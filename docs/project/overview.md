@@ -14,50 +14,129 @@ El Portal de Evaluación Académica IEM es una plataforma web diseñada para la 
 
 ## Arquitectura del Sistema
 
-### Estructura  General de Directorios
+### Estructura de Directorios
+
 ```
 plataforma_examenes/
 ├── backend/            # Lógica del servidor Flask y API
 ├── frontend/           # Interfaz de usuario
 ├── docs/               # Documentación del proyecto
+│   ├── architecture/   # Documentación de arquitectura
+│   ├── development/    # Documentación de desarrollo (setup, testing, contributing)
+│   ├── project/        # Documentación general del proyecto (changelog, license)
+│   └── internal/       # Documentación interna (revisiones, notas)
 ├── test/               # Pruebas unitarias y de integración
 ├── data/               # Banco de preguntas
 ├── index.html          # Página principal de la aplicación (redirecciona a login)
 ├── requirements.txt    # Dependencias de Python
 └── README.md           # Documentación general del proyecto
 ```
-#### Esctructura de Directorios backend
-```
-plataforma_examenes/backend/            
-├──data/
-    ├── usuarios.json        # Datos de usuarios (estudiantes)
-    ├── examenes.json        # Configuración de exámenes
-    ├── configuracion.json   # Banco de preguntas
-    └── resultados.json      # Historial de resultados
-└── app.py                   # Aplicación Flask
-```
-#### Esctructura de Directorios frontend 
-
-```
-plataforma_examenes/frontend/
-├── css/               # Estilos
-|    └── assets/                # Recursos estáticos
-|        └──  img/               # Imágenes estáticas
-├── pages/              # Páginas web
-|    ├── login.html          # Página de login
-|    ├── dashboard.html      # Dashboard personalizado
-|    ├── exam.html           # Página de examen
-|    └── results.html        # Página de resultados
-└── js/                # Lógica del cliente
-```
-
-### Estructura de Directorios docs
 
 ```
 plataforma_examenes/
 ├── backend/            # Lógica del servidor Flask y API
 ├── frontend/           # Interfaz de usuario
 ├── docs/               # Documentación del proyecto
+│   ├── architecture/   # Documentación de arquitectura
+│   ├── development/    # Documentación de desarrollo (setup, testing, contributing)
+│   ├── project/        # Documentación general del proyecto (changelog, license)
+│   └── internal/       # Documentación interna (revisiones, notas)
+├── test/               # Pruebas unitarias y de integración
+├── data/               # Banco de preguntas
+├── index.html          # Página principal de la aplicación (redirecciona a login)
+├── requirements.txt    # Dependencias de Python
+└── README.md           # Documentación general del proyecto
+```
+
+```
+plataforma_examenes/
+├── backend/            # Lógica del servidor Flask y API
+├── frontend/           # Interfaz de usuario
+├── docs/               # Documentación del proyecto
+│   ├── architecture/   # Documentación de arquitectura
+│   ├── development/    # Documentación de desarrollo (setup, testing, contributing)
+│   ├── project/        # Documentación general del proyecto (changelog, license)
+│   └── internal/       # Documentación interna (revisiones, notas)
+├── test/               # Pruebas unitarias y de integración
+├── data/               # Banco de preguntas
+├── index.html          # Página principal de la aplicación (redirecciona a login)
+├── requirements.txt    # Dependencias de Python
+└── README.md           # Documentación general del proyecto
+```
+
+```
+plataforma_examenes/
+├── backend/            # Lógica del servidor Flask y API
+├── frontend/           # Interfaz de usuario
+├── docs/               # Documentación del proyecto
+│   ├── architecture/   # Documentación de arquitectura
+│   ├── development/    # Documentación de desarrollo (setup, testing, contributing)
+│   ├── project/        # Documentación general del proyecto (changelog, license)
+│   └── internal/       # Documentación interna (revisiones, notas)
+├── test/               # Pruebas unitarias y de integración
+├── data/               # Banco de preguntas
+├── index.html          # Página principal de la aplicación (redirecciona a login)
+├── requirements.txt    # Dependencias de Python
+└── README.md           # Documentación general del proyecto
+```
+
+```
+plataforma_examenes/
+├── backend/            # Lógica del servidor Flask y API
+├── frontend/           # Interfaz de usuario
+├── docs/               # Documentación del proyecto
+│   ├── architecture/   # Documentación de arquitectura
+│   ├── development/    # Documentación de desarrollo (setup, testing, contributing)
+│   ├── project/        # Documentación general del proyecto (changelog, license)
+│   └── internal/       # Documentación interna (revisiones, notas)
+├── test/               # Pruebas unitarias y de integración
+├── data/               # Banco de preguntas
+├── index.html          # Página principal de la aplicación (redirecciona a login)
+├── requirements.txt    # Dependencias de Python
+└── README.md           # Documentación general del proyecto
+```
+
+```
+plataforma_examenes/
+├── backend/            # Lógica del servidor Flask y API
+├── frontend/           # Interfaz de usuario
+├── docs/               # Documentación del proyecto
+│   ├── architecture/   # Documentación de arquitectura
+│   ├── development/    # Documentación de desarrollo (setup, testing, contributing)
+│   ├── project/        # Documentación general del proyecto (changelog, license)
+│   └── internal/       # Documentación interna (revisiones, notas)
+├── test/               # Pruebas unitarias y de integración
+├── data/               # Banco de preguntas
+├── index.html          # Página principal de la aplicación (redirecciona a login)
+├── requirements.txt    # Dependencias de Python
+└── README.md           # Documentación general del proyecto
+```
+
+```
+plataforma_examenes/
+├── backend/            # Lógica del servidor Flask y API
+├── frontend/           # Interfaz de usuario
+├── docs/               # Documentación del proyecto
+│   ├── architecture/   # Documentación de arquitectura
+│   ├── development/    # Documentación de desarrollo (setup, testing, contributing)
+│   ├── project/        # Documentación general del proyecto (changelog, license)
+│   └── internal/       # Documentación interna (revisiones, notas)
+├── test/               # Pruebas unitarias y de integración
+├── data/               # Banco de preguntas
+├── index.html          # Página principal de la aplicación (redirecciona a login)
+├── requirements.txt    # Dependencias de Python
+└── README.md           # Documentación general del proyecto
+```
+
+```
+plataforma_examenes/
+├── backend/            # Lógica del servidor Flask y API
+├── frontend/           # Interfaz de usuario
+├── docs/               # Documentación del proyecto
+│   ├── architecture/   # Documentación de arquitectura
+│   ├── development/    # Documentación de desarrollo (setup, testing, contributing)
+│   ├── project/        # Documentación general del proyecto (changelog, license)
+│   └── internal/       # Documentación interna (revisiones, notas)
 ├── test/               # Pruebas unitarias y de integración
 ├── data/               # Banco de preguntas
 ├── index.html          # Página principal de la aplicación (redirecciona a login)
