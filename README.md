@@ -1,7 +1,7 @@
 # Portal de Evaluación Académica IEM
 
 ## Descripción
-Sistema web interactivo para evaluaciones académicas que permite a los estudiantes realizar pruebas en diferentes áreas del conocimiento. Desarrollado específicamente para la Institución Educativa Municipal (IEM).
+Sistema web interactivo para evaluaciones académicas que permite a los estudiantes realizar pruebas en diferentes áreas del conocimiento, en un entorno de red local. Desarrollado específicamente para la Institución Educativa Mojarras (IEM).
 
 ## Características Principales
 - 🔐 Sistema de autenticación por código estudiantil

@@ -54,10 +54,9 @@ data/*.sqlite3
 data/*.backup
 data/*.bak
 
-# Data files (if they are generated or should not be committed)
-# Assuming .json files in data/ are source data and should be committed
-# If they are generated, uncomment the following:
-# data/*.json
+# Data files (containing sensitive or generated data)
+# These files contain sample user data and should not be committed to a public repository.
+data/*.json
 
 # Environment variables
 .env

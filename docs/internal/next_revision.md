@@ -24,7 +24,7 @@ Implementar completamente la funcionalidad del botón "Terminar Examen" para per
 ### 1. Backend - API de Finalización
 
 #### 1.1 Corregir Ruta de Finalización
-**Archivo:** `backend/server.js`
+**Archivo:** `backend/app.py`
 **Función:** `POST /api/examenes/:area/finalizar`
 
 **Problemas Actuales:**
@@ -34,30 +34,31 @@ Implementar completamente la funcionalidad del botón "Terminar Examen" para per
 
 **Solución Requerida:**
 ```javascript
-app.post('/api/examenes/:area/finalizar', async (req, res) => {
-    try {
-        const { sesion_id, respuestas } = req.body;
+@app.route('/api/examenes/<area>/finalizar', methods=['POST'])
+def finalizar_examen(area):
+    try:
+        data = request.get_json()
+        sesion_id = data.get('sesion_id')
+        respuestas = data.get('respuestas')
         
-        // 1. Validar sesión existe y está activa
-        // 2. Obtener preguntas correctas del examen
-        // 3. Calcular puntuación comparando respuestas
-        // 4. Guardar resultado en resultados.json
-        // 5. Marcar sesión como completada
-        // 6. Retornar resultado calculado
+        # 1. Validar sesión existe y está activa
+        # 2. Obtener preguntas correctas del examen
+        # 3. Calcular puntuación comparando respuestas
+        # 4. Guardar resultado en la base de datos (o resultados.json)
+        # 5. Marcar sesión como completada
+        # 6. Retornar resultado calculado
         
-        res.json({
-            success: true,
-            resultado: {
-                puntuacion: calculatedScore,
-                porcentaje: percentage,
-                tiempo_usado: timeUsed,
-                preguntas_correctas: correctCount
+        return jsonify({
+            'success': True,
+            'resultado': {
+                'puntuacion': 'calculatedScore', # Placeholder
+                'porcentaje': 'percentage',     # Placeholder
+                'tiempo_usado': 'timeUsed',     # Placeholder
+                'preguntas_correctas': 'correctCount' # Placeholder
             }
-        });
-    } catch (error) {
-        res.status(500).json({ error: true, mensaje: error.message });
-    }
-});
+        })
+    except Exception as e:
+        return jsonify({'error': True, 'mensaje': str(e)}), 500
 ```
 
 #### 1.2 Implementar Cálculo de Resultados
@@ -262,7 +263,7 @@ async finishExam() {
 ## Recursos Necesarios
 
 ### Archivos a Modificar
-- `backend/server.js` (API de finalización)
+- `backend/app.py` (API de finalización)
 - `frontend/js/examen.js` (función finishExam)
 - `data/resultados.json` (estructura de datos)
 

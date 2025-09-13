@@ -19,7 +19,7 @@ El proyecto se encuentra en un estado funcional básico con las siguientes carac
    - Colores consistentes (gradiente verde)
 
 3. **Backend API**
-   - Servidor Express.js funcional
+   - Servidor Flask funcional
    - Rutas de autenticación implementadas
    - Manejo de archivos estáticos
    - CORS configurado correctamente

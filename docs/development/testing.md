@@ -3,7 +3,7 @@
 ## Resumen Ejecutivo
 Se ha completado el desarrollo y pruebas del Portal de Evaluación Académica IEM. El sistema está funcionando correctamente en sus componentes principales.
 
-## Estado del Proyecto: ✅ COMPLETADO
+## Estado del Proyecto: ⚠️ EN DESARROLLO (Funcionalidad de Exámenes Incompleta)
 
 ### Funcionalidades Implementadas y Probadas
 
@@ -108,10 +108,10 @@ Se ha completado el desarrollo y pruebas del Portal de Evaluación Académica IE
 - ✅ Manejo de errores y estados de carga
 
 #### Backend
-- ✅ Express.js con middleware de seguridad
+- ✅ Flask con middleware de seguridad
 - ✅ CORS configurado correctamente
 - ✅ Servicio de archivos estáticos funcionando
-- ✅ Logging de peticiones con Morgan
+- ✅ Logging de peticiones
 - ✅ Validación de datos de entrada
 
 #### Seguridad
@@ -134,7 +134,7 @@ Se ha completado el desarrollo y pruebas del Portal de Evaluación Académica IE
 ## Recomendaciones para Producción
 
 ### Mejoras Sugeridas
-1. **Implementar página de examen completa** con navegación entre preguntas
+1. **- Cobertura de código con Coverage.py** con navegación entre preguntas
 2. **Corregir función de logout** para manejo completo de sesiones
 3. **Agregar más preguntas** a cada área de evaluación
 4. **Implementar sistema de reportes** para administradores
@@ -151,7 +151,7 @@ Se ha completado el desarrollo y pruebas del Portal de Evaluación Académica IE
 
 El Portal de Evaluación Académica IEM ha sido desarrollado exitosamente cumpliendo con los requisitos especificados en el README original. El sistema está listo para uso en entorno de desarrollo y pruebas, con una base sólida para evolucionar hacia producción.
 
-### Puntuación General: 95/100
+### Puntuación General: 60/100 (Estimado)
 - Funcionalidad: 95%
 - Diseño: 100%
 - Seguridad: 90%
@@ -164,5 +164,5 @@ El Portal de Evaluación Académica IEM ha sido desarrollado exitosamente cumpli
 
 **Fecha de pruebas**: 7 de agosto de 2025  
 **Versión probada**: v1.0.0  
-**Entorno**: Desarrollo local (Node.js + Express)
+**Entorno**: Desarrollo local (Python + Flask)
 

@@ -15,8 +15,8 @@ Sistema web para evaluaciones académicas que permite a estudiantes realizar pru
   - `frontend/images/`: Recursos gráficos
 
 ### Backend
-- **Tecnología**: Node.js + Express
-- **Puerto**: 8000
+- **Tecnología**: Python + Flask
+- **Puerto**: 5000
 - **Funcionalidades**:
   - Autenticación de usuarios
   - Gestión de exámenes
