@@ -1,11 +1,11 @@
 # Configuración general para el manejo de proyectos 
  
-## 📊 Análisis del Repositorio: [NOMBRE_PROYECTO]
+## 📊 Análisis del Repositorio: Portal de Evaluación Académica IEM
 
 ### Resumen Ejecutivo
-- **Puntuación General:** X/100
-- **Tecnología Principal:** [TECNOLOGÍA]
-- **Estado General:** [EXCELENTE/BUENO/NECESITA_MEJORAS/CRÍTICO]
+- **Puntuación General:** 60/100
+- **Tecnología Principal:** Python (Flask), HTML5, CSS3, JavaScript (Vanilla)
+- **Estado General:** NECESITA_MEJORAS
 
 ### Resultados por Sección
 1. Estructura del Repositorio: X/10
@@ -13,31 +13,31 @@
 [... continuar con todas las secciones]
 
 ### Top 3 Áreas Críticas
-1. [ÁREA] - [DESCRIPCIÓN DEL PROBLEMA]
-2. [ÁREA] - [DESCRIPCIÓN DEL PROBLEMA]
-3. [ÁREA] - [DESCRIPCIÓN DEL PROBLEMA]
+1. **Funcionalidad de Exámenes Incompleta** - La funcionalidad del botón "Terminar Examen" y la carga real de preguntas no están implementadas.
+2. **Falta de Herramientas de Calidad y Testing** - No hay linters, formatters, Git hooks ni testing framework configurados.
+3. **Documentación Incompleta/Desorganizada** - Ausencia de `CODE_STYLE.md` y organización de la documentación diferente a la plantilla.
 
 ### Recomendaciones Prioritarias
-- [ ] [ACCIÓN INMEDIATA 1]
-- [ ] [ACCIÓN INMEDIATA 2]
-- [ ] [ACCIÓN INMEDIATA 3]
+- [ ] Completar la funcionalidad del botón "Terminar Examen" y la integración backend-frontend para exámenes.
+- [ ] Configurar herramientas de calidad de código (linters, formatters) e implementar un testing framework.
+- [ ] Organizar la documentación según la plantilla y crear `CODE_STYLE.md`.
 
 ### Validación de Configuración
 Despues de realizar el analisis puede validar esto antes de comenzar el desarrollo:
-- [ ] Revise la estructura de carpetas.
-- [ ] Confirme si el directorio `demo/` está creado, si no cree uno.
-- [ ] Revise las ramas del proyecto
-- [ ] Sugiera las 3 ramas principales configuradas (main, develop, debug)
-- [ ] Herramientas de calidad configuradas (linters, formatters, analyzers)
-- [ ] Git hooks instalados (pre-commit, pre-push)
-- [ ] Testing framework configurado
-- [ ] Documentación base generada (incluyendo CODE_STYLE.md y CONTRIBUTING.md)
-- [ ] Git inicializado y configurado
-- [ ] Dependencias instaladas y auditadas
-- [ ] Primera sesión documentada
-- [ ] Plantillas específicas configuradas
-- [ ] Prototipos iniciales creados en `prototype/`
-- [ ] Métricas de calidad baseline establecidas# Plantilla para Desarrollo de Proyectos con IA Assistant
+- [x] Revise la estructura de carpetas.
+- [x] Confirme si el directorio `demo/` está creado, si no cree uno. (El directorio `prototype/` existe y cumple una función similar, pero está vacío).
+- [x] Revise las ramas del proyecto (La rama `develop` está un commit atrasada con respecto a `origin/develop`).
+- [x] Sugiera las 3 ramas principales configuradas (main, develop, debug).
+- [ ] Herramientas de calidad configuradas ej: (linters, formatters, analyzers).
+- [ ] Git hooks instalados (pre-commit, pre-push).
+- [ ] Testing framework configurado.
+- [ ] Documentación base generada (incluyendo CODE_STYLE.md y CONTRIBUTING.md).
+- [x] Git inicializado y configurado.
+- [ ] Dependencias instaladas y auditadas (Dependencias de Python listadas, pero no se puede confirmar instalación/auditoría. No se encontró `package.json`).
+- [ ] Primera sesión documentada.
+- [ ] Plantillas específicas configuradas.
+- [ ] Prototipos iniciales creados en `prototype/` (El directorio `prototype/` está vacío).
+- [ ] Métricas de calidad baseline establecidas.# Plantilla para Desarrollo de Proyectos con IA Assistant
 
 ## 1. Configuración Inicial del Proyecto
 
@@ -46,69 +46,120 @@ Despues de realizar el analisis puede validar esto antes de comenzar el desarrol
 Cuando el usuario inicie un nuevo proyecto, el asistente debe realizar las siguientes preguntas para configurar la plantilla:
 
 #### Información Básica
-1. **Nombre del proyecto:** ¿Cuál es el nombre de tu proyecto?
+1. **Nombre del proyecto:** Portal de Evaluación Académica IEM
 2. **Tipo de proyecto:** 
    - [ ] Aplicación Web Frontend
-   - [ ] API/Backend
-   - [ ] Aplicación Full-Stack
+   - [x] API/Backend
+   - [x] Aplicación Full-Stack
    - [ ] Aplicación Móvil
    - [ ] Biblioteca/Package
    - [ ] Documentación/Presentación
    - [ ] Otro (especificar)
 
-3. **Tecnologías principales:** ¿Qué tecnologías planeas usar?
-   - Frontend: React, Vue, Angular, Vanilla JS, otro
-   - Backend: Node.js, Python, Java, C#, otro
-   - Base de datos: MongoDB, PostgreSQL, MySQL, otro
-   - Herramientas: Webpack, Vite, Docker, otro
+3. **Tecnologías principales:** 
+   - Frontend: Vanilla JS, HTML5, CSS3
+   - Backend: Python (Flask)
+   - Base de datos: Archivos JSON
+   - Herramientas: (Ninguna configurada explícitamente)
 
 4. **Nivel de complejidad:**
    - [ ] Básico (prototipo/demo)
-   - [ ] Intermedio (aplicación funcional)
+   - [x] Intermedio (aplicación funcional)
    - [ ] Avanzado (aplicación de producción)
 
-5. **Público objetivo:** ¿Para quién está dirigido el proyecto?
-6. **Plazo estimado:** ¿Cuál es el tiempo estimado de desarrollo?
+5. **Público objetivo:** Estudiantes de la Institución Educativa Mojarras
+6. **Plazo estimado:** No especificado
 
 ### 1.2. Estructura de Carpetas Base
 
 ```
-{nombre_proyecto}/
+portal_inicio/
 ├── docs/
-│   ├── README.md
-│   ├── ARCHITECTURE.md
-│   ├── CHANGELOG.md
-│   ├── CODE_STYLE.md
-│   ├── CONTRIBUTING.md
-│   └── API.md (si aplica)
-├── log/
-│   ├── PROJECT_SETUP.md
-│   ├── SESSION_LOG.md
-│   ├── CODE_QUALITY.md
-│   └── GIT_WORKFLOW.md
-├── prototype/
-│   ├── README.md
-│   ├── demos/
-│   ├── examples/
-│   ├── proof_of_concept/
-│   └── reference_scripts/
-├── src/
-│   ├── [estructura específica del tipo de proyecto]
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-├── tools/
-│   ├── linters/
-│   ├── formatters/
-│   └── quality_checks/
+│   ├── architecture/ # Documentación de arquitectura
+│   │   ├── api_endpoints.md
+│   │   ├── database.md
+│   │   ├── monitoring_logging.md
+│   │   ├── performance.md
+│   │   ├── security.md
+│   │   └── system_architecture.md
+│   ├── development/ # Documentación de desarrollo
+│   │   ├── contributing.md
+│   │   ├── improvements.md
+│   │   ├── maintenance.md
+│   │   ├── setup.md
+│   │   ├── testing.md
+│   │   ├── troubleshooting.md
+│   │   └── user_flow.md
+│   ├── internal/ # Documentación interna
+│   │   ├── error_revisions.md
+│   │   └── next_revision.md
+│   └── project/ # Documentación del proyecto
+│       ├── changelog.md
+│       ├── contact.md
+│       ├── license.md
+│       ├── overview.md
+│       └── roadmap.md
+├── prototype/ # Directorio para prototipos (vacío)
+├── backend/
+│   ├── app.py
+│   └── data/
+│       ├── configuracion.json
+│       ├── examenes.json
+│       ├── resultados.json
+│       └── usuarios.json
+├── data/ # Archivos de datos para grados
+│   ├── grado 10/
+│   ├── grado 11/
+│   ├── grado 6/
+│   ├── grado 7/
+│   │   └── ciencias/
+│   ├── grado 8/
+│   └── grado 9/
+├── frontend/
+│   ├── css/
+│   │   ├── dashboard.css
+│   │   ├── examen.css
+│   │   ├── global.css
+│   │   ├── resultados.css
+│   │   ├── styles.css
+│   │   └── assets/
+│   │       └── images/
+│   ├── js/
+│   │   ├── main.js
+│   │   ├── api/
+│   │   │   └── index.js
+│   │   ├── components/
+│   │   │   ├── modal.js
+│   │   │   └── notification.js
+│   │   ├── pages/
+│   │   │   ├── dashboard.js
+│   │   │   ├── exam.js
+│   │   │   ├── login.js
+│   │   │   └── results.js
+│   │   └── shared/
+│   │       ├── auth.js
+│   │       ├── timer.js
+│   │       └── utils.js
+│   └── pages/
+│       ├── dashboard.html
+│       ├── examen.html
+│       ├── footer.html
+│       ├── header.html
+│       ├── login-form.html
+│       ├── login.html
+│       └── resultados.html
+├── tests/ # Directorio para pruebas (vacío)
 ├── .gitignore
-├── .editorconfig
-├── .eslintrc.js (si aplica)
-├── .prettierrc (si aplica)
-├── package.json (si aplica)
-└── [archivos de configuración específicos]
+├── GEMINI.md
+├── index.html
+├── LICENSE
+├── README.md
+├── requirements.txt
+├── .git/... # Directorio Git
+└── .vscode/ # Configuración de VSCode
 ```
+
+
 
 ## 2. Flujos de Trabajo Automatizados
 
@@ -117,11 +168,11 @@ Cuando el usuario inicie un nuevo proyecto, el asistente debe realizar las sigui
 **Palabras clave:** "inicio de sesión", "hola", "comenzar", "iniciar proyecto"
 
 **Proceso:**
-1. **Análisis del contexto:** Revisar documentación existente en `log/`
+1. **Análisis del contexto:** Revisar documentación existente en `docs`
 2. **Estado del proyecto:** Verificar últimos commits y archivos modificados
 3. **Revisión de calidad:** Ejecutar checks automáticos de código si existen
 4. **Resumen de la sesión anterior:** Mostrar progreso, deuda técnica y próximos pasos
-5. **Creación de nueva sesión:** Generar entrada en `log/SESSION_LOG.md`
+5. **Creación de nueva sesión:** Generar entrada en `docs/project/changelog.md`
 
 ```markdown
 ## Sesión [NÚMERO] - [FECHA] [HORA_INICIO]
@@ -140,15 +191,14 @@ Cuando el usuario inicie un nuevo proyecto, el asistente debe realizar las sigui
 
 **Proceso:**
 1. **Análisis de cambios:** Detectar archivos modificados desde último commit
-2. **Verificación de calidad:** Ejecutar linters, formatters y análisis estático
-3. **Verificación de rama:** Asegurar que se está en la rama correcta (develop para desarrollo, debug para correcciones)
-4. **Validación de tests:** Ejecutar tests relacionados con los cambios
-5. **Generación de propuestas:** Crear 3 mensajes de commit descriptivos
-6. **Autorización:** Presentar opciones al usuario para selección
-7. **Ejecución:** Realizar commit con mensaje seleccionado
-8. **Post-commit:** Actualizar métricas de calidad en `log/CODE_QUALITY.md`
+2. **Verificación de rama:** Asegurar que se está en la rama correcta (develop para desarrollo, debug para correcciones)
+3. **Generación de propuestas:** Crear 3 mensajes de commit descriptivos
+4. **Autorización:** Presentar opciones al usuario para selección
+5. **Ejecución:** Realizar commit con mensaje seleccionado
+6. **Post-commit:** Actualizar métricas de calidad en `docs/project/changelog.md` .
 
 **Checks automáticos antes de commit:**
+(Estos checks no están automatizados actualmente. Se recomienda implementar las siguientes herramientas para automatizarlos en el futuro: `Flake8`, `Black` para Python; `ESLint`, `Prettier` para JavaScript/CSS; `Pytest`, `Jest`/`Vitest`, `Cypress`/`Playwright` para testing.)
 - Formateo de código consistente
 - Linting sin errores críticos
 - Tests unitarios pasando
@@ -172,11 +222,11 @@ Cuando el usuario inicie un nuevo proyecto, el asistente debe realizar las sigui
 **Palabras clave:** "cerrar sesión", "finalizar", "terminar", "adiós"
 
 **Proceso:**
-1. **Revisión de calidad de la sesión:** Generar reporte de calidad del código trabajado
+1. **Revisión de calidad de la sesión:** Generar reporte de calidad del código trabajado (Actualmente no implementado de forma automática).
 2. **Consulta de guardado:** "¿Desea guardar en repositorio Git la sesión actual?"
 3. **Guardado condicional:** Ejecutar flujo 2.2 si es afirmativo
-4. **Documentación de sesión:** Completar entrada en `log/SESSION_LOG.md`
-5. **Actualización de métricas:** Actualizar `log/CODE_QUALITY.md` con métricas de la sesión
+4. **Documentación de sesión:** Completar entrada en `docs/project/changelog.md`
+5. **Actualización de métricas:** Actualizar `docs/internal/error_revisions.md` o `docs/development/testing.md` con métricas de la sesión 
 6. **Sugerencias de mejora:** Proponer refactorizaciones o mejoras para próximas sesiones
 7. **Limpieza:** Borrar datos temporales de sesión
 
@@ -288,32 +338,7 @@ Cuando el usuario inicie un nuevo proyecto, el asistente debe realizar las sigui
 - Documentar decisiones de performance
 ```
 
-### 3.2. Logs de Desarrollo
 
-#### PROJECT_SETUP.md
-- Configuración inicial del proyecto
-- Decisiones tomadas durante setup
-- Dependencias instaladas y justificación
-- Herramientas de calidad configuradas
-
-#### SESSION_LOG.md
-- Registro cronológico de sesiones de trabajo
-- Objetivos, cambios realizados, errores encontrados
-- Métricas de productividad y calidad
-- Deuda técnica identificada y resuelta
-
-#### CODE_QUALITY.md
-- Métricas de calidad por sesión
-- Evolución de la cobertura de tests
-- Análisis de complejidad ciclomática
-- Alertas de code smells y su resolución
-- Tendencias de mejora o deterioro
-
-#### GIT_WORKFLOW.md
-- Estrategia de branching utilizada
-- Convenciones de commit
-- Políticas de merge/release
-- Historial de hotfixes y su análisis
 
 ## 4. Configuraciones por Tipo de Proyecto
 
@@ -498,56 +523,7 @@ fi
 echo "✅ Todos los checks pasaron. Procediendo con commit..."
 ```
 
-## 6. Métricas y Seguimiento
 
-### 6.1. KPIs de Desarrollo y Calidad
-
-**Métricas de Productividad:**
-- Commits por sesión
-- Tiempo por funcionalidad
-- Velocidad de desarrollo (story points/sprint)
-
-**Métricas de Calidad:**
-- Cobertura de tests (mínimo 80%)
-- Complejidad ciclomática (máximo 10)
-- Deuda técnica acumulada (tiempo estimado para resolver)
-- Code smells detectados vs resueltos
-- Tiempo medio para fix de bugs
-
-**Métricas de Proceso:**
-- Tiempo de code review
-- Frecuencia de hotfixes
-- Ratio de bugs en producción
-- Adherencia a estándares de código
-
-### 6.2. Reportes Automáticos
-
-Al final de cada sesión generar:
-- **Resumen de productividad:** Líneas de código, commits, funcionalidades completadas
-- **Análisis de calidad:** Cobertura de tests, complejidad, code smells
-- **Deuda técnica:** Nuevos issues identificados y resueltos
-- **Próximos pasos:** Sugerencias priorizadas de mejoras
-- **Alertas de calidad:** Violaciones de estándares que requieren atención inmediata
-- **Tendencias:** Evolución de métricas comparado con sesiones anteriores
-
-**Formato del reporte:**
-```markdown
-## Reporte de Sesión [FECHA]
-
-### 📊 Métricas de Calidad
-- Cobertura de tests: 85% (+2% desde última sesión)
-- Complejidad promedio: 6.2 (-0.3 desde última sesión)
-- Code smells: 3 nuevos, 5 resueltos
-
-### ⚠️ Alertas
-- Función `processData()` excede complejidad máxima (15)
-- Falta documentación en 3 métodos públicos nuevos
-
-### 🎯 Próximas Prioridades
-1. Refactorizar `processData()` para reducir complejidad
-2. Añadir tests para nuevo módulo de autenticación
-3. Actualizar documentación de API
-```
 
 ## 7. Personalización y Extensiones
 
