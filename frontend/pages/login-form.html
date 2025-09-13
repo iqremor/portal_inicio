@@ -1,0 +1,62 @@
+<main class="main-content">
+    <div class="login-card">
+        <div class="card-header">
+            <i class="fas fa-user-graduate card-icon"></i>
+            <h2>Acceso Estudiantil</h2>
+            <p>Ingresa tu código para acceder a las evaluaciones</p>
+        </div>
+
+        <form id="loginForm" class="login-form">
+            <div class="input-group">
+                <label for="codigoEstudiantil" class="input-label">
+                    <i class="fas fa-id-card"></i>
+                    Código Estudiantil
+                </label>
+                <input 
+                    type="text" 
+                    id="codigoEstudiantil" 
+                    name="codigoEstudiantil"
+                    placeholder="IEM1234"
+                    maxlength="7"
+                    autocomplete="off"
+                    required
+                >
+                <div class="input-help">
+                    Formato: IEM seguido de 4 números
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary" id="btnIngresar">
+                <span class="btn-text">Ingresar</span>
+                <i class="fas fa-arrow-right btn-icon"></i>
+            </button>
+        </form>
+
+        <div id="mensaje" class="mensaje hidden"></div>
+        
+        <div class="loading-overlay hidden" id="loadingOverlay">
+            <div class="spinner"></div>
+            <p>Validando código...</p>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <div class="info-card">
+            <i class="fas fa-clock info-icon"></i>
+            <h3>Evaluaciones Cronometradas</h3>
+            <p>Cada examen tiene un tiempo límite específico</p>
+        </div>
+        
+        <div class="info-card">
+            <i class="fas fa-chart-line info-icon"></i>
+            <h3>Resultados Inmediatos</h3>
+            <p>Conoce tu puntuación al finalizar cada evaluación</p>
+        </div>
+        
+        <div class="info-card">
+            <i class="fas fa-shield-alt info-icon"></i>
+            <h3>Acceso Seguro</h3>
+            <p>Sistema de autenticación por código estudiantil</p>
+        </div>
+    </div>
+</main>

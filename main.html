@@ -126,42 +126,8 @@
         </footer>
     </div>
 
-    <script>
-        // JavaScript básico para la demo
-        document.addEventListener('DOMContentLoaded', function() {
-            // Event listeners para botones de actividades
-            document.querySelectorAll('.activity-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const activity = e.target.getAttribute('data-activity');
-                    if (activity === 'preunal') {
-                        showExamAreas();
-                    } else {
-                        alert(`${activity} estará disponible próximamente.`);
-                    }
-                });
-            });
-
-            // Event listener para botón de volver
-            const btnBack = document.getElementById('btnBackToActivities');
-            if (btnBack) {
-                btnBack.addEventListener('click', () => {
-                    showActivities();
-                });
-            }
-
-            function showExamAreas() {
-                document.querySelector('.activities-section').classList.add('hidden');
-                document.querySelector('.hero-section').classList.add('hidden');
-                document.getElementById('examAreasSection').classList.remove('hidden');
-            }
-
-            function showActivities() {
-                document.querySelector('.activities-section').classList.remove('hidden');
-                document.querySelector('.hero-section').classList.remove('hidden');
-                document.getElementById('examAreasSection').classList.add('hidden');
-            }
-        });
-    </script>
+    <script src="frontend/js/main.js" defer></script>
+    <script type="module" src="frontend/js/pages/dashboard.js"></script>
 </body>
 </html>
 

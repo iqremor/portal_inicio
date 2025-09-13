@@ -3,97 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados del Examen - Portal IEM</title>
+    <title>Resultados - Portal Estudiantil IEM</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/resultados.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="dashboard-body">
-    <div class="dashboard-container">
-        <!-- Header -->
-        <header class="dashboard-header">
-            <div class="header-content">
-                <div class="logo-section">
-                    <i class="fas fa-graduation-cap"></i>
-                    <h1>Resultados de la Evaluación</h1>
-                </div>
-                <div class="user-section">
-                    <div class="user-info">
-                        <div class="user-avatar" id="userAvatar">--</div>
-                        <div class="user-details">
-                            <span class="user-name" id="userName">Cargando...</span>
-                            <span class="user-grade" id="userGrade">--</span>
-                        </div>
-                    </div>
-                    <button class="btn-logout" id="btnLogout">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Cerrar Sesión
-                    </button>
+<body>
+    <div class="results-container">
+        <header class="results-header">
+            <div class="user-info">
+                <div id="userAvatar" class="user-avatar"></div>
+                <div>
+                    <span id="userName" class="user-name"></span>
+                    <span id="userGrade" class="user-grade"></span>
                 </div>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="dashboard-main">
-            <div class="results-card">
-                <div class="results-header">
-                    <h2 id="examAreaTitle">Matemáticas</h2>
-                    <p>Resumen de tu desempeño</p>
+        <main class="results-main">
+            <h1 id="examAreaTitle"></h1>
+            <div class="score-summary">
+                <div class="score-circle">
+                    <svg viewBox="0 0 36 36">
+                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path id="scoreRing" class="circle" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <span id="scorePercentage" class="score-percentage"></span>
                 </div>
+                <p id="scoreStatus"></p>
+            </div>
 
-                <div class="score-summary">
-                    <div class="score-circle" id="scoreCircle">
-                        <svg class="score-ring" width="160" height="160">
-                            <circle class="score-ring-bg" stroke-width="12" r="74" cx="80" cy="80" />
-                            <circle class="score-ring-fg" id="scoreRing" stroke-width="12" r="74" cx="80" cy="80" />
-                        </svg>
-                        <div class="score-percentage" id="scorePercentage">85%</div>
-                    </div>
-                    <div class="score-status" id="scoreStatus">¡Excelente!</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Respuestas Correctas</h3>
+                    <p id="correctAnswers"></p>
                 </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <i class="fas fa-check-circle"></i>
-                        <h3>Correctas</h3>
-                        <p id="correctAnswers">17 / 20</p>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-times-circle"></i>
-                        <h3>Incorrectas</h3>
-                        <p id="incorrectAnswers">3 / 20</p>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-clock"></i>
-                        <h3>Tiempo Usado</h3>
-                        <p id="timeUsed">25:30</p>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-trophy"></i>
-                        <h3>Puntuación</h3>
-                        <p id="score">850 / 1000</p>
-                    </div>
+                <div class="stat-card">
+                    <h3>Respuestas Incorrectas</h3>
+                    <p id="incorrectAnswers"></p>
                 </div>
-
-                <div class="results-footer">
-                    <button class="btn-secondary" id="backToExams">
-                        <i class="fas fa-th-large"></i>
-                        Ver más exámenes
-                    </button>
-                    <button class="btn-primary" id="backToDashboard">
-                        <i class="fas fa-arrow-left"></i>
-                        Volver a Actividades
-                    </button>
+                <div class="stat-card">
+                    <h3>Tiempo Utilizado</h3>
+                    <p id="timeUsed"></p>
+                </div>
+                <div class="stat-card">
+                    <h3>Puntuación</h3>
+                    <p id="score"></p>
                 </div>
             </div>
-        </main>
 
-        <div id="global-footer"></div>
+            <div class="results-actions">
+                <button id="backToDashboard" class="btn-primary">Volver al Inicio</button>
+                <button id="backToExams" class="btn-secondary">Ver otros exámenes</button>
+            </div>
+        </main>
     </div>
 
-    <script src="/frontend/js/global.js" defer></script>
-    <script src="../js/resultados.js"></script>
+    <script src="../js/main.js" defer></script>
+    <script type="module" src="../js/pages/results.js"></script>
 </body>
 </html>

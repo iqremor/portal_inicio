@@ -31,25 +31,106 @@ Sistema web interactivo para evaluaciones académicas que permite a los estudian
 - **SQLite** - Base de datos SQL ligera basada en un archivo, gestionada a través de SQLAlchemy.
 
 ## Estructura del Proyecto
-
 ```
 plataforma_examenes/
-├── backend/
-│   └── app.py               # Lógica del servidor Flask y API
-├── frontend/
-│   ├── css/
-│   ├── js/
-│   └── pages/
+├── backend/            # Lógica del servidor Flask y API
+├── frontend/           # Interfaz de usuario
+├── docs/               # Documentación del proyecto
+|── test/               # Pruebas unitarias y de integración
+|── data/               # Banco de preguntas
+├── index.html          # Página principal de la aplicación
+├── requirements.txt    # Dependencias de Python
+└── README.md           # Documentación general del proyecto
+```
+### Backend
+```
+plataforma_examenes/backend/
 ├── data/
 │   ├── usuarios.json        # Datos iniciales de usuarios
 │   ├── examenes.json        # Datos iniciales de exámenes y preguntas
 │   └── portal_academico.db  # Base de datos SQLite (generada automáticamente)
-├── docs/
-├── index.html
-├── requirements.txt         # Dependencias de Python
-└── README.md                # Este archivo
+└── app.py                  # Lógica del servidor Flask y API
+
+```
+### Frontend
+```
+plataforma_examenes/frontend/           
+├── css/
+├── js/
+│   ├── api/
+│   |   └── index.js            # Centraliza todas las llamadas a la API.
+│   ├── components/
+│   │   ├── modal.js            # Componente de modal reutilizable.
+│   │   └── notification.js     # Componente de notificación reutilizable.
+|   ├── pages/
+|   │   ├── login.js            # Lógica específica de la página de login.
+│   ├── dashboard.js            # Lógica específica del dashboard.
+|   ├── exam/
+|   │   ├── constants.js        # Constantes de la aplicación.
+|   │   ├── exam.js             # Lógica específica de la página de examen.
+│   └── results.js              # Lógica específica de la página de resultados.
+|   ├── shared/
+|   │   ├── auth.js             # Funciones de autenticación (sesiones, etc.).
+|   │   ├── timer.js            # Clase de temporizador reutilizable.
+|   │   └── utils.js            # Funciones de utilidad (formateo de fechas, etc.).
+|   └── main.js                 # Punto de entrada principal de la aplicación.
+└── pages/                      
+    ├── index.html              # Página principal de la aplicación
+    ├── login.html              # Página de login
+    ├── dashboard.html          # Página de dashboard
+    ├── exam.html               # Página de examen
+    └── results.html            # Página de resultados
 ```
 
+### Docs
+```
+plataforma_examenes/docs/    # Documentación del proyecto
+├── requirements.txt         # Dependencias de Python
+├── Frontend.md              # Descripción Fronted
+|── log.md                   # Descripción de historial de cambios
+|── Backend.md               # Descripción Backend
+|── bugs.md                  # Reportar bugs
+|── contributing.md          # Contribuir al proyecto
+|── license.md               # Licencia del proyecto
+└── README.md                # Este archivo
+```
+### data 
+```
+plataforma_examenes/data/    # Banco de preguntas
+├──Grado_6/
+|      ├──Ciencias/
+|      ├──Matematicas/
+|      ├──Lectura/
+|      └──Sociales/
+├──Grado_7/
+|      ├──Ciencias/
+|      ├──Matematicas/
+|      ├──Lectura/
+|      └──Sociales/
+├──Grado_8/
+|      ├──Ciencias/
+|      ├──Matematicas/
+|      ├──Lectura/
+|      └──Sociales/
+├──Grado_9/
+|      ├──Ciencias/
+|      ├──Matematicas/
+|      ├──Ingles/
+|      ├──Lectura/
+|      └──Sociales/
+├──Grado_10/
+|      ├──Ciencias/
+|      ├──Matematicas/
+|      ├──Ingles/
+|      ├──Lectura/
+|      └──Sociales/
+└────Grado_11/
+      ├──Ciencias/
+      ├──Matematicas/
+      ├──Ingles/
+      ├──Lectura/
+      └──Sociales/
+```
 ## Requisitos Previos
 - Python 3.8+
 - Navegador web moderno
