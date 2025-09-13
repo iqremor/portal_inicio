@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - Portal Estudiantil IEM</title>
+    <link rel="stylesheet" href="frontend/css/styles.css">
+    <link rel="stylesheet" href="frontend/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>Institución Educativa Mojarras</h1>
+                    <span style="font-size: 0.9rem; margin-left: 1rem;">Convivencia y Superación</span>
+                </div>
+                
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">
+                            ZN
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name" id="userName">ZULY ÑAÑEZ</span>
+                            <span class="user-grade" id="userGrade">Estudiante</span>
+                        </div>
+                    </div>
+                    <button class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h1 class="hero-title">Bienvenido al Portal Estudiantil</h1>
+                <p class="hero-subtitle">Aquí podrás acceder a todas tus actividades académicas</p>
+            </section>
+
+            <!-- Activities Section -->
+            <section class="activities-section">
+                <h2 class="activities-title">Escoge la actividad a realizar</h2>
+                <div class="cards-container">
+                    <article class="activity-card">
+                        <h3>Preunal</h3>
+                        <p>Simulacro interactivo examen universidad nacional</p>
+                        <button class="activity-btn" data-activity="preunal">Comenzar</button>
+                    </article>
+                    
+                    <article class="activity-card">
+                        <h3>Preicfes</h3>
+                        <p>Simulacro interactivo de las pruebas saber</p>
+                        <button class="activity-btn" data-activity="preicfes">Comenzar</button>
+                    </article>
+                    
+                    <article class="activity-card">
+                        <h3>Pruebas y laboratorios interactivos</h3>
+                        <p>Pruebas para mejorar la lectura comprensiva y laboratorios virtuales</p>
+                        <button class="activity-btn" data-activity="laboratorios">Comenzar</button>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Exam Areas Section (Hidden by default, shown when "Preunal" is clicked) -->
+            <section class="exam-areas-section hidden" id="examAreasSection">
+                <div class="section-header">
+                    <button class="btn-back" id="btnBackToActivities">
+                        <i class="fas fa-arrow-left"></i>
+                        Volver a Actividades
+                    </button>
+                    <h2 class="section-title">Áreas de Evaluación</h2>
+                </div>
+
+                <!-- Exam Areas Grid -->
+                <div class="exam-areas-grid" id="examAreasGrid">
+                    <!-- Ejemplo de tarjeta de área -->
+                    <div class="exam-area-card">
+                        <div class="exam-area-header">
+                            <div class="exam-area-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="exam-area-title">
+                                <h3>Matemáticas</h3>
+                                <p>Evaluación de conceptos matemáticos básicos y avanzados</p>
+                            </div>
+                        </div>
+                        <div class="exam-area-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">30</span>
+                                <span class="stat-label">Minutos</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">10</span>
+                                <span class="stat-label">Preguntas</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">
+                                    <i class="fas fa-play-circle"></i>
+                                </span>
+                                <span class="stat-label">Iniciar</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            <div class="footer-content">
+                <div>© 2025 Institución Educativa Mojarras - Portal de Evaluación Académica</div>
+                <div class="footer-links">
+                    <span><i class="fas fa-phone"></i> ext. 123</span>
+                    <span><i class="fas fa-envelope"></i> evaluaciones@iem.edu.co</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // JavaScript básico para la demo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listeners para botones de actividades
+            document.querySelectorAll('.activity-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const activity = e.target.getAttribute('data-activity');
+                    if (activity === 'preunal') {
+                        showExamAreas();
+                    } else {
+                        alert(`${activity} estará disponible próximamente.`);
+                    }
+                });
+            });
+
+            // Event listener para botón de volver
+            const btnBack = document.getElementById('btnBackToActivities');
+            if (btnBack) {
+                btnBack.addEventListener('click', () => {
+                    showActivities();
+                });
+            }
+
+            function showExamAreas() {
+                document.querySelector('.activities-section').classList.add('hidden');
+                document.querySelector('.hero-section').classList.add('hidden');
+                document.getElementById('examAreasSection').classList.remove('hidden');
+            }
+
+            function showActivities() {
+                document.querySelector('.activities-section').classList.remove('hidden');
+                document.querySelector('.hero-section').classList.remove('hidden');
+                document.getElementById('examAreasSection').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
+

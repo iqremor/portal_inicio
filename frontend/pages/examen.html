@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen - Portal de Evaluación IEM</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/frontend/css/styles.css" rel="stylesheet">
+    <link href="/frontend/css/examen.css" rel="stylesheet">
+</head>
+<body class="exam-body">
+    <div class="exam-container">
+        <!-- Header del Examen -->
+        <header class="exam-header">
+            <div class="header-content">
+                <div class="exam-info">
+                    <h1 id="examTitle">Cargando examen...</h1>
+                    <span id="examArea" class="exam-area-badge">--</span>
+                </div>
+                
+                <div class="exam-controls">
+                    <div class="timer-container">
+                        <i class="fas fa-clock"></i>
+                        <span id="timer">00:00</span>
+                    </div>
+                    <button class="btn-finish-exam" id="btnFinishExam">
+                        <i class="fas fa-check"></i>
+                        Finalizar Examen
+                    </button>
+                    <button class="btn-logout" id="btnLogout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido Principal del Examen -->
+        <main class="exam-main">
+            <div class="exam-content">
+                <!-- Barra de Progreso -->
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">Pregunta 1 de 10</span>
+                </div>
+
+                <!-- Pregunta Actual -->
+                <div class="question-container" id="questionContainer">
+                    <div class="question-header">
+                        <span class="question-number" id="questionNumber">1</span>
+                        <div class="question-points" id="questionPoints">
+                            <i class="fas fa-star"></i>
+                            <span>2 puntos</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-content">
+                        <h2 class="question-text" id="questionText">
+                            Cargando pregunta...
+                        </h2>
+                        
+                        <div class="question-image" id="questionImage" style="display: none;">
+                            <img src="" alt="Imagen de la pregunta" id="questionImg">
+                        </div>
+                        
+                        <div class="options-container" id="optionsContainer">
+                            <!-- Las opciones se cargarán dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navegación de Preguntas -->
+                <div class="question-navigation">
+                    <button class="btn-nav" id="btnPrevious" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                        Anterior
+                    </button>
+                    
+                    <div class="question-grid" id="questionGrid">
+                        <!-- Los números de preguntas se cargarán dinámicamente -->
+                    </div>
+                    
+                    <button class="btn-nav" id="btnNext">
+                        Siguiente
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="global-footer"></div>
+
+    <!-- Modal de Confirmación para Finalizar -->
+    <div class="modal-overlay" id="finishModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Finalizar Examen</h3>
+            </div>
+            <div class="modal-body">
+                <div class="finish-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <p><strong>¿Estás seguro de que deseas finalizar el examen?</strong></p>
+                        <p>Una vez finalizado, no podrás modificar tus respuestas.</p>
+                    </div>
+                </div>
+                <div class="exam-summary" id="examSummary">
+                    <!-- Resumen se cargará dinámicamente -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btnCancelFinish">Cancelar</button>
+                <button class="btn-primary" id="btnConfirmFinish">Finalizar Examen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Cargando examen...</p>
+        </div>
+    </div>
+
+        <script src="/frontend/js/global.js" defer></script>
+    <script src="/frontend/js/validacion.js"></script>
+    <script src="/frontend/js/examen.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,77 @@
+{
+  "usuarios_permitidos": [
+    "IEM1001",
+    "IEM1002", 
+    "IEM1003",
+    "IEM1004",
+    "IEM1005",
+    "IEM2001",
+    "IEM2002",
+    "IEM2003",
+    "IEM3001",
+    "IEM3002"
+  ],
+  "nombres": {
+    "IEM1001": {
+      "nombre_completo": "Ana María García",
+      "grado": "9A",
+      "activo": true,
+      "fecha_registro": "2025-01-01"
+    },
+    "IEM1002": {
+      "nombre_completo": "Carlos Eduardo López",
+      "grado": "9A", 
+      "activo": true,
+      "fecha_registro": "2025-01-01"
+    },
+    "IEM1003": {
+      "nombre_completo": "María José Rodríguez",
+      "grado": "9B",
+      "activo": true,
+      "fecha_registro": "2025-01-01"
+    },
+    "IEM1004": {
+      "nombre_completo": "Diego Alejandro Martínez",
+      "grado": "9B",
+      "activo": true,
+      "fecha_registro": "2025-01-01"
+    },
+    "IEM1005": {
+      "nombre_completo": "Laura Sofía Hernández",
+      "grado": "9C",
+      "activo": true,
+      "fecha_registro": "2025-01-01"
+    },
+    "IEM2001": {
+      "nombre_completo": "Andrés Felipe Gómez",
+      "grado": "10A",
+      "activo": true,
+      "fecha_registro": "2025-01-01"
+    },
+    "IEM2002": {
+      "nombre_completo": "Valentina Castro",
+      "grado": "10A",
+      "activo": true,
+      "fecha_registro": "2025-01-01"
+    },
+    "IEM2003": {
+      "nombre_completo": "Santiago Morales",
+      "grado": "10B",
+      "activo": true,
+      "fecha_registro": "2025-01-01"
+    },
+    "IEM3001": {
+      "nombre_completo": "Isabella Vargas",
+      "grado": "11A",
+      "activo": true,
+      "fecha_registro": "2025-01-01"
+    },
+    "IEM3002": {
+      "nombre_completo": "Sebastián Torres",
+      "grado": "11A",
+      "activo": true,
+      "fecha_registro": "2025-01-01"
+    }
+  }
+}
+

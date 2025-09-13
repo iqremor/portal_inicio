@@ -1,0 +1,47 @@
+{
+  "sistema": {
+    "nombre": "Portal de Evaluación Académica IEM",
+    "version": "1.0.0",
+    "puerto": 8000,
+    "modo_desarrollo": true,
+    "logs_habilitados": true
+  },
+  "autenticacion": {
+    "formato_codigo": "IEM####",
+    "longitud_codigo": 7,
+    "prefijo_requerido": "IEM",
+    "session_timeout": 3600
+  },
+  "examenes": {
+    "intentos_maximos": 3,
+    "tiempo_gracia": 5,
+    "guardado_automatico": true,
+    "intervalo_guardado": 30,
+    "mostrar_resultados_inmediatos": true,
+    "permitir_revision": false
+  },
+  "puntuacion": {
+    "escala_maxima": 100,
+    "nota_minima_aprobacion": 60,
+    "redondeo_decimales": 1,
+    "peso_por_dificultad": {
+      "facil": 1,
+      "medio": 1.5,
+      "dificil": 2
+    }
+  },
+  "interfaz": {
+    "tema": "claro",
+    "idioma": "es",
+    "mostrar_progreso": true,
+    "sonidos_habilitados": false,
+    "animaciones_habilitadas": true
+  },
+  "seguridad": {
+    "validacion_doble": true,
+    "logs_acceso": true,
+    "bloqueo_multiples_sesiones": true,
+    "tiempo_bloqueo_intentos_fallidos": 300
+  }
+}
+

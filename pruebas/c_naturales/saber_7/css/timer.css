@@ -1,0 +1,102 @@
+/* Estilos del temporizador */
+.timer-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.timer-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.timer-label {
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.timer-time {
+    font-family: 'Courier New', monospace;
+    font-size: 1.5em;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: center;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.timer-time.timer-warning {
+    color: #ff4757;
+    background: rgba(255, 71, 87, 0.2);
+    border-color: #ff4757;
+    animation: pulse 1s infinite;
+}
+
+.timer-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-timer {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 5px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    min-width: 30px;
+}
+
+.btn-timer:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-timer:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- ESTILOS PARA HEADER DEL QUIZ Y TEMPORIZADOR --- */
+.quiz-header-view {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 1rem; /* Espacio debajo del header */
+}
+
+.timer-container-quiz {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 10px 15px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.timer-container-quiz:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.timer-container-quiz.timer-warning-quiz {
+    background: linear-gradient(135deg, #ff4757 0%, #b91c1c 100%);
+    animation: pulse 1s infinite;
+}

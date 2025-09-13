@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Evaluación Académica - IEM</title>
+    <link rel="stylesheet" href="frontend/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-container">
+                <i class="fas fa-graduation-cap logo-icon"></i>
+                <h1 class="logo-text">Portal IEM</h1>
+            </div>
+            <p class="subtitle">Sistema de Evaluación Académica</p>
+        </header>
+
+        <main class="main-content">
+            <div class="login-card">
+                <div class="card-header">
+                    <i class="fas fa-user-graduate card-icon"></i>
+                    <h2>Acceso Estudiantil</h2>
+                    <p>Ingresa tu código para acceder a las evaluaciones</p>
+                </div>
+
+                <form id="loginForm" class="login-form">
+                    <div class="input-group">
+                        <label for="codigoEstudiantil" class="input-label">
+                            <i class="fas fa-id-card"></i>
+                            Código Estudiantil
+                        </label>
+                        <input 
+                            type="text" 
+                            id="codigoEstudiantil" 
+                            name="codigoEstudiantil"
+                            placeholder="IEM1234"
+                            maxlength="7"
+                            autocomplete="off"
+                            required
+                        >
+                        <div class="input-help">
+                            Formato: IEM seguido de 4 números
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="btnIngresar">
+                        <span class="btn-text">Ingresar</span>
+                        <i class="fas fa-arrow-right btn-icon"></i>
+                    </button>
+                </form>
+
+                <div id="mensaje" class="mensaje hidden"></div>
+                
+                <div class="loading-overlay hidden" id="loadingOverlay">
+                    <div class="spinner"></div>
+                    <p>Validando código...</p>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-card">
+                    <i class="fas fa-clock info-icon"></i>
+                    <h3>Evaluaciones Cronometradas</h3>
+                    <p>Cada examen tiene un tiempo límite específico</p>
+                </div>
+                
+                <div class="info-card">
+                    <i class="fas fa-chart-line info-icon"></i>
+                    <h3>Resultados Inmediatos</h3>
+                    <p>Conoce tu puntuación al finalizar cada evaluación</p>
+                </div>
+                
+                <div class="info-card">
+                    <i class="fas fa-shield-alt info-icon"></i>
+                    <h3>Acceso Seguro</h3>
+                    <p>Sistema de autenticación por código estudiantil</p>
+                </div>
+            </div>
+        </main>
+
+        <div id="global-footer"></div>
+    </div>
+
+    <script src="/frontend/js/global.js" defer></script>
+    <script src="frontend/js/validacion.js"></script>
+    <script src="frontend/js/script.js"></script>
+</body>
+</html>
+

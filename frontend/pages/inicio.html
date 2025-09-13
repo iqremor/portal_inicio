@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Portal de Evaluación IEM</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div class="logo-text">
+                        <h1>Institución Educativa Mojarras</h1>
+                        <span class="logo-subtitle">Convivencia y Superación</span>
+                    </div>
+                </div>
+                
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">
+                            <span id="userInitials">--</span>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name" id="userName">Cargando...</span>
+                            <span class="user-grade" id="userGrade">--</span>
+                        </div>
+                    </div>
+                    <button class="btn-logout" id="btnLogout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h1 class="hero-title">Bienvenido al Portal Estudiantil</h1>
+                <p class="hero-subtitle">Aquí podrás acceder a todas tus actividades académicas</p>
+            </section>
+
+            <!-- Activities Section -->
+            <section class="activities-section">
+                <h2 class="activities-title">Escoge la actividad a realizar</h2>
+                <div class="cards-container">
+                    <article class="activity-card">
+                        <h3>Preunal</h3>
+                        <p>Simulacro interactivo examen universidad nacional</p>
+                        <button class="activity-btn" data-activity="preunal">Comenzar</button>
+                    </article>
+                    
+                    <article class="activity-card">
+                        <h3>Preicfes</h3>
+                        <p>Simulacro interactivo de las pruebas saber</p>
+                        <button class="activity-btn" data-activity="preicfes">Comenzar</button>
+                    </article>
+                    
+                    <article class="activity-card">
+                        <h3>Pruebas y laboratorios interactivos</h3>
+                        <p>Pruebas para mejorar la lectura comprensiva y laboratorios virtuales</p>
+                        <button class="activity-btn" data-activity="laboratorios">Comenzar</button>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Exam Areas Section (Hidden by default, shown when "Examen Unal" is clicked) -->
+            <section class="exam-areas-section hidden" id="examAreasSection">
+                <div class="section-header">
+                    <button class="btn-back" id="btnBackToActivities">
+                        <i class="fas fa-arrow-left"></i>
+                        Volver a Actividades
+                    </button>
+                    <h2 class="section-title">Áreas de Evaluación</h2>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state hidden" id="loadingState">
+                    <div class="spinner-large"></div>
+                    <p>Cargando áreas de evaluación...</p>
+                </div>
+
+                <!-- Error State -->
+                <div class="error-state hidden" id="errorState">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error al cargar las evaluaciones</h3>
+                    <p>No se pudieron cargar las áreas de evaluación. Por favor, intenta nuevamente.</p>
+                    <button class="btn-retry" id="btnRetry">
+                        <i class="fas fa-redo"></i>
+                        Reintentar
+                    </button>
+                </div>
+
+                <!-- Exam Areas Grid -->
+                <div class="exam-areas-grid" id="examAreasGrid">
+                    <!-- Las áreas se cargarán dinámicamente -->
+                </div>
+
+                <!-- Recent Results Section -->
+                <section class="recent-results-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-chart-line"></i>
+                        Resultados Recientes
+                    </h3>
+                    <div class="results-container" id="resultsContainer">
+                        <div class="loading-results" id="loadingResults">
+                            <div class="spinner"></div>
+                            <span>Cargando resultados...</span>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </main>
+
+        <div id="global-footer"></div>
+    </div>
+
+    <!-- Modal de Confirmación de Examen -->
+    <div class="modal-overlay hidden" id="examModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Confirmar Examen</h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="exam-info">
+                    <div class="info-item">
+                        <i class="fas fa-book"></i>
+                        <span>Área: <strong id="examArea">--</strong></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Tiempo límite: <strong id="examTime">-- minutos</strong></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Preguntas: <strong id="examQuestions">--</strong></span>
+                    </div>
+                </div>
+                <div class="exam-description" id="examDescription">
+                    --
+                </div>
+                <div class="exam-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Una vez iniciado el examen, no podrás pausarlo. Asegúrate de tener tiempo suficiente para completarlo.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btnCancelExam">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button class="btn-primary" id="btnStartExam">
+                    <i class="fas fa-play"></i>
+                    Iniciar Examen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/frontend/js/global.js" defer></script>
+    <script src="../js/validacion.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>
+
