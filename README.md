@@ -96,6 +96,65 @@ plataforma_examenes/
 
 ### Códigos de prueba disponibles
 Los usuarios se cargan desde `data/usuarios.json` al inicializar la base de datos.
+### Acceder a la aplicación
+1. Abrir el navegador web
+2. Visitar `http://localhost:8000`
+3. Ingresar con un código estudiantil válido
+
+### Códigos de prueba disponibles
+- `IEM0601` - Ana María García (Grado 6)
+- `IEM0702` - Carlos Eduardo López (Grado 7)
+- `IEM0803` - María José Rodríguez (Grado 8)
+- `IEM0901` - Andrés Felipe Gómez (Grado 9)
+- `IEM1001` - Laura Sofía Hernández (Grado 10)
+- `IEM1101` - Maria Vargas (Grado 11)
+
+## Flujo de la Aplicación
+
+### 1. Autenticación
+- El usuario ingresa su código estudiantil (formato: IEMdddd)
+- El sistema valida el formato y verifica en la base de datos
+- Si es válido, redirige al dashboard personalizado
+
+### 2. Dashboard
+- Muestra información personalizada del estudiante
+- Lista las áreas de evaluación disponibles
+- Permite ver resultados anteriores
+- Opción de cerrar sesión
+
+### 3. Selección de Examen
+- El estudiante selecciona un área de evaluación
+- Se muestra información detallada del examen
+- Confirmación antes de iniciar
+
+### 4. Realización del Examen
+- Temporizador activo durante la evaluación
+- Navegación entre preguntas
+- Guardado automático de respuestas
+- Finalización automática al agotar el tiempo
+
+### 5. Resultados
+- Cálculo automático de puntuación
+- Almacenamiento en historial
+- Visualización de resultados
+
+## APIs Disponibles
+
+### Autenticación
+- `POST /api/validar` - Validar código estudiantil
+- `POST /api/logout` - Cerrar sesión
+
+### Exámenes
+- `GET /api/examenes` - Listar áreas disponibles
+- `GET /api/examenes/:area` - Información de examen específico
+- `POST /api/examenes/:area/iniciar` - Iniciar examen
+- `POST /api/examenes/:area/responder` - Enviar respuesta
+- `POST /api/examenes/:area/finalizar` - Finalizar examen
+
+### Resultados
+- `GET /api/resultados/:codigo` - Historial del estudiante
+- `GET /api/resultados/:codigo/:resultado_id` - Resultado específico
+
 
 ## Flujo de la Base de Datos
 

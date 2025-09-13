@@ -2,7 +2,7 @@
   "sistema": {
     "nombre": "Portal de Evaluación Académica IEM",
     "version": "1.0.0",
-    "puerto": 8000,
+    "puerto": 5000,
     "modo_desarrollo": true,
     "logs_habilitados": true
   },

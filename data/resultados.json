@@ -1,34 +1,12 @@
 {
-  "IEM1001": [
+  "IEM0601": [
     {
       "id": "result_001",
-      "fecha": "2025-01-07T14:30:00Z",
       "area": "matematicas",
-      "puntuacion": 8,
-      "puntuacion_maxima": 10,
-      "porcentaje": 80,
-      "tiempo_usado": 25,
-      "tiempo_limite": 30,
-      "respuestas": [1, 1, 2, 0, 2],
-      "preguntas_respondidas": 5,
-      "preguntas_correctas": 4,
-      "estado": "completado"
-    }
-  ],
-  "IEM1002": [
-    {
-      "id": "result_002", 
-      "fecha": "2025-01-07T15:45:00Z",
-      "area": "ciencias_naturales",
-      "puntuacion": 6,
-      "puntuacion_maxima": 8,
-      "porcentaje": 75,
-      "tiempo_usado": 20,
-      "tiempo_limite": 25,
-      "respuestas": [1, 2, 0, 2],
-      "preguntas_respondidas": 4,
-      "preguntas_correctas": 3,
-      "estado": "completado"
+      "intentos_realizados": 1,
+      "estado": "completado",
+      "preguntas_pendientes":0,
+      "intentos_anulados": 0
     }
   ]
 }
