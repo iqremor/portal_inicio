@@ -115,7 +115,7 @@ Este proyecto está bajo la Licencia MIT. Para más detalles, consulte [docs/pro
 ## Contacto
 - **Institución**: Institución Educativa Mojarras
 - **Soporte**: razcarvajal@iem.edu.co
-- **Teléfono**: 3192076175
+- **Teléfono**: 
 
 ## Versión
 **v1.0.0** - Versión inicial del Portal de Evaluación Académica IEM
