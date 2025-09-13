@@ -122,15 +122,23 @@ La próxima revisión debe enfocarse en implementar completamente la funcionalid
 
 ## 🔧 Recomendaciones Técnicas
 
-1. **Implementar pruebas unitarias** para las funciones críticas
-2. **Agregar logging** más detallado en el backend
-3. **Implementar validación** más robusta en el frontend
-4. **Optimizar consultas** a la base de datos JSON
-5. **Agregar compresión** de archivos estáticos
+1. **Implementar pruebas unitarias y de integración:** Configurar `Pytest` para el backend (Python) y `Jest`/`Vitest` para el frontend (JavaScript), junto con `Cypress`/`Playwright` para pruebas E2E.
+2. **Agregar logging más detallado en el backend.**
+3. **Implementar validación más robusta en el frontend.**
+4. **Optimizar consultas a la base de datos JSON.**
+5. **Agregar compresión de archivos estáticos.**
+6. **Configurar Herramientas de Calidad de Código:** Implementar `Flake8` y `Black` para Python, y `ESLint` y `Prettier` para JavaScript/CSS.
+7. **Instalar Git Hooks:** Configurar `pre-commit` hooks para automatizar la verificación de estándares de código antes de cada commit.
+8. **Crear Documentación de Estilo de Código:** Desarrollar un `CODE_STYLE.md` detallando las convenciones de codificación del proyecto.
+9. **Realizar Auditoría de Dependencias:** Auditar las dependencias de Python para identificar y mitigar vulnerabilidades de seguridad.
+10. **Implementar Plantillas Específicas:** Crear plantillas para componentes o módulos comunes para estandarizar el desarrollo.
+11. **Desarrollar Prototipos Iniciales:** Utilizar el directorio `prototype/` para ejemplos de código y pruebas de concepto.
+12. **Establecer Métricas de Calidad Baseline:** Definir y registrar métricas iniciales de calidad de código para seguimiento.
+13. **Definir y Migrar la Estrategia de Base de Datos:** Clarificar la estrategia de persistencia de datos y considerar la migración de archivos JSON a una base de datos más robusta (ej. SQLite, PostgreSQL, MongoDB) para mejorar la escalabilidad, concurrencia y persistencia.
 
 ## 📝 Notas Adicionales
 
-- El proyecto utiliza Node.js/Express como se solicitó originalmente
+- El proyecto utiliza Python/Flask como se solicitó originalmente
 - La estructura de archivos es clara y mantenible
 - El código está bien comentado en su mayoría
 - Se requiere completar la integración frontend-backend para exámenes
