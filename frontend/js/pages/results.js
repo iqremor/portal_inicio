@@ -4,7 +4,7 @@ import { getInitials, formatDate } from '../shared/utils.js';
 document.addEventListener('DOMContentLoaded', () => {
     const session = checkSession();
     if (!session.active) {
-        window.location.href = '/';
+        window.location.href = '/frontend/pages/login.html';
         return;
     }
 
@@ -98,11 +98,11 @@ class Results {
 
     setupEventListeners() {
         document.getElementById('backToDashboard').addEventListener('click', () => {
-            window.location.href = `main.html?codigo=${this.session.codigo}`;
+            window.location.href = `/frontend/pages/dashboard.html?codigo=${this.session.codigo}`;
         });
 
         document.getElementById('backToExams').addEventListener('click', () => {
-            window.location.href = `main.html?codigo=${this.session.codigo}&view=exams`;
+            window.location.href = `/frontend/pages/dashboard.html?codigo=${this.session.codigo}&view=exams`;
         });
     }
 }

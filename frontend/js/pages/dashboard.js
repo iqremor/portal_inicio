@@ -13,7 +13,7 @@ import { showModal } from '../components/modal.js';
 document.addEventListener('DOMContentLoaded', () => {
     const session = checkSession();
     if (!session.active) {
-        window.location.href = '/';
+        window.location.href = '/frontend/pages/login.html';
         return;
     }
 
@@ -38,7 +38,7 @@ class Dashboard {
         } catch (error) {
             console.error('Error initializing dashboard:', error);
             clearSession();
-            window.location.href = '/';
+            window.location.href = '/frontend/pages/login.html';
         }
     }
 
@@ -200,7 +200,7 @@ class Dashboard {
         clearSession();
         showNotification('Sesión cerrada correctamente', 'info');
         setTimeout(() => {
-            window.location.href = '/';
+            window.location.href = '/frontend/pages/login.html';
         }, 1000);
     }
 }

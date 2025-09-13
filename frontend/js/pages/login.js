@@ -5,7 +5,7 @@ import { validarFormatoCodigo, obtenerMensajeError } from '../shared/utils.js';
 document.addEventListener("DOMContentLoaded", () => {
     const session = checkSession();
     if (session.active) {
-        window.location.href = `main.html?codigo=${session.codigo}`;
+        window.location.href = `/frontend/pages/dashboard.html?codigo=${session.codigo}`;
         return;
     }
 
@@ -54,7 +54,7 @@ function initializeLogin() {
                 saveSession(codigo, data.nombre, data.grado);
                 showMessage('¡Acceso permitido! Redirigiendo...', 'success');
                 setTimeout(() => {
-                    window.location.href = `main.html?codigo=${codigo}`;
+                    window.location.href = `/frontend/pages/dashboard.html?codigo=${codigo}`;
                 }, 1500);
             } else {
                 showMessage(data.mensaje || 'Código no permitido', 'error');

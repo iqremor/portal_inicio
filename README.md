@@ -49,7 +49,7 @@ plataforma_examenes/backend/
 │   ├── usuarios.json        # Datos iniciales de usuarios
 │   ├── examenes.json        # Datos iniciales de exámenes y preguntas
 │   └── portal_academico.db  # Base de datos SQLite (generada automáticamente)
-└── app.py                  # Lógica del servidor Flask y API
+└── app.py                   # Lógica del servidor Flask y API
 
 ```
 ### Frontend
@@ -58,30 +58,29 @@ plataforma_examenes/frontend/
 ├── css/
 ├── js/
 │   ├── api/
-│   |   └── index.js            # Centraliza todas las llamadas a la API.
+│   │   └── index.js            # Centraliza todas las llamadas a la API.
 │   ├── components/
 │   │   ├── modal.js            # Componente de modal reutilizable.
 │   │   └── notification.js     # Componente de notificación reutilizable.
-|   ├── pages/
-|   │   ├── login.js            # Lógica específica de la página de login.
-│   ├── dashboard.js            # Lógica específica del dashboard.
-|   ├── exam/
-|   │   ├── constants.js        # Constantes de la aplicación.
-|   │   ├── exam.js             # Lógica específica de la página de examen.
-│   └── results.js              # Lógica específica de la página de resultados.
-|   ├── shared/
-|   │   ├── auth.js             # Funciones de autenticación (sesiones, etc.).
-|   │   ├── timer.js            # Clase de temporizador reutilizable.
-|   │   └── utils.js            # Funciones de utilidad (formateo de fechas, etc.).
-|   └── main.js                 # Punto de entrada principal de la aplicación.
+│   ├── pages/
+│   │   ├── dashboard.js        # Lógica específica de la página de dashboard.
+│   │   ├── exam.js             # Lógica específica de la página de examen.
+│   │   ├── login.js            # Lógica específica de la página de login.
+│   │   └── results.js          # Lógica específica de la página de resultados.
+│   ├── shared/
+│   │   ├── auth.js             # Funciones de autenticación (sesiones, etc.).
+│   │   ├── timer.js            # Clase de temporizador reutilizable.
+│   │   └── utils.js            # Funciones de utilidad (formateo de fechas, etc.).
+│   └── main.js                 # Punto de entrada principal de la aplicación.
 └── pages/                      
-    ├── index.html              # Página principal de la aplicación
-    ├── login.html              # Página de login
     ├── dashboard.html          # Página de dashboard
-    ├── exam.html               # Página de examen
-    └── results.html            # Página de resultados
+    ├── examen.html             # Página de examen
+    ├── footer.html             # Componente de pie de página
+    ├── header.html             # Componente de encabezado
+    ├── login-form.html         # Componente de formulario de login
+    ├── login.html              # Página de login
+    └── resultados.html         # Página de resultados
 ```
-
 ### Docs
 ```
 plataforma_examenes/docs/    # Documentación del proyecto
@@ -92,7 +91,7 @@ plataforma_examenes/docs/    # Documentación del proyecto
 |── bugs.md                  # Reportar bugs
 |── contributing.md          # Contribuir al proyecto
 |── license.md               # Licencia del proyecto
-└── README.md                # Este archivo
+└── README.md                # Descripción detalla del proyecto
 ```
 ### data 
 ```
