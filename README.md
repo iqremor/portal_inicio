@@ -5,245 +5,140 @@ Sistema web interactivo para evaluaciones académicas que permite a los estudian
 
 ## Características Principales
 - 🔐 Sistema de autenticación por código estudiantil
-- 📚 Evaluaciones en múltiples áreas:
+- 📚 Evaluaciones en múltiples áreas curso de 6 a 11:
   - Matemáticas
   - Ciencias Naturales
   - Ciencias Sociales
-  - Análisis de Imagen
-  - Comprensión de Textos
+  - Lectura 
+  - Ingles (solo 9,10,11)
 - ⏱️ Temporizador incorporado en las pruebas
-- 📊 Sistema de puntuación estandarizado
-- 💾 Almacenamiento de resultados
 - 📱 Diseño responsive
 - 🎨 Interfaz moderna y profesional
 
 ## Tecnologías Utilizadas
 
 ### Backend
-- **Node.js** - Entorno de ejecución
-- **Express.js** - Framework web
-- **CORS** - Manejo de peticiones cross-origin
-- **Helmet** - Seguridad HTTP
-- **Morgan** - Logging de peticiones
-- **Moment.js** - Manejo de fechas
-- **UUID** - Generación de identificadores únicos
+- **Python** - Lenguaje de programación principal.
+- **Flask** - Microframework web para construir la API REST.
+- **SQLAlchemy** - ORM para interactuar con la base de datos.
 
 ### Frontend
 - **HTML5** - Estructura
 - **CSS3** - Estilos y animaciones
 - **JavaScript (ES6+)** - Funcionalidad interactiva
-- **Font Awesome** - Iconografía
-- **Google Fonts** - Tipografía
 
 ### Base de Datos
-- **JSON Files** - Almacenamiento de datos (usuarios, exámenes, resultados)
+- **SQLite** - Base de datos SQL ligera basada en un archivo, gestionada a través de SQLAlchemy.
 
 ## Estructura del Proyecto
 
 ```
 plataforma_examenes/
 ├── backend/
-│   └── server.js              # Servidor Express principal
+│   └── app.py               # Lógica del servidor Flask y API
 ├── frontend/
 │   ├── css/
-│   │   ├── styles.css         # Estilos principales
-│   │   └── dashboard.css      # Estilos del dashboard
 │   ├── js/
-│   │   ├── script.js          # JavaScript principal
-│   │   ├── validacion.js      # Funciones de validación
-│   │   └── dashboard.js       # JavaScript del dashboard
 │   └── pages/
-│       └── inicio.html        # Página del dashboard
 ├── data/
-│   ├── usuarios.json          # Base de datos de usuarios
-│   ├── examenes.json          # Banco de preguntas
-│   ├── resultados.json        # Historial de evaluaciones
-│   └── configuracion.json     # Configuración del sistema
+│   ├── usuarios.json        # Datos iniciales de usuarios
+│   ├── examenes.json        # Datos iniciales de exámenes y preguntas
+│   └── portal_academico.db  # Base de datos SQLite (generada automáticamente)
 ├── docs/
-│   └── arquitectura.md        # Documentación de arquitectura
-├── index.html                 # Página principal de login
-├── package.json               # Dependencias y scripts
-└── README.md                  # Este archivo
+├── index.html
+├── requirements.txt         # Dependencias de Python
+└── README.md                # Este archivo
 ```
 
 ## Requisitos Previos
-- Node.js >= 14.x
-- npm >= 6.0.0
-- Navegador web moderno (Chrome, Firefox, Safari, Edge)
+- Python 3.8+
+- Navegador web moderno
 
-## Instalación
+## Instalación y Puesta en Marcha
 
-1. **Clonar o descargar el proyecto:**
-```bash
-cd plataforma_examenes
-```
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone <url-del-repositorio>
+    cd plataforma_examenes
+    ```
 
-2. **Instalar dependencias:**
-```bash
-npm install
-```
+2.  **Crear un entorno virtual (recomendado):**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # En Windows: venv\Scripts\activate
+    ```
 
-3. **Verificar archivos de datos:**
-Los archivos JSON en la carpeta `data/` ya están configurados con datos de ejemplo.
+3.  **Instalar las dependencias de Python:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Inicializar la Base de Datos:**
+    Este es un paso crucial que prepara la base de datos por primera vez.
+    ```bash
+    flask init-db
+    ```
+    Este comando:
+    - Crea el archivo de base de datos `data/portal_academico.db`.
+    - Define toda la estructura de tablas (Usuarios, Grados, Áreas, etc.).
+    - Puebla las tablas con los datos iniciales extraídos de los archivos `data/usuarios.json` y `data/examenes.json`.
 
 ## Uso
 
-### Iniciar el servidor
-```bash
-npm start
-```
+1.  **Iniciar el servidor Flask:**
+    ```bash
+    flask run
+    ```
+    El servidor se iniciará en `http://127.0.0.1:5000` por defecto.
 
-El servidor se iniciará en `http://localhost:8000`
-
-### Acceder a la aplicación
-1. Abrir el navegador web
-2. Visitar `http://localhost:8000`
-3. Ingresar con un código estudiantil válido
+2.  **Acceder a la aplicación:**
+    Abre `index.html` en tu navegador. El frontend se conectará automáticamente a la API de Flask en el puerto 5000.
 
 ### Códigos de prueba disponibles
-- `IEM1001` - Ana María García (Grado 9A)
-- `IEM1002` - Carlos Eduardo López (Grado 9A)
-- `IEM1003` - María José Rodríguez (Grado 9B)
-- `IEM2001` - Andrés Felipe Gómez (Grado 10A)
-- `IEM3001` - Isabella Vargas (Grado 11A)
+Los usuarios se cargan desde `data/usuarios.json` al inicializar la base de datos.
 
-## Flujo de la Aplicación
+## Flujo de la Base de Datos
 
-### 1. Autenticación
-- El usuario ingresa su código estudiantil (formato: IEMdddd)
-- El sistema valida el formato y verifica en la base de datos
-- Si es válido, redirige al dashboard personalizado
+El sistema está diseñado con una base de datos relacional que asegura la integridad de los datos:
 
-### 2. Dashboard
-- Muestra información personalizada del estudiante
-- Lista las áreas de evaluación disponibles
-- Permite ver resultados anteriores
-- Opción de cerrar sesión
+1.  **Usuarios Fijos**: Los usuarios se cargan una única vez durante la inicialización de la base de datos. No hay una API para crear nuevos usuarios, garantizando un conjunto fijo de participantes.
 
-### 3. Selección de Examen
-- El estudiante selecciona un área de evaluación
-- Se muestra información detallada del examen
-- Confirmación antes de iniciar
+2.  **Relación Grado-Área**: El sistema define qué áreas de examen están disponibles para cada grado a través de una tabla de asociación. Un estudiante de `10mo` solo verá los exámenes de Matemáticas y Ciencias, mientras que uno de `11vo` verá los de Matemáticas y Sociales (según la configuración inicial).
 
-### 4. Realización del Examen
-- Temporizador activo durante la evaluación
-- Navegación entre preguntas
-- Guardado automático de respuestas
-- Finalización automática al agotar el tiempo
-
-### 5. Resultados
-- Cálculo automático de puntuación
-- Almacenamiento en historial
-- Visualización de resultados
+3.  **Banco de Preguntas**: Cada área tiene su propio conjunto de preguntas asociado, asegurando que cada examen sea específico a su materia.
 
 ## APIs Disponibles
+(Las rutas de la API seguirán la misma estructura que la versión anterior, pero ahora son gestionadas por Flask)
 
 ### Autenticación
-- `POST /api/validar` - Validar código estudiantil
-- `POST /api/logout` - Cerrar sesión
+- `POST /api/validar`
 
 ### Exámenes
-- `GET /api/examenes` - Listar áreas disponibles
-- `GET /api/examenes/:area` - Información de examen específico
-- `POST /api/examenes/:area/iniciar` - Iniciar examen
-- `POST /api/examenes/:area/responder` - Enviar respuesta
-- `POST /api/examenes/:area/finalizar` - Finalizar examen
+- `GET /api/examenes`
+- `POST /api/examenes/<area>/iniciar`
 
 ### Resultados
-- `GET /api/resultados/:codigo` - Historial del estudiante
-- `GET /api/resultados/:codigo/:resultado_id` - Resultado específico
-
-## Configuración
-
-### Archivo de configuración (`data/configuracion.json`)
-```json
-{
-  "sistema": {
-    "puerto": 8000,
-    "modo_desarrollo": true
-  },
-  "examenes": {
-    "intentos_maximos": 3,
-    "tiempo_gracia": 5,
-    "guardado_automatico": true
-  },
-  "puntuacion": {
-    "escala_maxima": 100,
-    "nota_minima_aprobacion": 60
-  }
-}
-```
-
-## Seguridad
-- Validación de formato de código estudiantil
-- Verificación de usuario activo en base de datos
-- Tiempo límite por examen
-- Prevención de múltiples intentos simultáneos
-- Headers de seguridad con Helmet
-- Logging de todas las peticiones
-
-## Características Técnicas
-- **Diseño Responsivo**: Adaptable a dispositivos móviles y desktop
-- **Interfaz Moderna**: Gradientes, animaciones y micro-interacciones
-- **Validación en Tiempo Real**: Feedback inmediato al usuario
-- **Manejo de Errores**: Mensajes informativos y recuperación elegante
-- **Accesibilidad**: Navegación por teclado y lectores de pantalla
-- **Performance**: Carga optimizada de recursos
-
-## Scripts Disponibles
-- `npm start` - Iniciar servidor en producción
-- `npm run dev` - Iniciar servidor en modo desarrollo (con nodemon)
-- `npm test` - Ejecutar pruebas
-- `npm run lint` - Verificar código con ESLint
+- `GET /api/resultados/<codigo>`
 
 ## Desarrollo
 
-### Agregar nuevos usuarios
-Editar `data/usuarios.json`:
-```json
-{
-  "usuarios_permitidos": ["IEM1234"],
-  "nombres": {
-    "IEM1234": {
-      "nombre_completo": "Nuevo Estudiante",
-      "grado": "10A",
-      "activo": true,
-      "fecha_registro": "2025-01-08"
-    }
-  }
-}
-```
+### Modificar los datos iniciales
+Si necesitas cambiar los usuarios, grados, áreas o preguntas iniciales, puedes modificar los archivos `data/usuarios.json` y `data/examenes.json` y luego **volver a ejecutar `flask init-db`**. 
 
-### Agregar nuevas preguntas
-Editar `data/examenes.json` y agregar preguntas al área correspondiente:
-```json
-{
-  "id": 6,
-  "tipo": "multiple",
-  "pregunta": "Nueva pregunta",
-  "opciones": ["A", "B", "C", "D"],
-  "respuesta_correcta": 0,
-  "puntos": 1,
-  "dificultad": "medio"
-}
-```
+**¡Atención!:** El comando `flask init-db` borra y re-crea la base de datos completamente, por lo que se perderán todos los intentos y resultados guardados.
 
 ## Solución de Problemas
 
-### El servidor no inicia
-- Verificar que Node.js esté instalado
-- Ejecutar `npm install` para instalar dependencias
-- Verificar que el puerto 8000 esté disponible
+### `flask` command not found
+- Asegúrate de haber activado el entorno virtual (`source venv/bin/activate`).
+- Confirma que Flask se instaló correctamente con `pip list`.
 
-### Los estilos no cargan
-- Verificar que los archivos CSS estén en `frontend/css/`
-- Revisar la consola del navegador para errores 404
-- Verificar la configuración de archivos estáticos en `server.js`
+### Error de base de datos (e.g., `table not found`)
+- Asegúrate de haber ejecutado `flask init-db` al menos una vez después de instalar las dependencias.
+- Si has modificado los modelos en `backend/app.py`, necesitas volver a ejecutar `flask init-db`.
 
-### Error de autenticación
-- Verificar que el código tenga formato `IEMdddd`
-- Comprobar que el código esté en `usuarios_permitidos`
-- Verificar que el usuario esté marcado como `activo: true`
+### Problemas de CORS
+- El backend está configurado para aceptar peticiones desde cualquier origen (`*`). Si tienes problemas, revisa la consola del navegador para mensajes de error específicos de CORS.
 
 ## Contribución
 1. Fork del proyecto
@@ -256,14 +151,14 @@ Editar `data/examenes.json` y agregar preguntas al área correspondiente:
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
 ## Contacto
-- **Institución**: Institución Educativa Municipal
-- **Soporte**: evaluaciones@iem.edu.co
-- **Teléfono**: ext. 123
+- **Institución**: Institución Educativa Mojarras
+- **Soporte**: razcarvajal@iem.edu.co
+- **Teléfono**: 3192076175
 
 ## Versión
 **v1.0.0** - Versión inicial del Portal de Evaluación Académica IEM
 
 ---
 
-© 2025 Institución Educativa Municipal - Portal de Evaluación Académica
+© 2025 Institución Educativa Mojarras - Portal de Evaluación Académica
 
