@@ -14,57 +14,37 @@ El Portal de Evaluación Académica IEM es una plataforma web diseñada para la 
 
 ## Arquitectura del Sistema
 
-### Estructura  General de Directorios
-```
-plataforma_examenes/
-├── backend/            # Lógica del servidor Flask y API
-├── frontend/           # Interfaz de usuario
-├── docs/               # Documentación del proyecto
-├── test/               # Pruebas unitarias y de integración
-├── data/               # Banco de preguntas
-├── index.html          # Página principal de la aplicación (redirecciona a login)
-├── requirements.txt    # Dependencias de Python
-└── README.md           # Documentación general del proyecto
-```
-#### Esctructura de Directorios backend
-```
-plataforma_examenes/backend/            
-├──data/
-    ├── usuarios.json        # Datos de usuarios (estudiantes)
-    ├── examenes.json        # Configuración de exámenes
-    ├── configuracion.json   # Banco de preguntas
-    └── resultados.json      # Historial de resultados
-└── app.py                   # Aplicación Flask
-```
-#### Esctructura de Directorios frontend 
-
-```
-plataforma_examenes/frontend/
-├── css/               # Estilos
-|    └── assets/                # Recursos estáticos
-|        └──  img/               # Imágenes estáticas
-├── pages/              # Páginas web
-|    ├── login.html          # Página de login
-|    ├── dashboard.html      # Dashboard personalizado
-|    ├── exam.html           # Página de examen
-|    └── results.html        # Página de resultados
-└── js/                # Lógica del cliente
-```
-
-### Estructura de Directorios docs
+### Estructura de Directorios
 
 ```
 plataforma_examenes/
-├── backend/            # Lógica del servidor Flask y API
-├── frontend/           # Interfaz de usuario
-├── docs/               # Documentación del proyecto
-├── test/               # Pruebas unitarias y de integración
-├── data/               # Banco de preguntas
-├── index.html          # Página principal de la aplicación (redirecciona a login)
-├── requirements.txt    # Dependencias de Python
-└── README.md           # Documentación general del proyecto
+├── backend/
+│   └── server.js                 # Servidor principal Express.js
+├── frontend/
+│   ├── css/
+│   │   ├── styles.css           # Estilos principales
+│   │   ├── dashboard.css        # Estilos del dashboard
+│   │   └── examen.css          # Estilos de la página de examen
+│   ├── js/
+│   │   ├── script.js           # JavaScript principal (login)
+│   │   ├── validacion.js       # Funciones de validación
+│   │   ├── dashboard.js        # Lógica del dashboard
+│   │   └── examen.js          # Lógica de exámenes
+│   └── pages/
+│       ├── inicio.html         # Dashboard principal
+│       └── examen.html        # Página de examen
+├── data/
+│   ├── usuarios.json           # Base de datos de usuarios
+│   ├── examenes.json          # Configuración de exámenes
+│   ├── resultados.json        # Resultados de exámenes
+│   └── configuracion.json     # Configuración general
+├── docs/
+│   ├── arquitectura.md        # Documentación de arquitectura
+│   ├── revision_errores.md    # Reporte de errores
+│   └── documentacion_proyecto.md # Esta documentación
+├── index.html                  # Página de login principal
+└── package.json               # Dependencias del proyecto
 ```
-
 
 ### Tecnologías Utilizadas
 
@@ -413,3 +393,4 @@ NODE_ENV=development         # Entorno de ejecución
 ---
 
 *Esta documentación será actualizada conforme el proyecto evolucione.*
+

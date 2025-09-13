@@ -51,10 +51,6 @@ plataforma_examenes/
 ├── backend/            # Lógica del servidor Flask y API
 ├── frontend/           # Interfaz de usuario
 ├── docs/               # Documentación del proyecto
-│   ├── architecture/   # Documentación de arquitectura
-│   ├── development/    # Documentación de desarrollo (setup, testing, contributing)
-│   ├── project/        # Documentación general del proyecto (changelog, license)
-│   └── internal/       # Documentación interna (revisiones, notas)
 ├── test/               # Pruebas unitarias y de integración
 ├── data/               # Banco de preguntas
 ├── index.html          # Página principal de la aplicación (redirecciona a login)
