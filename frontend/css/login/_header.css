@@ -1,0 +1,85 @@
+/* Header */
+.header {
+    padding: 2rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Cambié de center a flex-start */
+    gap: 2rem; /* Aumenté el gap para mejor separación */
+    margin-bottom: 0.5rem;
+    width: 100%;
+    max-width: 1200px; /* Limitar el ancho máximo */
+    position: relative; /* Para posicionamiento absoluto del text-group */
+}
+
+.logo-image {
+    height: 150px;
+    width: auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    flex-shrink: 0; /* Evita que la imagen se redimensione */
+}
+
+.text-group {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); /* Centra perfectamente el texto */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none; /* Evita interferir con la imagen */
+}
+
+.logo-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-white);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    white-space: nowrap; /* Evita que el texto se rompa en líneas */
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    margin: 0;
+    white-space: nowrap; /* Evita que el texto se rompa en líneas */
+}
+
+/* Responsive para Header */
+@media (max-width: 768px) {
+    .header {
+        padding: 1.5rem 1rem;
+    }
+    
+    .logo-container {
+        flex-direction: column; /* Cambia a vertical en móviles */
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .text-group {
+        position: static; /* Remueve el posicionamiento absoluto */
+        transform: none;
+    }
+    
+    .logo-image {
+        height: 45px;
+    }
+
+    .logo-text {
+        font-size: 2rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+}

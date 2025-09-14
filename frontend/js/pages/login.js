@@ -13,12 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadPage() {
-    // Cargar header
-    fetch("/frontend/pages/header.html")
-        .then(response => response.text())
-        .then(data => {
-            document.querySelector("#global-header").innerHTML = data;
-        });
+    
 
     
 
