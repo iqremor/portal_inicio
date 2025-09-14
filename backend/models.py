@@ -26,9 +26,11 @@ class User(db.Model):
     __tablename__ = 'users'
     
     id = db.Column(db.Integer, primary_key=True)
+    codigo = db.Column(db.String(20), unique=True, nullable=False) # Nuevo campo
     username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
+    nombre_completo = db.Column(db.String(150), nullable=True) # Nuevo campo
+    grado = db.Column(db.String(50), nullable=True) # Nuevo campo
     role = db.Column(db.Enum(UserRole), default=UserRole.USER, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -51,8 +53,10 @@ class User(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
+            'codigo': self.codigo, # Incluir nuevo campo
             'username': self.username,
-            'email': self.email,
+            'nombre_completo': self.nombre_completo, # Incluir nuevo campo
+            'grado': self.grado, # Incluir nuevo campo
             'role': self.role.value,
             'created_at': self.created_at.isoformat(),
             'is_active': self.is_active

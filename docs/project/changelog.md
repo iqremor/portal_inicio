@@ -41,3 +41,24 @@
 - Modificación de la ruta principal (`/`) en `backend/routes/web_main.py` para servir `index.html` de la raíz del proyecto.
 
 ### Finalización: [PENDIENTE]
+
+## Sesión 3 - 13 de septiembre de 2025
+### Objetivos de la sesión:
+- Resolver el problema de redirección del dashboard.
+- Migrar la autenticación y datos de usuario de JSON a la base de datos.
+- Organizar modularmente los estilos CSS del login.
+- Ajustar el logo y el texto del header.
+- Solucionar errores de migración de base de datos.
+- Implementar script de seeding para la base de datos.
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Discrepancia Tecnológica en `overview.md` (Node.js/Express.js vs Python Flask).
+    - Dependencias no auditadas.
+- Tests: No hay testing framework configurado.
+### Finalización: [PENDIENTE]
+queda pendiente problema de cierre de sesión y carga dinamica de las areas a evaluar
