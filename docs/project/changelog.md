@@ -19,3 +19,25 @@
 - **Directorio `prototype/`:** Creado.
 - **Análisis inicial del repositorio:** Completado.
 - **Pendiente:** Implementación de herramientas de calidad, testing, documentación de estilo de código, auditoría de dependencias, creación de prototipos y plantillas, y establecimiento de métricas de calidad.
+
+## Sesión 2 - 13 de septiembre de 2025
+### Objetivos de la sesión:
+- Resolver errores de rutas y configuración del servidor.
+- Configurar el servicio de archivos estáticos del frontend.
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Discrepancia Tecnológica en `overview.md` (Node.js/Express.js vs Python Flask).
+    - Dependencias no auditadas.
+- Tests: No hay testing framework configurado.
+
+### Acciones Realizadas:
+- Corrección de la ruta de `FileAdmin` en `backend/admin.py`.
+- Creación y registro del `frontend_bp` en `backend/routes/frontend.py` y `backend/app.py` para servir archivos estáticos del directorio `frontend/`.
+- Modificación de la ruta principal (`/`) en `backend/routes/web_main.py` para servir `index.html` de la raíz del proyecto.
+
+### Finalización: [PENDIENTE]
