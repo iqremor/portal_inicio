@@ -41,10 +41,12 @@ def create_app():
     # Registrar Blueprints
     from routes.web_main import web_main_bp
     from routes.web_test import web_test_bp
-    from routes.server_admin import server_admin_bp # Added this line
+    from routes.server_admin import server_admin_bp
+    from routes.frontend import frontend_bp
 
     app.register_blueprint(web_main_bp, url_prefix='')
     app.register_blueprint(web_test_bp, url_prefix='/test')
-    app.register_blueprint(server_admin_bp) # Added this line
+    app.register_blueprint(server_admin_bp)
+    app.register_blueprint(frontend_bp)
 
     return app
