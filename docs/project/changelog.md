@@ -62,3 +62,31 @@
 - Tests: No hay testing framework configurado.
 ### Finalización: [PENDIENTE]
 queda pendiente problema de cierre de sesión y carga dinamica de las areas a evaluar
+
+## Sesión 6 - 14 de septiembre de 2025
+### Objetivos de la sesión:
+- Resolver el error "Target database is not up to date".
+- Refactorizar la estructura de datos de exámenes y preguntas.
+- Actualizar la documentación del proyecto.
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+
+### Acciones Realizadas:
+- Se corrigió el método `to_dict` del modelo `Activity` en `backend/models.py`.
+- Se eliminó la llamada a `create_tables()` de `backend/app.py` para permitir que Flask-Migrate gestione el esquema de la base de datos.
+- Se eliminó el archivo de base de datos `backend/instance/sistema_gestion.db`.
+- Se ejecutó `flask db upgrade` para recrear la base de datos y aplicar todas las migraciones.
+- Se analizó la estructura de los archivos JSON en `backend/data/` (`usuarios.json`, `configuracion.json`, `examenes.json`, `resultados.json`).
+- Se propuso y diseñó una nueva estructura para un `banco_preguntas.json` separado, con soporte para varios tipos de preguntas (múltiple opción, imagen en enunciado, imagen en respuestas, verdadero/falso, rellenar espacios).
+- Se actualizó `docs/architecture/database.md` para documentar la nueva estructura de `banco_preguntas.json` y la modificación de `examenes.json`.
+- Se eliminaron las reglas amplias de ignorado de imágenes (`*.jpg`, `*.png`, etc.) de `.gitignore` para permitir que los activos de imagen en `backend/web_test/banco_preguntas/` sean rastreados por Git.
+
+### Finalización: [PENDIENTE]
