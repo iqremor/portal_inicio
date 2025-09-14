@@ -338,7 +338,7 @@ def init_admin(app):
     admin.add_view(ModelView(Log, db.session, name='Logs del Sistema'))
     
     # Añadir vista de gestión de archivos para la carpeta 'templates/web_test'
-    path = op.join(op.dirname(__file__), 'templates', 'web_test')
+    path = op.join(op.dirname(__file__), 'web_test')
     admin.add_view(FileAdmin(path, '/web_test/', name='Gestor de Archivos'))
     
     return admin

@@ -4,6 +4,11 @@ import shutil
 import time
 import logging
 from functools import wraps
+import os
+import shutil
+import time
+import logging
+from functools import wraps
 from flask import (
     Blueprint, send_from_directory, abort, jsonify, flash,
     render_template_string, session, redirect, url_for, request, render_template
@@ -64,10 +69,14 @@ def logout():
     return redirect(url_for('web_main.login'))
 
 
+# Get the absolute path to the project root
+bp_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(bp_dir, '..', '..'))
+
 @web_main_bp.route('/')
 def index_main():
-    """Renderiza la página principal del sitio web."""
-    return render_template('web_main/index.html')
+    """Sirve el index.html del directorio raíz del proyecto."""
+    return send_from_directory(project_root, 'index.html')
 
 @web_main_bp.route('/<path:filename>')
 def serve_static_main(filename):
