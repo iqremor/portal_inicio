@@ -31,9 +31,7 @@ def create_app():
     # Inicializar extensiones
     init_db(app)
 
-    # Crear tablas si no existen
-    with app.app_context():
-        create_tables()
+    
 
     Migrate(app, db)
     init_admin(app)

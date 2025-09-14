@@ -1,0 +1,79 @@
+/* Activities Section */
+.activities-section {
+    margin-bottom: 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+.activities-title {
+    font-size: 3rem;
+    font-weight: 600;
+    color: var(--text-white);
+    text-align: center;
+    margin-bottom: 3rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cards-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.activity-card {
+    background: rgba(27, 85, 27, 0.432);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 320px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.activity-card:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.activity-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 1rem;
+}
+
+.activity-card p {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+    margin-bottom: 2rem;
+}
+
+.activity-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-white);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 2rem;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.activity-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}

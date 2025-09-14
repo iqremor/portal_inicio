@@ -48,18 +48,25 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
     
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'<ExamSession {self.id} - User {self.user_id} - Exam {self.exam_id}>'
+
+class Activity(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    data_activity_id = db.Column(db.String(80), unique=True, nullable=False)
+    applicable_grades = db.Column(db.String(200), nullable=True) # e.g., "6,7,8,9,10,11"
+
+    def __repr__(self):
+        return '<Activity %r>' % self.name
     
     def to_dict(self):
         return {
             'id': self.id,
-            'codigo': self.codigo, # Incluir nuevo campo
-            'username': self.username,
-            'nombre_completo': self.nombre_completo, # Incluir nuevo campo
-            'grado': self.grado, # Incluir nuevo campo
-            'role': self.role.value,
-            'created_at': self.created_at.isoformat(),
-            'is_active': self.is_active
+            'name': self.name,
+            'description': self.description,
+            'data_activity_id': self.data_activity_id,
+            'applicable_grades': self.applicable_grades
         }
 
 class Peticion(db.Model):

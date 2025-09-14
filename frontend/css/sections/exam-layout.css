@@ -1,0 +1,29 @@
+/* Estilos generales de layout para la página de examen */
+
+.exam-body {
+    background: linear-gradient(135deg, #2d5016 0%, #4a7c59 50%, #5d8a66 100%);
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.exam-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Contenido Principal */
+.exam-main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.exam-content {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
