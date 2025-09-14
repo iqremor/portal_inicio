@@ -123,4 +123,12 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
     - Dependencias no auditadas.
     - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
 - Tests: No hay testing framework configurado.
-### Finalización: [PENDIENTE]
+### Finalización: 14 de septiembre de 2025
+### Acciones Realizadas:
+- Refactorización y organización de los archivos CSS del frontend (`dashboard.css`, `examen.css`, `global.css`, `resultados.css`) en una estructura modular (`base`, `components`, `sections`).
+- Eliminación del archivo `frontend/css/styles.css` y sus referencias en los archivos HTML.
+- Refactorización de la funcionalidad de "cerrar sesión" en JavaScript para hacerla reutilizable y corrección de su interactividad.
+- Personalización del mensaje de bienvenida en el dashboard para incluir el nombre y grado del usuario.
+- Aplicación de un color de fondo específico al header, footer y tarjetas.
+- Modificación del estilo de `activities-section` para que se vea como un contenedor transparente con borde blanco.
+- Revisión de rutas y etiquetas en `frontend//**` para asegurar la compatibilidad con la nueva estructura CSS.
