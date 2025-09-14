@@ -1,28 +1,29 @@
-export function saveSession(codigo, nombre, grado) {
+export function saveSession(codigo, username, role) {
     localStorage.setItem('codigoEstudiantil', codigo);
-    localStorage.setItem('usuario_nombre', nombre);
-    localStorage.setItem('usuario_grado', grado);
+    localStorage.setItem('usuario_username', username);
+    localStorage.setItem('usuario_role', role);
     localStorage.setItem('sesion_inicio', new Date().toISOString());
 }
 
 export function clearSession() {
     localStorage.removeItem('codigoEstudiantil');
-    localStorage.removeItem('usuario_nombre');
-    localStorage.removeItem('usuario_grado');
+    localStorage.removeItem('usuario_username');
+    localStorage.removeItem('usuario_role');
     localStorage.removeItem('sesion_inicio');
 }
 
 export function checkSession() {
     const codigoGuardado = localStorage.getItem('codigoEstudiantil');
-    const nombreGuardado = localStorage.getItem('usuario_nombre');
+    const usernameGuardado = localStorage.getItem('usuario_username');
+    const roleGuardado = localStorage.getItem('usuario_role');
     const sesionInicio = localStorage.getItem('sesion_inicio');
 
-    if (codigoGuardado && nombreGuardado && sesionInicio) {
+    if (codigoGuardado && usernameGuardado && roleGuardado && sesionInicio) {
         const tiempoSesion = new Date() - new Date(sesionInicio);
         const horasTranscurridas = tiempoSesion / (1000 * 60 * 60);
 
         if (horasTranscurridas < 24) {
-            return { active: true, codigo: codigoGuardado, nombre: nombreGuardado };
+            return { active: true, codigo: codigoGuardado, username: usernameGuardado, role: roleGuardado };
         } else {
             clearSession();
             return { active: false };

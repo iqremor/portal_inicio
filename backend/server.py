@@ -28,7 +28,7 @@ def get_local_ip():
         s.close()
     return IP
 
-def _print_server_info_box(is_running, host, port, debug_mode):
+def _print_server_info_box(is_running, host, port, debug_mode, db_status_message=None):
     """Imprime una caja con la información del estado del servidor."""
     status_text = click.style("EN EJECUCIÓN", fg='green', bold=True) if is_running else click.style("DETENIDO", fg='red', bold=True)
     
@@ -36,7 +36,9 @@ def _print_server_info_box(is_running, host, port, debug_mode):
     click.echo(click.style(f" Estado del Servidor: {status_text:<24} ", fg='cyan'))
     click.echo(click.style(f" Host:                {host:<24} ", fg='cyan'))
     click.echo(click.style(f" Puerto:              {port:<24} ", fg='cyan'))
-    click.echo(click.style(f" Modo Debug:          {str(debug_mode):<24} ", fg='cyan')) 
+    click.echo(click.style(f" Modo Debug:          {str(debug_mode):<24} ", fg='cyan'))
+    if db_status_message:
+        click.echo(click.style(f" Base de Datos:       {db_status_message:<24} ", fg='cyan'))
     click.echo(click.style("└───────────────────────────────────────────┘", fg='cyan'))
     click.echo()
 
@@ -63,6 +65,13 @@ def run(host, port, debug, reload, open_browser):
     warnings.filterwarnings("ignore", category=UserWarning, module='flask_admin.model.base')
     log = logging.getLogger('werkzeug')
     log.setLevel(logging.ERROR)
+
+    # --- Verificación e Inicialización de DB ---
+    from utils.db_utils import initialize_database_if_not_exists
+    db_ready, db_status_for_box = initialize_database_if_not_exists() # Renombrar a db_status_for_box
+    if not db_ready:
+        sys.exit(1) # Salir si la DB no está lista y el usuario no la inicializó
+    # --- Fin Verificación e Inicialización de DB ---
 
     # La creación de la app se mueve a run_server_thread para el modo interactivo
     admin_url = f"http://{host}:{port}/admin"
@@ -91,7 +100,7 @@ def run(host, port, debug, reload, open_browser):
     """
     click.echo(click.style(title, fg='cyan', bold=True))
     click.echo(click.style(subtitle, fg='yellow', bold=True))
-    _print_server_info_box(False, host, port, debug)
+    _print_server_info_box(False, host, port, debug, db_status_message=db_status_for_box)
     click.echo(click.style("Escriba 'Help' para ver comandos disponibles", fg='blue'))
     click.echo()
 
@@ -169,7 +178,7 @@ def run(host, port, debug, reload, open_browser):
                 click.echo(click.style(title, fg='cyan', bold=True))
                 click.echo(click.style(subtitle, fg='yellow', bold=True))
                 is_alive = server_manager.is_running()
-                _print_server_info_box(is_alive, host, port, debug)
+                _print_server_info_box(is_alive, host, port, debug, db_status_message=db_status_for_box)
                 click.echo(click.style("Escriba 'Help' para ver comandos disponibles", fg='blue'))
                 click.echo()
 

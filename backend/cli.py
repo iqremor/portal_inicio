@@ -1,8 +1,6 @@
-# cli.py
 import click
 from server import run
-import click
-from server import run
+from db import init_db_command
 
 @click.group()
 def cli():
@@ -10,3 +8,4 @@ def cli():
     pass
 
 cli.add_command(run)
+cli.add_command(init_db_command)

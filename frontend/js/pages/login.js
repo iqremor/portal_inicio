@@ -51,7 +51,7 @@ function initializeLogin() {
         try {
             const data = await validateCode(codigo);
             if (data.permitido) {
-                saveSession(codigo, data.nombre, data.grado);
+                saveSession(codigo, data.usuario.username, data.usuario.role);
                 showMessage('¡Acceso permitido! Redirigiendo...', 'success');
                 setTimeout(() => {
                     window.location.href = `/frontend/pages/dashboard.html?codigo=${codigo}`;

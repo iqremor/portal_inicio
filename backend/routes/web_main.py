@@ -13,7 +13,21 @@ from flask import (
     Blueprint, send_from_directory, abort, jsonify, flash,
     render_template_string, session, redirect, url_for, request, render_template
 )
+import json
 from models import db, User, UserRole, ConfiguracionSistema
+
+# Función para cargar los usuarios desde el archivo JSON
+def load_users_from_json():
+    json_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'usuarios.json')
+    try:
+        with open(json_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        logging.error(f"Archivo de usuarios no encontrado en: {json_path}")
+        return {"usuarios_permitidos": [], "nombres": {}}
+    except json.JSONDecodeError:
+        logging.error(f"Error al decodificar JSON de usuarios en: {json_path}")
+        return {"usuarios_permitidos": [], "nombres": {}}
 
 # --- Autenticación ---
 
@@ -67,6 +81,45 @@ def logout():
     session.clear()
     flash('Has cerrado la sesión.', 'info')
     return redirect(url_for('web_main.login'))
+
+@web_main_bp.route('/api/validar', methods=['POST'])
+def validar_usuario():
+    """Valida el código de usuario y devuelve si está permitido."""
+    if not request.is_json:
+        return jsonify({"permitido": False, "mensaje": "Content-Type debe ser application/json"}), 400
+
+    data = request.get_json()
+    codigo = data.get('codigo')
+
+    
+
+    if not codigo:
+        print("DEBUG: Código no proporcionado.") # DEBUG
+        return jsonify({"permitido": False, "mensaje": "Código de usuario no proporcionado"}), 400
+
+    users_data = load_users_from_json()
+    
+    # Verificar si el código está en la lista de usuarios permitidos
+    if codigo in users_data.get("usuarios_permitidos", []):
+        user_info = users_data.get("nombres", {}).get(codigo)
+        
+        if user_info and user_info.get("activo"):
+            
+            return jsonify({
+                "permitido": True,
+                "usuario": {
+                    "codigo": codigo,
+                    "nombre_completo": user_info.get("nombre_completo"),
+                    "grado": user_info.get("grado"),
+                    "activo": user_info.get("activo")
+                }
+            }), 200
+        else:
+            print(f"DEBUG: Usuario {codigo} inactivo o información incompleta en JSON.") # DEBUG
+            return jsonify({"permitido": False, "mensaje": "Código de usuario inactivo o información incompleta."}), 401
+    else:
+        
+        return jsonify({"permitido": False, "mensaje": "Código de usuario no reconocido."}), 401
 
 
 # Get the absolute path to the project root
@@ -139,6 +192,11 @@ def promote_to_main():
             'success': False, 
             'message': 'Error interno del servidor'
         }), 500
+
+@web_main_bp.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(web_main_bp.root_path, '..', 'frontend', 'css', 'assets', 'images'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @web_main_bp.route('/admin/api/promote', methods=['POST'])
 @require_auth
