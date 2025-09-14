@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Admin - Gestión de Páginas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #e4e4e7;
+            line-height: 1.6;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #0d1117;
+            border-right: 1px solid #30363d;
+            padding: 2rem 1rem;
+            overflow-y: auto;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #58a6ff;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #8b949e;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #21262d;
+            color: #58a6ff;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+
+        .header {
+            background: #0d1117;
+            padding: 1.5rem 2rem;
+            margin: -2rem -2rem 2rem -2rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            color: #8b949e;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #58a6ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+
+        .content-card {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #f0f6fc;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #238636;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #2ea043;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #21262d;
+            color: #f0f6fc;
+            border: 1px solid #30363d;
+        }
+
+        .btn-secondary:hover {
+            background: #30363d;
+        }
+
+        .btn-danger {
+            background: #da3633;
+            color: #ffffff;
+        }
+
+        .btn-danger:hover {
+            background: #f85149;
+        }
+
+        .page-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .page-table th,
+        .page-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .page-table th {
+            background: #161b22;
+            color: #58a6ff;
+            font-weight: 600;
+        }
+
+        .page-table tr:hover {
+            background: #161b22;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(56, 139, 253, 0.2);
+            color: #58a6ff;
+        }
+
+        .status-inactive {
+            background: rgba(255, 129, 130, 0.2);
+            color: #ff8182;
+        }
+
+        .status-maintenance {
+            background: rgba(255, 221, 87, 0.2);
+            color: #ffdd57;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .log-viewer {
+            background: #010409;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            height: 300px;
+            overflow-y: auto;
+            color: #e6edf3;
+        }
+
+        .log-entry {
+            margin-bottom: 0.5rem;
+            padding: 0.25rem;
+        }
+
+        .log-info {
+            color: #58a6ff;
+        }
+
+        .log-warning {
+            color: #ffdd57;
+        }
+
+        .log-error {
+            color: #ff8182;
+        }
+
+        .domain-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .domain-item {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .domain-info h4 {
+            color: #f0f6fc;
+            margin-bottom: 0.5rem;
+        }
+
+        .domain-info p {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            padding: 2rem 0;
+            border-top: 1px solid #30363d;
+            text-align: center;
+            color: #8b949e;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo-container">
+            <div class="logo">Flask Manager</div>
+        </div>
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" onclick="showSection('dashboard')">
+                        📊 Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('pages')">
+                        📄 Páginas Activas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('domains')">
+                        🌐 Dominios
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('logs')">
+                        📋 Logs del Sistema
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('services')">
+                        ⚙️ Servicios
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <h1 class="header-title">Panel de Gestión Flask</h1>
+            <p class="header-subtitle">Administra tus páginas y servicios web</p>
+        </header>
+
+        <!-- Dashboard -->
+        <section id="dashboard-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="active-pages">12</div>
+                    <div class="stat-label">Páginas Activas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-requests">2,547</div>
+                    <div class="stat-label">Requests Hoy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="uptime">99.8%</div>
+                    <div class="stat-label">Tiempo Activo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="response-time">45ms</div>
+                    <div class="stat-label">Tiempo Respuesta</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Estado del Servidor</h2>
+                    <button class="btn btn-primary" onclick="restartFlaskServer()">
+                        🔄 Reiniciar Flask
+                    </button>
+                </div>
+                <p>Servidor Flask funcionando correctamente. Última actualización: <span id="last-update"></span></p>
+            </div>
+        </section>
+
+        <!-- Páginas Activas -->
+        <section id="pages-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Páginas Activas</h2>
+                    <button class="btn btn-primary" onclick="addNewPage()">
+                        ➕ Nueva Página
+                    </button>
+                </div>
+                <table class="page-table">
+                    <thead>
+                        <tr>
+                            <th>Ruta</th>
+                            <th>Método</th>
+                            <th>Estado</th>
+                            <th>Requests</th>
+                            <th>Última Actividad</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pages-table-body">
+                        <!-- Contenido generado por JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Dominios -->
+        <section id="domains-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Configuración de Dominios</h2>
+                    <button class="btn btn-primary" onclick="configureDomain()">
+                        ⚙️ Configurar Dominio
+                    </button>
+                </div>
+                <div class="domain-list" id="domains-list">
+                    <!-- Contenido generado por JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Logs -->
+        <section id="logs-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Logs del Sistema</h2>
+                    <button class="btn btn-secondary" onclick="clearLogs()">
+                        🗑️ Limpiar Logs
+                    </button>
+                </div>
+                <div class="log-viewer" id="log-viewer">
+                    <!-- Logs generados por JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Servicios -->
+        <section id="services-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Control de Servicios</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <button class="btn btn-primary" onclick="restartFlaskServer()">
+                            🔄 Reiniciar Flask
+                        </button>
+                    </div>
+                    <div class="stat-card">
+                        <button class="btn btn-secondary" onclick="reloadConfig()">
+                            ⚙️ Recargar Config
+                        </button>
+                    </div>
+                    <div class="stat-card">
+                        <button class="btn btn-secondary" onclick="backupData()">
+                            💾 Backup
+                        </button>
+                    </div>
+                    <div class="stat-card">
+                        <button class="btn btn-danger" onclick="shutdownServer()">
+                            ⏹️ Apagar Servidor
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Flask Admin Panel v2.0 - Gestión completa de páginas web</p>
+        </footer>
+    </main>
+
+    <script>
+        // Datos simulados
+        let pagesData = [
+            { route: '/', method: 'GET', status: 'active', requests: 1234, lastActivity: '2 min ago' },
+            { route: '/api/users', method: 'GET', status: 'active', requests: 567, lastActivity: '5 min ago' },
+            { route: '/admin', method: 'GET', status: 'maintenance', requests: 89, lastActivity: '1 hour ago' },
+            { route: '/api/data', method: 'POST', status: 'active', requests: 345, lastActivity: '10 min ago' },
+            { route: '/login', method: 'POST', status: 'active', requests: 123, lastActivity: '3 min ago' },
+            { route: '/dashboard', method: 'GET', status: 'inactive', requests: 45, lastActivity: '2 hours ago' }
+        ];
+
+        let domainsData = [
+            { name: 'localhost:5000', status: 'active', ssl: false, description: 'Desarrollo local' },
+            { name: 'myapp.com', status: 'active', ssl: true, description: 'Sitio principal' },
+            { name: 'api.myapp.com', status: 'maintenance', ssl: true, description: 'API REST' },
+            { name: 'staging.myapp.com', status: 'inactive', ssl: false, description: 'Ambiente de pruebas' }
+        ];
+
+        let logs = [
+            { type: 'info', message: '127.0.0.1 - - [11/Sep/2025 14:30:25] "GET / HTTP/1.1" 200 -', timestamp: '14:30:25' },
+            { type: 'info', message: '127.0.0.1 - - [11/Sep/2025 14:30:22] "GET /api/users HTTP/1.1" 200 -', timestamp: '14:30:22' },
+            { type: 'warning', message: 'Slow response detected for /api/data (2.3s)', timestamp: '14:29:15' },
+            { type: 'info', message: '127.0.0.1 - - [11/Sep/2025 14:28:10] "POST /login HTTP/1.1" 200 -', timestamp: '14:28:10' },
+            { type: 'error', message: 'Failed to connect to database - retrying...', timestamp: '14:25:33' },
+            { type: 'info', message: 'Database connection restored', timestamp: '14:25:35' },
+            { type: 'info', message: 'Flask server started on port 5000', timestamp: '14:20:00' }
+        ];
+
+        // Navegación entre secciones
+        function showSection(sectionName) {
+            // Ocultar todas las secciones
+            const sections = ['dashboard', 'pages', 'domains', 'logs', 'services'];
+            sections.forEach(section => {
+                document.getElementById(section + '-section').style.display = 'none';
+            });
+
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionName + '-section').style.display = 'block';
+
+            // Actualizar navegación activa
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Cargar datos específicos de la sección
+            if (sectionName === 'pages') renderPagesTable();
+            if (sectionName === 'domains') renderDomainsList();
+            if (sectionName === 'logs') renderLogs();
+        }
+
+        // Renderizar tabla de páginas
+        function renderPagesTable() {
+            const tbody = document.getElementById('pages-table-body');
+            tbody.innerHTML = '';
+
+            pagesData.forEach((page, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><code>${page.route}</code></td>
+                    <td><span style="color: #58a6ff">${page.method}</span></td>
+                    <td><span class="status-badge status-${page.status}">${getStatusText(page.status)}</span></td>
+                    <td>${page.requests.toLocaleString()}</td>
+                    <td>${page.lastActivity}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary btn-small" onclick="editPage(${index})">✏️</button>
+                            <button class="btn btn-danger btn-small" onclick="deletePage(${index})">🗑️</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Renderizar lista de dominios
+        function renderDomainsList() {
+            const domainsList = document.getElementById('domains-list');
+            domainsList.innerHTML = '';
+
+            domainsData.forEach((domain, index) => {
+                const domainItem = document.createElement('div');
+                domainItem.className = 'domain-item';
+                domainItem.innerHTML = `
+                    <div class="domain-info">
+                        <h4>${domain.name} ${domain.ssl ? '🔒' : '🔓'}</h4>
+                        <p>${domain.description}</p>
+                    </div>
+                    <div class="action-buttons">
+                        <span class="status-badge status-${domain.status}">${getStatusText(domain.status)}</span>
+                        <button class="btn btn-secondary btn-small" onclick="editDomain(${index})">⚙️</button>
+                    </div>
+                `;
+                domainsList.appendChild(domainItem);
+            });
+        }
+
+        // Renderizar logs
+        function renderLogs() {
+            const logViewer = document.getElementById('log-viewer');
+            logViewer.innerHTML = '';
+
+            logs.forEach(log => {
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry log-${log.type}`;
+                logEntry.innerHTML = `[${log.timestamp}] ${log.message}`;
+                logViewer.appendChild(logEntry);
+            });
+
+            // Scroll to bottom
+            logViewer.scrollTop = logViewer.scrollHeight;
+        }
+
+        // Utilidades
+        function getStatusText(status) {
+            const statusMap = {
+                'active': 'Activo',
+                'inactive': 'Inactivo',
+                'maintenance': 'Mantenimiento'
+            };
+            return statusMap[status] || status;
+        }
+
+        // Funciones de acciones
+        function restartFlaskServer() {
+            alert('Reiniciando servidor Flask...\nEl proceso tomará aproximadamente 10 segundos.');
+            addLog('info', 'Flask server restart initiated');
+        }
+
+        function addNewPage() {
+            const route = prompt('Ingresa la nueva ruta (ej: /new-page):');
+            if (route) {
+                pagesData.push({
+                    route: route,
+                    method: 'GET',
+                    status: 'active',
+                    requests: 0,
+                    lastActivity: 'Just created'
+                });
+                renderPagesTable();
+                addLog('info', `New route created: ${route}`);
+            }
+        }
+
+        function editPage(index) {
+            const page = pagesData[index];
+            const newRoute = prompt('Editar ruta:', page.route);
+            if (newRoute && newRoute !== page.route) {
+                page.route = newRoute;
+                renderPagesTable();
+                addLog('info', `Route updated: ${newRoute}`);
+            }
+        }
+
+        function deletePage(index) {
+            const page = pagesData[index];
+            if (confirm(`¿Eliminar la ruta ${page.route}?`)) {
+                pagesData.splice(index, 1);
+                renderPagesTable();
+                addLog('warning', `Route deleted: ${page.route}`);
+            }
+        }
+
+        function configureDomain() {
+            const domain = prompt('Ingresa el nuevo dominio (ej: subdomain.myapp.com):');
+            if (domain) {
+                domainsData.push({
+                    name: domain,
+                    status: 'inactive',
+                    ssl: false,
+                    description: 'Configuración pendiente'
+                });
+                renderDomainsList();
+                addLog('info', `New domain configured: ${domain}`);
+            }
+        }
+
+        function editDomain(index) {
+            const domain = domainsData[index];
+            const options = ['active', 'inactive', 'maintenance'];
+            const newStatus = prompt(`Estado para ${domain.name} (${options.join(', ')}):`, domain.status);
+            if (newStatus && options.includes(newStatus)) {
+                domain.status = newStatus;
+                renderDomainsList();
+                addLog('info', `Domain ${domain.name} status changed to ${newStatus}`);
+            }
+        }
+
+        function clearLogs() {
+            if (confirm('¿Limpiar todos los logs?')) {
+                logs = [];
+                renderLogs();
+                addLog('info', 'Logs cleared by admin');
+            }
+        }
+
+        function reloadConfig() {
+            alert('Recargando configuración...');
+            addLog('info', 'Configuration reloaded');
+        }
+
+        function backupData() {
+            alert('Creando backup...\nBackup guardado en: /backups/flask_backup_' + new Date().getTime() + '.tar.gz');
+            addLog('info', 'Backup created successfully');
+        }
+
+        function shutdownServer() {
+            if (confirm('¿Estás seguro de que quieres apagar el servidor?')) {
+                alert('Apagando servidor de forma segura...');
+                addLog('warning', 'Server shutdown initiated');
+            }
+        }
+
+        function addLog(type, message) {
+            const now = new Date();
+            const timestamp = now.toTimeString().slice(0, 8);
+            logs.unshift({ type, message, timestamp });
+            if (logs.length > 50) logs.pop(); // Mantener solo los últimos 50 logs
+        }
+
+        // Actualizar métricas
+        function updateDashboardStats() {
+            const activePages = pagesData.filter(p => p.status === 'active').length;
+            const totalRequests = pagesData.reduce((sum, p) => sum + p.requests, 0);
+            
+            document.getElementById('active-pages').textContent = activePages;
+            document.getElementById('total-requests').textContent = totalRequests.toLocaleString();
+            document.getElementById('uptime').textContent = (Math.random() * 0.5 + 99.5).toFixed(1) + '%';
+            document.getElementById('response-time').textContent = Math.floor(Math.random() * 50 + 20) + 'ms';
+        }
+
+        // Actualizar timestamp
+        function updateTimestamp() {
+            document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboardStats();
+            updateTimestamp();
+            renderPagesTable();
+            renderDomainsList();
+            renderLogs();
+
+            // Actualizar cada 30 segundos
+            setInterval(() => {
+                updateDashboardStats();
+                updateTimestamp();
+                
+                // Simular nuevos logs ocasionalmente
+                if (Math.random() < 0.3) {
+                    const logTypes = ['info', 'warning'];
+                    const messages = [
+                        'New request processed',
+                        'Cache cleared automatically',
+                        'Database query completed',
+                        'User session expired'
+                    ];
+                    const randomType = logTypes[Math.floor(Math.random() * logTypes.length)];
+                    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                    addLog(randomType, randomMessage);
+                }
+            }, 30000);
+
+            // Simular cambios en requests cada 10 segundos
+            setInterval(() => {
+                pagesData.forEach(page => {
+                    if (page.status === 'active' && Math.random() < 0.7) {
+                        page.requests += Math.floor(Math.random() * 10) + 1;
+                    }
+                });
+            }, 10000);
+        });
+    </script>
+</body>
+</html>

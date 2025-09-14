@@ -1,4 +1,4 @@
 @echo off
-call "C:\Users\dqu_r\Documents\proyects\Fundamentos\Backend\python\mi_server\mi_server\Scripts\activate"
-python "C:\Users\dqu_r\Documents\proyects\Fundamentos\Backend\python\mi_server\main.py" run
+call "C:\Users\dqu_r\Documents\proyects\portal_inicio\backend\mi_server\Scripts\activate"
+python "C:\Users\dqu_r\Documents\proyects\portal_inicio\backend\main.py" run
 exit

@@ -1,0 +1,120 @@
+/* Estilos para el nuevo header (topbar) */
+.topbar {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.brand-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(45deg, #00d4aa, #00ff88);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #000;
+}
+
+.brand-text {
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #00d4aa, #00ff88);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 212, 170, 0.1);
+    border: 1px solid rgba(0, 212, 170, 0.3);
+    border-radius: 20px;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: #00ff88;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* --- Nuevos estilos para el layout --- */
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #1a1a1a;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Ocupa todo el espacio vertical */
+}
+
+.sidebar nav .nav-menu:last-child {
+    margin-top: auto; /* Empuja el último menú (logout) hacia abajo */
+}
+
+.main-content {
+    flex-grow: 1; /* El contenido principal ocupa el resto del espacio */
+    padding: 2rem;
+    background-color: #111;
+    overflow-y: auto; /* Para permitir scroll si el contenido es largo */
+}
+
+/* --- Nuevos estilos para el layout --- */
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #1a1a1a;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Necesario para el posicionamiento absoluto del logout */
+}
+
+.main-content {
+    flex-grow: 1; /* El contenido principal ocupa el resto del espacio */
+    padding: 2rem;
+    background-color: #111;
+}

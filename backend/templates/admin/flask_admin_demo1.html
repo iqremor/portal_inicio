@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Admin - Panel de Monitoreo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f1419;
+            color: #e6e6e6;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: #1a1f26;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #2a3441;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d4aa;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: #1a1f26;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #2a3441;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #2a3441;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #00d4aa;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin: 0.5rem 0;
+        }
+
+        .metric-label {
+            color: #8b9dc3;
+            font-size: 0.9rem;
+        }
+
+        .device-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .device-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #2a3441;
+        }
+
+        .device-item:last-child {
+            border-bottom: none;
+        }
+
+        .device-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .device-name {
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .device-ip {
+            color: #8b9dc3;
+            font-size: 0.85rem;
+        }
+
+        .device-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .status-idle {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .chart-container {
+            height: 200px;
+            background: #0f1419;
+            border-radius: 6px;
+            padding: 1rem;
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            gap: 4px;
+        }
+
+        .chart-bar {
+            background: linear-gradient(to top, #00d4aa, #00ff88);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            min-height: 10px;
+        }
+
+        .chart-bar:hover {
+            background: linear-gradient(to top, #00ff88, #00d4aa);
+            transform: scale(1.05);
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            background: #1a1f26;
+            border: 1px solid #2a3441;
+            color: #e6e6e6;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            background: #2a3441;
+            border-color: #00d4aa;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            border-color: #ff4757;
+        }
+
+        .btn-danger:hover {
+            border-color: #ff3742;
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .btn-warning {
+            border-color: #ffc107;
+        }
+
+        .btn-warning:hover {
+            border-color: #ffcd39;
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #8b9dc3;
+            border-top: 1px solid #2a3441;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">Flask Admin Panel</div>
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>Servidor Activo</span>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="dashboard-grid">
+            <!-- Dispositivos Conectados -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Dispositivos Conectados</h3>
+                </div>
+                <div class="metric-value" id="connected-devices">24</div>
+                <div class="metric-label">dispositivos activos</div>
+            </div>
+
+            <!-- Tráfico Total -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Tráfico Total</h3>
+                </div>
+                <div class="metric-value" id="total-traffic">1.2 GB</div>
+                <div class="metric-label">en las últimas 24h</div>
+            </div>
+
+            <!-- Requests por Minuto -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Requests/min</h3>
+                </div>
+                <div class="metric-value" id="requests-per-min">156</div>
+                <div class="metric-label">promedio actual</div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Tráfico -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Tráfico por Hora</h3>
+            </div>
+            <div class="chart-container" id="traffic-chart">
+                <!-- Barras generadas por JavaScript -->
+            </div>
+        </div>
+
+        <!-- Lista de Dispositivos -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Dispositivos Recientes</h3>
+            </div>
+            <div class="device-list" id="device-list">
+                <!-- Lista generada por JavaScript -->
+            </div>
+        </div>
+
+        <!-- Acciones Rápidas -->
+        <div class="actions-grid">
+            <button class="action-btn" onclick="restartServer()">
+                🔄 Reiniciar Servidor
+            </button>
+            <button class="action-btn" onclick="viewLogs()">
+                📋 Ver Logs
+            </button>
+            <button class="action-btn btn-warning" onclick="manageDomains()">
+                🌐 Configurar Dominios
+            </button>
+            <button class="action-btn btn-danger" onclick="shutdownServer()">
+                ⏹️ Apagar Servidor
+            </button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Flask Server Admin Panel v1.0 - Monitoreo en tiempo real</p>
+    </footer>
+
+    <script>
+        // Datos simulados
+        let deviceData = [
+            { name: 'Usuario-Desktop-01', ip: '192.168.1.101', status: 'active' },
+            { name: 'Móvil-Android-15', ip: '192.168.1.102', status: 'active' },
+            { name: 'Laptop-Windows-07', ip: '192.168.1.103', status: 'idle' },
+            { name: 'iPhone-12-Pro', ip: '192.168.1.104', status: 'active' },
+            { name: 'Tablet-Samsung', ip: '192.168.1.105', status: 'active' },
+            { name: 'MacBook-Pro-M1', ip: '192.168.1.106', status: 'idle' }
+        ];
+
+        // Generar gráfico de barras
+        function generateChart() {
+            const chart = document.getElementById('traffic-chart');
+            const hours = 24;
+            
+            for (let i = 0; i < hours; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                const height = Math.random() * 150 + 20;
+                bar.style.height = height + 'px';
+                bar.style.width = `${100/hours}%`;
+                bar.title = `Hora ${i}: ${Math.floor(height * 2)} requests`;
+                chart.appendChild(bar);
+            }
+        }
+
+        // Renderizar lista de dispositivos
+        function renderDevices() {
+            const deviceList = document.getElementById('device-list');
+            deviceList.innerHTML = '';
+
+            deviceData.forEach(device => {
+                const deviceItem = document.createElement('div');
+                deviceItem.className = 'device-item';
+                deviceItem.innerHTML = `
+                    <div class="device-info">
+                        <div class="device-name">${device.name}</div>
+                        <div class="device-ip">${device.ip}</div>
+                    </div>
+                    <div class="device-status status-${device.status}">
+                        ${device.status === 'active' ? 'Activo' : 'Inactivo'}
+                    </div>
+                `;
+                deviceList.appendChild(deviceItem);
+            });
+        }
+
+        // Actualizar métricas en tiempo real
+        function updateMetrics() {
+            const connectedDevices = document.getElementById('connected-devices');
+            const totalTraffic = document.getElementById('total-traffic');
+            const requestsPerMin = document.getElementById('requests-per-min');
+
+            // Simular cambios en los datos
+            const newDeviceCount = Math.floor(Math.random() * 10) + 20;
+            const newTraffic = (Math.random() * 2 + 0.8).toFixed(1);
+            const newRequests = Math.floor(Math.random() * 100) + 100;
+
+            connectedDevices.textContent = newDeviceCount;
+            totalTraffic.textContent = newTraffic + ' GB';
+            requestsPerMin.textContent = newRequests;
+        }
+
+        // Funciones de acciones
+        function restartServer() {
+            alert('Reiniciando servidor Flask...\n¡El servidor se reiniciará en 5 segundos!');
+        }
+
+        function viewLogs() {
+            alert('Abriendo logs del servidor...\n[INFO] Servidor iniciado correctamente\n[INFO] 156 requests procesados\n[WARNING] Conexión lenta detectada');
+        }
+
+        function manageDomains() {
+            alert('Configuración de dominios:\n• localhost:5000 (activo)\n• myapp.local (configurado)\n• api.myapp.com (pendiente)');
+        }
+
+        function shutdownServer() {
+            if (confirm('¿Estás seguro de que quieres apagar el servidor?')) {
+                alert('Apagando servidor Flask de forma segura...');
+            }
+        }
+
+        // Inicializar panel
+        generateChart();
+        renderDevices();
+        
+        // Actualizar métricas cada 5 segundos
+        setInterval(updateMetrics, 5000);
+        
+        // Simular cambios en dispositivos cada 10 segundos
+        setInterval(() => {
+            // Cambiar estado aleatorio de algunos dispositivos
+            deviceData.forEach(device => {
+                if (Math.random() < 0.3) {
+                    device.status = device.status === 'active' ? 'idle' : 'active';
+                }
+            });
+            renderDevices();
+        }, 10000);
+    </script>
+</body>
+</html>

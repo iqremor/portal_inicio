@@ -1,0 +1,97 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #111111;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .demo {
+            width: 380px;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .demo-title {
+            position: absolute;
+            top: -35px;
+            left: 0;
+            font-size: 14px;
+            color: #00ff88;
+            font-weight: 500;
+        }
+
+        .login-form {
+            padding: 50px 40px;
+            width: 280px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-weight: 200;
+            font-size: 22px;
+            color: #00ff88;
+            letter-spacing: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #333333;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 300;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #666666;
+            font-weight: 300;
+        }
+
+        input:focus {
+            outline: none;
+            border-bottom-color: #00ff88;
+            color: #ffffff;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #00ff88;
+            border: none;
+            color: #111111;
+            font-size: 16px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: #00e67a;
+            color: #000000;
+        }
+
+        button:active {
+            background: #00cc6a;
+        }

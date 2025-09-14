@@ -1,0 +1,174 @@
+{% extends 'admin/master.html' %}
+
+{# 1. Añadir nuestra hoja de estilos personalizada #}
+{% block head_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_custom.css') }}">
+{% endblock %}
+
+{# 2. Sobrescribir el bloque del menú para usar nuestra barra lateral personalizada #}
+{% block menu %}
+  {% include 'admin/_menu.html' %}
+{% endblock %}
+
+{# 3. Definir el contenido principal de la página #}
+{% block body %}
+  <main class="main-content">
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">F</div>
+            <div class="brand-text">Flask Control Center</div>
+        </div>
+        <div class="system-status">
+            <div class="status-indicator">
+                <div class="pulse-dot"></div>
+                <span>Sistema Operativo</span>
+            </div>
+            <div style="color: #aaa; font-size: 0.85rem;" id="current-time"></div>
+            <a href="{{ url_for('admin.logout_view') }}" class="btn btn-outline-danger btn-sm" style="margin-left: 1rem;">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </div>
+    </header>
+
+    <!-- Dashboard -->
+    <section id="dashboard-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_usuarios if stats else 'N/A' }}</div>
+                <div class="stat-label">Total Usuarios</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_peticiones if stats else 'N/A' }}</div>
+                <div class="stat-label">Total Peticiones</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.peticiones_pendientes if stats else 'N/A' }}</div>
+                <div class="stat-label">Peticiones Pendientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.peticiones_completadas if stats else 'N/A' }}</div>
+                <div class="stat-label">Peticiones Completadas</div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <div class="card-header">
+                <h2 class="card-title">Control del Sitio Web</h2>
+            </div>
+            
+            <div class="domain-list">
+                <!-- Panel de Control del Sitio de Prueba -->
+                <div class="domain-item">
+                    <div class="domain-info">
+                        <h4>Sitio Web de Prueba</h4>
+                        <p>
+                            Estado: 
+                            {% if test_site_enabled %}
+                              <span class="status-badge status-active">Activado</span>
+                            {% else %}
+                              <span class="status-badge status-inactive">Desactivado</span>
+                            {% endif %}
+                        </p>
+                        <p>Ruta de acceso: <a href="{{ url_for('web_test.index_test') }}" target="_blank">/test/</a></p>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="{{ url_for('admin.toggle_test_site') }}" class="btn btn-{{ 'danger' if test_site_enabled else 'primary' }}">
+                          {{ 'Desactivar' if test_site_enabled else 'Activar' }} Sitio
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Panel de Promoción a Principal -->
+                <div class="domain-item">
+                    <div class="domain-info">
+                        <h4>Gestión del Sitio Principal</h4>
+                        <p>Promueve el contenido del sitio de prueba a la ruta principal.</p>
+                        <div id="promote-result" class="mt-2"></div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="promoteSite()">
+                            🚀 Promover a Principal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="content-card">
+            <div class="card-header">
+                <h2 class="card-title">Control de Servicios</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <button class="btn btn-primary" onclick="showNotImplementedAlert()">
+                        🔄 Reiniciar Flask
+                    </button>
+                </div>
+                <div class="stat-card">
+                    <button class="btn btn-secondary" onclick="showNotImplementedAlert()">
+                        ⚙️ Recargar Config
+                    </button>
+                </div>
+                <div class="stat-card">
+                    <button class="btn btn-secondary" onclick="showNotImplementedAlert()">
+                        💾 Backup
+                    </button>
+                </div>
+                <div class="stat-card">
+                    <button class="btn btn-danger" onclick="showNotImplementedAlert()">
+                        ⏹️ Apagar Servidor
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <footer class="footer">
+        <p>Panel de Administración Personalizado</p>
+    </footer>
+
+  </main>
+{% endblock %}
+
+{# 4. Añadir nuestro JavaScript personalizado #}
+{% block tail %}
+  {{ super() }}
+  <script>
+    function showNotImplementedAlert() {
+      alert('Función no implementada todavía.');
+    }
+
+    function promoteSite() {
+        if(confirm('¿Estás seguro de que quieres promover el sitio de prueba a la ruta principal?')) {
+            fetch('{{ url_for("web_main.promote_to_main") }}', {method: 'POST'})
+                .then(response => response.json())
+                .then(data => {
+                    let resultDiv = document.getElementById('promote-result');
+                    let alertClass = data.success ? 'status-badge status-active' : 'status-badge status-inactive';
+                    resultDiv.innerHTML = 
+                        `<div class="${alertClass}" style="margin-top: 1rem;">${data.message}</div>`;
+                });
+        }
+    }
+
+    // Script para actualizar la hora en el header
+    function updateCurrentTime() {
+        const now = new Date();
+        const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+        document.getElementById('current-time').textContent = now.toLocaleTimeString('es-ES', options);
+    }
+
+    // Actualizar cada segundo
+    setInterval(updateCurrentTime, 1000);
+    // Llamar una vez al cargar para que no haya retraso inicial
+    updateCurrentTime();
+
+    window.addEventListener('beforeunload', function(event) {
+        // Usar sendBeacon para enviar una solicitud de logout de forma fiable
+        // No es necesario establecer ninguna bandera o manejar la respuesta
+        navigator.sendBeacon('{{ url_for("admin.logout_view") }}', new Blob());
+    });
+  </script>
+{% endblock %}
