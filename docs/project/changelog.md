@@ -62,3 +62,33 @@
 - Tests: No hay testing framework configurado.
 ### Finalización: [PENDIENTE]
 queda pendiente problema de cierre de sesión y carga dinamica de las areas a evaluar
+
+## Sesión 4 - 14 de septiembre de 2025
+### Objetivos de la sesión:
+- Corregir la discrepancia tecnológica en el archivo `overview.md`.
+- Modularizar el header y footer de la página `dashboard.html`.
+- Modularizar y refactorizar los estilos del header.
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - **Discrepancia Tecnológica en `overview.md` (Node.js/Express.js vs Python Flask).**
+    - Dependencias no auditadas.
+- Tests: No hay testing framework configurado.
+
+### Acciones Realizadas:
+- Se actualizó el archivo `docs/project/overview.md` para reflejar que la tecnología del backend es Python/Flask en lugar de Node.js/Express.js.
+- Se corrigieron las secciones de tecnologías, instalación, requisitos y configuración para que coincidan con un proyecto de Python/Flask.
+- Se extrajo el contenido del header de `frontend/pages/dashboard.html` a un nuevo archivo `frontend/pages/header.html`.
+- Se extrajo el contenido del footer de `frontend/pages/dashboard.html` a un nuevo archivo `frontend/pages/footer.html`.
+- Se modificó `frontend/pages/dashboard.html` para cargar dinámicamente el `header.html` y `footer.html` mediante scripts de JavaScript.
+- Se eliminó la información de usuario codificada del `header.html` para permitir la carga dinámica.
+- Se creó un archivo `frontend/css/header.css` con los estilos específicos para el header.
+- Se eliminaron los estilos del header de `frontend/css/dashboard.css` y se importó el nuevo archivo `header.css`.
+- Se refactorizó el CSS del header utilizando la metodología BEM para mejorar la estructura y mantenibilidad.
+- Se actualizó `frontend/pages/header.html` para utilizar las nuevas clases BEM.
+
+### Finalización: [PENDIENTE]
