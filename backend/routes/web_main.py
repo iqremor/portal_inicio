@@ -84,43 +84,46 @@ def logout():
 
 @web_main_bp.route('/api/validar', methods=['POST'])
 def validar_usuario():
-    """Valida el código de usuario y devuelve si está permitido."""
+    """Valida el código de usuario y devuelve si está permitido (usando DB)."""
     if not request.is_json:
         return jsonify({"permitido": False, "mensaje": "Content-Type debe ser application/json"}), 400
 
     data = request.get_json()
     codigo = data.get('codigo')
 
-    
-
     if not codigo:
-        print("DEBUG: Código no proporcionado.") # DEBUG
         return jsonify({"permitido": False, "mensaje": "Código de usuario no proporcionado"}), 400
 
-    users_data = load_users_from_json()
-    
-    # Verificar si el código está en la lista de usuarios permitidos
-    if codigo in users_data.get("usuarios_permitidos", []):
-        user_info = users_data.get("nombres", {}).get(codigo)
-        
-        if user_info and user_info.get("activo"):
-            
-            return jsonify({
-                "permitido": True,
-                "usuario": {
-                    "codigo": codigo,
-                    "nombre_completo": user_info.get("nombre_completo"),
-                    "grado": user_info.get("grado"),
-                    "activo": user_info.get("activo")
-                }
-            }), 200
-        else:
-            print(f"DEBUG: Usuario {codigo} inactivo o información incompleta en JSON.") # DEBUG
-            return jsonify({"permitido": False, "mensaje": "Código de usuario inactivo o información incompleta."}), 401
-    else:
-        
-        return jsonify({"permitido": False, "mensaje": "Código de usuario no reconocido."}), 401
+    # Buscar usuario por código en la base de datos
+    user = User.query.filter_by(codigo=codigo).first()
 
+    if user and user.is_active:
+        return jsonify({
+            "permitido": True,
+            "usuario": {
+                "codigo": user.codigo,
+                "nombre_completo": user.nombre_completo,
+                "grado": user.grado,
+                "role": user.role.value
+            }
+        }), 200
+    else:
+        return jsonify({"permitido": False, "mensaje": "Código de usuario no reconocido o inactivo."}), 401
+
+@web_main_bp.route('/api/usuario/<string:codigo>', methods=['GET'])
+def get_user_data(codigo):
+    """Obtiene los datos completos de un usuario por su código."""
+    user = User.query.filter_by(codigo=codigo).first()
+
+    if user:
+        return jsonify({
+            "codigo": user.codigo,
+            "nombre_completo": user.nombre_completo,
+            "grado": user.grado,
+            "role": user.role.value
+        }), 200
+    else:
+        return jsonify({"mensaje": "Usuario no encontrado"}), 404
 
 # Get the absolute path to the project root
 bp_dir = os.path.dirname(os.path.abspath(__file__))

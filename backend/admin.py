@@ -113,9 +113,9 @@ class MyAdminIndexView(AdminIndexView):
 # Vista personalizada para usuarios
 class UserModelView(ModelView):
     # Configuración de columnas
-    column_list = ['username', 'email', 'role', 'is_active', 'created_at', 'peticiones']
-    column_details_list = ['id', 'username', 'email', 'role', 'is_active', 'created_at', 'updated_at']
-    column_searchable_list = ['username', 'email']
+    column_list = ['username', 'role', 'is_active', 'created_at', 'peticiones']
+    column_details_list = ['id', 'username', 'role', 'is_active', 'created_at', 'updated_at']
+    column_searchable_list = ['username']
     column_filters = ['role', 'is_active', 'created_at']
     column_editable_list = ['is_active', 'role']
     
@@ -135,7 +135,6 @@ class UserModelView(ModelView):
     # Etiquetas personalizadas
     column_labels = {
         'username': 'Nombre de Usuario',
-        'email': 'Correo Electrónico',
         'role': 'Rol',
         'is_active': 'Activo',
         'created_at': 'Fecha de Creación',
