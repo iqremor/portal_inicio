@@ -3,7 +3,12 @@
 /* Estilos específicos para el Dashboard */
 
 .dashboard-body {
-    background: linear-gradient(135deg, #2d5016 0%, #4a7c59 50%, #5d8a66 100%);
+    background-color: #2d5016; /* Fallback color */
+    background-image: url('assets/images/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* To keep the background fixed while scrolling */
     min-height: 100vh;
 }
 
@@ -27,6 +32,18 @@
     text-align: center;
     margin-bottom: 4rem;
     padding: 2rem 0;
+}
+
+.hero-card {
+    background: rgba(8, 145, 3, 0.432);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    max-width: 800px; /* Adjust as needed */
+    margin: 0 auto; /* Center the card */
 }
 
 .hero-title {
@@ -69,7 +86,7 @@
 }
 
 .activity-card {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(8, 145, 3, 0.432);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 1rem;
@@ -396,7 +413,7 @@
 
 /* Footer del Dashboard */
 .dashboard-footer {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(8, 145, 3, 0.432);
     backdrop-filter: blur(10px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1rem 2rem;
@@ -667,47 +684,13 @@
 .activity-card:nth-child(3) { animation-delay: 0.3s; }
 
 
-.welcome-section {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.welcome-title {
-    font-size: 2.25rem;
-    font-weight: 700;
-    color: var(--text-white);
-    margin-bottom: 0.5rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.welcome-subtitle {
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 400;
-}
 
 
-/* Logo Text Styles */
-.logo-text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.logo-subtitle {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: 400;
-    margin-top: 0.2rem;
-}
 
 /* Responsive Design Improvements */
 @media (max-width: 768px) {
     
-    .logo-subtitle {
-        font-size: 0.8rem;
-    }
-    
+   
     .hero-title {
         font-size: 2rem;
     }

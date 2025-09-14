@@ -68,6 +68,13 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Corregir la discrepancia tecnológica en el archivo `overview.md`.
 - Modularizar el header y footer de la página `dashboard.html`.
 - Modularizar y refactorizar los estilos del header.
+- Integrar el escudo del colegio en el header.
+- Mejorar la estructura y semántica del HTML del header.
+- Reorganizar el layout del header para centrar el título.
+- Establecer una imagen de fondo para el dashboard.
+- Ajustar la visualización de los elementos transparentes.
+- Ajustar el tamaño del botón de logout.
+- Encerrar el contenido de la sección hero en un contenedor con estilo de tarjeta.
 
 ### Estado inicial:
 - Calidad de código: No hay checks automáticos configurados.
@@ -90,5 +97,16 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Se eliminaron los estilos del header de `frontend/css/dashboard.css` y se importó el nuevo archivo `header.css`.
 - Se refactorizó el CSS del header utilizando la metodología BEM para mejorar la estructura y mantenibilidad.
 - Se actualizó `frontend/pages/header.html` para utilizar las nuevas clases BEM.
+- Se reemplazó el ícono del header por la imagen del escudo del colegio (`escudo.png`).
+- Se ajustaron los estilos en `frontend/css/header.css` para la nueva imagen del logo.
+- Se mejoró la estructura del `header.html` añadiendo comentarios, un enlace al dashboard en el logo y atributos de accesibilidad.
+- Se ajustaron los estilos del logo en `header.css` para eliminar la decoración de texto del nuevo enlace.
+- Se reestructuró el HTML de `header.html` para separar el logo, el título y la sección de usuario, permitiendo un layout más flexible.
+- Se actualizó `header.css` para centrar el título y el eslogan en el espacio disponible.
+- Se corrigió la ruta de la imagen de fondo en `dashboard.css` para que apunte a `assets/images/fondo.jpg`.
+- Se añadió la regla CSS a `frontend/css/header.css` para mostrar "Grado: " antes del número de grado.
+- Se aplicó el color `rgba(8, 145, 3, 0.432)` al fondo del footer (`.dashboard-footer`) y a las tarjetas de actividad (`.activity-card`) en `dashboard.css`.
+- Se ajustó el tamaño del botón de logout en `frontend/css/header.css` (padding y font-size).
+- Se envolvió el contenido de la sección hero en un contenedor (`.hero-card`) con un estilo similar a las tarjetas de actividad en `frontend/pages/dashboard.html` y se le aplicaron los estilos correspondientes en `frontend/css/dashboard.css`.
 
 ### Finalización: [PENDIENTE]
