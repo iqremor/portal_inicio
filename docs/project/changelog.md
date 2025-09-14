@@ -109,4 +109,18 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Se ajustó el tamaño del botón de logout en `frontend/css/header.css` (padding y font-size).
 - Se envolvió el contenido de la sección hero en un contenedor (`.hero-card`) con un estilo similar a las tarjetas de actividad en `frontend/pages/dashboard.html` y se le aplicaron los estilos correspondientes en `frontend/css/dashboard.css`.
 
+### Finalización: 14 de septiembre de 2025
+
+## Sesión 5 - 14 de septiembre de 2025 
+### Objetivos de la sesión:
+- 
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
 ### Finalización: [PENDIENTE]

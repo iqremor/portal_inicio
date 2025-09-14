@@ -2,10 +2,9 @@ import {
     fetchUserData,
     loadExamAreas,
     startExam,
-    loadRecentResults,
-    logout
+    loadRecentResults
 } from '../api/index.js';
-import { checkSession, clearSession } from '../shared/auth.js';
+import { checkSession, clearSession, handleLogout } from '../shared/auth.js';
 import { getInitials, formatDate } from '../shared/utils.js';
 import { showNotification } from '../components/notification.js';
 import { showModal } from '../components/modal.js';
@@ -46,10 +45,14 @@ class Dashboard {
         const userAvatar = document.getElementById('userAvatar');
         const userName = document.getElementById('userName');
         const userGrade = document.getElementById('userGrade');
+        const heroUserName = document.getElementById('heroUserName');
+        const heroUserGrade = document.getElementById('heroUserGrade');
 
         if (userAvatar) userAvatar.textContent = getInitials(this.currentUser.nombre_completo);
         if (userName) userName.textContent = this.currentUser.nombre_completo;
         if (userGrade) userGrade.textContent = this.currentUser.grado;
+        if (heroUserName) heroUserName.textContent = this.currentUser.nombre_completo;
+        if (heroUserGrade) heroUserGrade.textContent = `Grado ${this.currentUser.grado}`;
     }
 
     setupEventListeners() {
@@ -65,9 +68,9 @@ class Dashboard {
             btnBack.addEventListener('click', () => this.showActivitiesView());
         }
 
-        const btnLogout = document.querySelector('.btn-logout');
+        const btnLogout = document.querySelector('.main-header__logout-btn');
         if (btnLogout) {
-            btnLogout.addEventListener('click', () => this.handleLogout());
+            btnLogout.addEventListener('click', () => handleLogout(this.currentUser));
         }
     }
 
@@ -193,14 +196,5 @@ class Dashboard {
 
         resultsContainer.innerHTML = '';
         resultsContainer.appendChild(resultsGrid);
-    }
-
-    async handleLogout() {
-        await logout(this.currentUser.codigo);
-        clearSession();
-        showNotification('Sesión cerrada correctamente', 'info');
-        setTimeout(() => {
-            window.location.href = '/frontend/pages/login.html';
-        }, 1000);
     }
 }
