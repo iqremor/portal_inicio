@@ -5,98 +5,21 @@
     "tiempo_limite": 30,
     "numero_preguntas": 10,
     "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es el resultado de 15 + 27?",
-        "opciones": ["40", "42", "44", "46"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 2,
-        "tipo": "multiple", 
-        "pregunta": "Si x = 5, ¿cuál es el valor de 3x + 2?",
-        "opciones": ["15", "17", "19", "21"],
-        "respuesta_correcta": 1,
-        "puntos": 2,
-        "dificultad": "medio"
-      },
-      {
-        "id": 3,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es la raíz cuadrada de 144?",
-        "opciones": ["10", "11", "12", "13"],
-        "respuesta_correcta": 2,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 4,
-        "tipo": "multiple",
-        "pregunta": "En un triángulo rectángulo, si un cateto mide 3 y el otro 4, ¿cuánto mide la hipotenusa?",
-        "opciones": ["5", "6", "7", "8"],
-        "respuesta_correcta": 0,
-        "puntos": 2,
-        "dificultad": "medio"
-      },
-      {
-        "id": 5,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es el 20% de 250?",
-        "opciones": ["40", "45", "50", "55"],
-        "respuesta_correcta": 2,
-        "puntos": 1,
-        "dificultad": "facil"
-      }
-    ]
-  },
+      "applicable_grades": ["6", "7", "8", "9", "10", "11"], 
+      "question_ids": [
+        "question_id_1"
+      ]
+    },
   "ciencias_naturales": {
     "nombre": "Ciencias Naturales",
     "descripcion": "Evaluación de conceptos de biología, química y física",
     "tiempo_limite": 25,
     "numero_preguntas": 8,
     "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es la unidad básica de la vida?",
-        "opciones": ["Átomo", "Célula", "Molécula", "Tejido"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 2,
-        "tipo": "multiple",
-        "pregunta": "¿Qué gas es esencial para la respiración?",
-        "opciones": ["Nitrógeno", "Dióxido de carbono", "Oxígeno", "Hidrógeno"],
-        "respuesta_correcta": 2,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 3,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es la fórmula química del agua?",
-        "opciones": ["H2O", "CO2", "NaCl", "CH4"],
-        "respuesta_correcta": 0,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 4,
-        "tipo": "multiple",
-        "pregunta": "¿Qué proceso realizan las plantas para producir su alimento?",
-        "opciones": ["Respiración", "Digestión", "Fotosíntesis", "Fermentación"],
-        "respuesta_correcta": 2,
-        "puntos": 2,
-        "dificultad": "medio"
-      }
-    ]
+    "applicable_grades": ["6", "7", "8", "9", "10", "11"], 
+      "question_ids": [
+        "question_id_2"
+      ]
   },
   "ciencias_sociales": {
     "nombre": "Ciencias Sociales",
@@ -104,35 +27,10 @@
     "tiempo_limite": 20,
     "numero_preguntas": 6,
     "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple",
-        "pregunta": "¿En qué año se independizó Colombia?",
-        "opciones": ["1810", "1819", "1820", "1821"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "medio"
-      },
-      {
-        "id": 2,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es la capital de Colombia?",
-        "opciones": ["Medellín", "Cali", "Bogotá", "Barranquilla"],
-        "respuesta_correcta": 2,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 3,
-        "tipo": "multiple",
-        "pregunta": "¿Quién fue el libertador de Colombia?",
-        "opciones": ["Antonio Nariño", "Simón Bolívar", "Francisco de Paula Santander", "Camilo Torres"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "facil"
-      }
-    ]
+    "applicable_grades": ["6", "7", "8", "9", "10", "11"], 
+      "question_ids": [
+        "question_id_3"
+      ]
   },
   "analisis_imagen": {
     "nombre": "Análisis de Imagen",
@@ -140,28 +38,10 @@
     "tiempo_limite": 15,
     "numero_preguntas": 5,
     "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple",
-        "pregunta": "Observa la imagen de un gráfico de barras que muestra ventas por mes. ¿En qué mes se registraron las mayores ventas?",
-        "imagen": "/images/grafico_ventas.png",
-        "opciones": ["Enero", "Marzo", "Junio", "Diciembre"],
-        "respuesta_correcta": 2,
-        "puntos": 2,
-        "dificultad": "medio"
-      },
-      {
-        "id": 2,
-        "tipo": "multiple",
-        "pregunta": "En la imagen del mapa, ¿qué representa el color azul?",
-        "imagen": "/images/mapa_colombia.png",
-        "opciones": ["Montañas", "Ríos y océanos", "Ciudades", "Carreteras"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "facil"
-      }
-    ]
+    "applicable_grades": ["6", "7", "8", "9", "10", "11"], 
+      "question_ids": [
+        "question_id_4"
+      ]
   },
   "comprension_textos": {
     "nombre": "Comprensión de Textos",
@@ -169,31 +49,9 @@
     "tiempo_limite": 25,
     "numero_preguntas": 7,
     "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple",
-        "pregunta": "Lee el siguiente texto: 'El agua es fundamental para la vida. Sin ella, ningún ser vivo podría existir. Cubre aproximadamente el 70% de la superficie terrestre.' ¿Cuál es la idea principal del texto?",
-        "opciones": [
-          "El agua cubre el 70% de la Tierra",
-          "Los seres vivos necesitan agua",
-          "La importancia vital del agua",
-          "La superficie terrestre es acuática"
-        ],
-        "respuesta_correcta": 2,
-        "puntos": 2,
-        "dificultad": "medio"
-      },
-      {
-        "id": 2,
-        "tipo": "multiple",
-        "pregunta": "Según el texto anterior, ¿qué porcentaje de la superficie terrestre cubre el agua?",
-        "opciones": ["60%", "70%", "80%", "90%"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "facil"
-      }
-    ]
-  }
+    "applicable_grades": ["6", "7", "8", "9", "10", "11"], 
+      "question_ids": [
+        "question_id_5"
+      ]
 }
 

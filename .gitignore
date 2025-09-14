@@ -47,18 +47,10 @@ demo/
 
 
 # Database files
-*.db
-*.sqlite
-*.sqlite3
-data/*.db
-data/*.sqlite
-data/*.sqlite3
-data/*.backup
-data/*.bak
+
 
 # Data files (containing sensitive or generated data)
 # These files contain sample user data and should not be committed to a public repository.
-data/*.json
 
 # Environment variables
 .env
