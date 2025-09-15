@@ -34,7 +34,7 @@ function initializeLogin() {
 
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const codigo = codigoInput.value.trim();
+        const codigo = codigoInput.value.trim().toUpperCase();
 
         if (!validarFormatoCodigo(codigo)) {
             showMessage(obtenerMensajeError(codigo), 'error');

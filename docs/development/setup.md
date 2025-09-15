@@ -22,15 +22,26 @@
     pip install -r requirements.txt
     ```
 
-4.  **Inicializar la Base de Datos:**
-    Este es un paso crucial que prepara la base de datos por primera vez.
+4.  **Inicializar/Reiniciar la Base de Datos:**
+    Este es un paso crucial que prepara la base de datos. Si necesitas reiniciar la base de datos por completo (por ejemplo, después de cambios en los modelos o en los datos de semilla), sigue estos pasos:
+
+    a. **Limpiar la base de datos existente (opcional, solo para reinicio completo):**
     ```bash
-    flask init-db
+    python backend/clean_db.py
     ```
-    Este comando:
-    - Crea el archivo de base de datos `data/portal_academico.db`.
-    - Define toda la estructura de tablas (Usuarios, Grados, Áreas, etc.).
-    - Puebla las tablas con los datos iniciales extraídos de los archivos `data/usuarios.json` y `data/examenes.json`.
+    Este comando elimina el archivo de la base de datos y la carpeta de instancia.
+
+    b. **Crear las tablas de la base de datos:**
+    ```bash
+    python backend/init_db.py
+    ```
+    Este comando crea el archivo de la base de datos SQLite y todas las tablas necesarias.
+
+    c. **Poblar la base de datos con datos de semilla:**
+    ```bash
+    python backend/seed_db.py
+    ```
+    Este comando lee los archivos JSON de `backend/data` y los inserta en las tablas correspondientes.
 
 ### Uso
 1.  **Iniciar el servidor Flask:**

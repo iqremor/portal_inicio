@@ -169,7 +169,7 @@ portal_inicio/
 
 **Proceso:**
 1. **Análisis del contexto:** Revisar documentación existente en `docs`
-2. **Estado del proyecto:** Verificar últimos commits y archivos modificados
+2. **Estado del proyecto:** Verificar últimos commits , archivos modificados y las sesiones anteriores en  `docs/project/changelog.md`
 3. **Revisión de calidad:** Ejecutar checks automáticos de código si existen
 4. **Resumen de la sesión anterior:** Mostrar progreso, deuda técnica y próximos pasos
 5. **Creación de nueva sesión:** Generar entrada en `docs/project/changelog.md`
@@ -228,7 +228,8 @@ portal_inicio/
 4. **Documentación de sesión:** Completar entrada en `docs/project/changelog.md`
 5. **Actualización de métricas:** Actualizar `docs/internal/error_revisions.md` o `docs/development/testing.md` con métricas de la sesión 
 6. **Sugerencias de mejora:** Proponer refactorizaciones o mejoras para próximas sesiones
-7. **Limpieza:** Borrar datos temporales de sesión
+7. **Generar commit de sugerencias**: Crear un commit que resuma las sugerencias de mejora propuestas.
+8. **Limpieza:** Borrar datos temporales de sesión
 
 ## 3. Sistema de Documentación
 
