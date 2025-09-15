@@ -10,7 +10,7 @@
 
 /* Login Card */
 .login-card {
-    background: var(--bg-primary);
+    background:rgba(27, 85, 27, 0.568); /* Changed */
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-xl);
     padding: 2.5rem;
@@ -37,7 +37,7 @@
 
 .card-icon {
     font-size: 3rem;
-    color: var(--primary-color);
+    color: rgba(253, 253, 253, 0.904);
     margin-bottom: 1rem;
     display: block;
 }
@@ -45,12 +45,12 @@
 .card-header h2 {
     font-size: 1.75rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: rgb(255, 255, 255);
     margin-bottom: 0.5rem;
 }
 
 .card-header p {
-    color: var(--text-secondary);
+    color: rgba(253, 253, 253, 0.904);
     font-size: 0.95rem;
 }
 
@@ -68,17 +68,17 @@
 }
 
 .input-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    display: block;
+    align-items: right;
+    gap: 1rem;
     font-weight: 500;
-    color: var(--text-primary);
-    font-size: 0.9rem;
+    color: rgb(255, 255, 255);
+    font-size: 1.4rem;
 }
 
 .input-label i {
-    color: var(--primary-color);
-    width: 16px;
+    color: rgb(255, 255, 255);
+    width: 20px;
 }
 
 input[type="text"] {
@@ -94,7 +94,7 @@ input[type="text"] {
 input[type="text"]:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(248, 248, 248, 0.1);
 }
 
 input[type="text"]:invalid {
@@ -102,8 +102,8 @@ input[type="text"]:invalid {
 }
 
 .input-help {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+    font-size: 1.2rem;
+    color: rgb(255, 255, 255);
     margin-top: 0.25rem;
 }
 
@@ -168,9 +168,9 @@ input[type="text"]:invalid {
 }
 
 .mensaje.error {
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(196, 186, 186, 0.925);
     color: var(--danger-color);
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(235, 18, 18, 0.2);
 }
 
 .mensaje.warning {
@@ -186,7 +186,7 @@ input[type="text"]:invalid {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgb(255, 255, 255);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -219,7 +219,7 @@ input[type="text"]:invalid {
 }
 
 .info-card {
-    background: rgba(255, 255, 255, 0.1);
+    background:rgba(27, 85, 27, 0.568);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius-lg);

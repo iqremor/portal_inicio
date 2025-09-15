@@ -1,6 +1,5 @@
 import {
     fetchUserData,
-    loadExamAreas,
     startExam,
     loadRecentResults
 } from '../api/index.js';
@@ -56,18 +55,6 @@ class Dashboard {
     }
 
     setupEventListeners() {
-        document.querySelectorAll('.activity-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const activity = e.target.getAttribute('data-activity');
-                this.handleActivityClick(activity);
-            });
-        });
-
-        const btnBack = document.getElementById('btnBackToActivities');
-        if (btnBack) {
-            btnBack.addEventListener('click', () => this.showActivitiesView());
-        }
-
         const btnLogout = document.querySelector('.main-header__logout-btn');
         if (btnLogout) {
             btnLogout.addEventListener('click', () => handleLogout(this.currentUser));
@@ -75,73 +62,12 @@ class Dashboard {
     }
 
     async loadDashboardData() {
-        this.examAreas = await loadExamAreas();
-        this.renderExamAreas();
+        await this.loadExamsForGrade(this.currentUser.grado);
         const recentResults = await loadRecentResults(this.currentUser.codigo);
         this.renderRecentResults(recentResults);
     }
 
-    handleActivityClick(activity) {
-        if (activity === 'preunal') {
-            this.showExamAreasView();
-        } else {
-            showNotification(`${activity} estará disponible próximamente.`, 'info');
-        }
-    }
-
-    showActivitiesView() {
-        document.querySelector('.activities-section').classList.remove('hidden');
-        document.querySelector('.hero-section').classList.remove('hidden');
-        document.getElementById('examAreasSection').classList.add('hidden');
-    }
-
-    showExamAreasView() {
-        document.querySelector('.activities-section').classList.add('hidden');
-        document.querySelector('.hero-section').classList.add('hidden');
-        document.getElementById('examAreasSection').classList.remove('hidden');
-    }
-
-    renderExamAreas() {
-        const examAreasGrid = document.getElementById('examAreasGrid');
-        if (!examAreasGrid) return;
-
-        examAreasGrid.innerHTML = '';
-        this.examAreas.forEach(area => {
-            const areaCard = this.createExamAreaCard(area);
-            examAreasGrid.appendChild(areaCard);
-        });
-    }
-
-    createExamAreaCard(area) {
-        const card = document.createElement('div');
-        card.className = 'exam-area-card';
-        card.setAttribute('data-area', area.id);
-        card.innerHTML = `
-            <div class="exam-area-header">
-                <div class="exam-area-icon"><i class="${area.icono}"></i></div>
-                <div class="exam-area-title">
-                    <h3>${area.nombre}</h3>
-                    <p>${area.descripcion}</p>
-                </div>
-            </div>
-            <div class="exam-area-stats">
-                <div class="stat-item">
-                    <span class="stat-value">${area.tiempo_limite}</span>
-                    <span class="stat-label">Minutos</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-value">${area.total_preguntas}</span>
-                    <span class="stat-label">Preguntas</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-value"><i class="fas fa-play-circle"></i></span>
-                    <span class="stat-label">Iniciar</span>
-                </div>
-            </div>
-        `;
-        card.addEventListener('click', () => this.showExamConfirmation(area));
-        return card;
-    }
+    
 
     showExamConfirmation(area) {
         const body = `
@@ -196,5 +122,56 @@ class Dashboard {
 
         resultsContainer.innerHTML = '';
         resultsContainer.appendChild(resultsGrid);
+    }
+
+    async loadExamsForGrade(grade) {
+        try {
+            const response = await fetch(`/api/examenes/grado/${grade}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const exams = await response.json();
+            this.renderExamCards(exams);
+        } catch (error) {
+            console.error('Error loading exams for grade:', error);
+            showNotification('Error al cargar los exámenes. Intenta nuevamente.', 'error');
+        }
+    }
+
+    renderExamCards(exams) {
+        const activitiesSection = document.querySelector('.activities-section');
+        if (!activitiesSection) return;
+
+        // Clear existing content in the activities section
+        activitiesSection.innerHTML = '';
+
+        if (exams.length === 0) {
+            activitiesSection.innerHTML = `<div class="no-exams"><i class="fas fa-book-open"></i><p>No hay exámenes disponibles para tu grado.</p></div>`;
+            return;
+        }
+
+        exams.forEach(exam => {
+            const card = document.createElement('div');
+            card.className = 'activity-card';
+            card.innerHTML = `
+                <div class="activity-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="activity-info">
+                    <h3>${exam.nombre}</h3>
+                    <p>${exam.descripcion}</p>
+                </div>
+                <button class="start-exam-btn" data-cuadernillo-id="${exam.cuadernillo_id}">Iniciar Examen</button>
+            `;
+            activitiesSection.appendChild(card);
+        });
+
+        // Add event listeners to the new buttons
+        document.querySelectorAll('.start-exam-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const cuadernilloId = e.target.getAttribute('data-cuadernillo-id');
+                window.location.href = `/frontend/pages/examen.html?cuadernilloId=${cuadernilloId}`;
+            });
+        });
     }
 }

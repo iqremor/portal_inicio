@@ -6,6 +6,10 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 1rem;
     padding: 2rem;
+    display: flex; /* Added */
+    flex-wrap: wrap; /* Added */
+    justify-content: center; /* Added for centering cards */
+    gap: 2rem; /* Added for spacing between cards */
 }
 
 .activities-title {
@@ -17,14 +21,7 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.cards-container {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+
 
 .activity-card {
     background: rgba(27, 85, 27, 0.432);
@@ -76,4 +73,27 @@
     border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for the "Iniciar Examen" button */
+.start-exam-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Added for centering text */
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-white);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius); /* Using variable from base/variables.css */
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition); /* Using variable from base/variables.css */
+    width: 100%; /* Make button full width of card */
+    margin-top: auto; /* Push button to bottom of flex container */
+}
+
+.start-exam-btn:hover {
+    background: rgba(22, 71, 2, 0.575);
+    transform: translateY(-1px);
 }

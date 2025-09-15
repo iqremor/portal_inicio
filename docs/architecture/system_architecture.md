@@ -10,7 +10,7 @@ Sistema web para evaluaciones académicas que permite a estudiantes realizar pru
 - **Estructura**:
   - `index.html`: Página de login
   - `frontend/pages/`: Páginas de la aplicación
-  - `frontend/js/`: Scripts de validación y funcionalidad
+  - `frontend/js/`: Scripts de validación, funcionalidad y carga dinámica de exámenes
   - `frontend/css/`: Estilos responsivos
   - `frontend/images/`: Recursos gráficos
 
@@ -19,7 +19,7 @@ Sistema web para evaluaciones académicas que permite a estudiantes realizar pru
 - **Puerto**: 5000
 - **Funcionalidades**:
   - Autenticación de usuarios
-  - Gestión de exámenes
+  - Gestión de exámenes (incluyendo listado por grado)
   - Almacenamiento de resultados
   - API REST para frontend
 

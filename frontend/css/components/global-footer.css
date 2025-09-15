@@ -1,6 +1,6 @@
 /* Footer */
 .footer {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(27, 85, 27, 0.432); /* Changed */
     backdrop-filter: blur(10px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1.5rem 1rem;

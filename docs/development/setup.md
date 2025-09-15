@@ -22,16 +22,22 @@
     pip install -r requirements.txt
     ```
 
-4.  **Inicializar la Base de Datos:**
-    Este es un paso crucial que prepara la base de datos por primera vez. Se realiza en dos pasos:
+4.  **Inicializar/Reiniciar la Base de Datos:**
+    Este es un paso crucial que prepara la base de datos. Si necesitas reiniciar la base de datos por completo (por ejemplo, después de cambios en los modelos o en los datos de semilla), sigue estos pasos:
 
-    a. **Crear las tablas de la base de datos:**
+    a. **Limpiar la base de datos existente (opcional, solo para reinicio completo):**
+    ```bash
+    python backend/clean_db.py
+    ```
+    Este comando elimina el archivo de la base de datos y la carpeta de instancia.
+
+    b. **Crear las tablas de la base de datos:**
     ```bash
     python backend/init_db.py
     ```
     Este comando crea el archivo de la base de datos SQLite y todas las tablas necesarias.
 
-    b. **Poblar la base de datos con datos de semilla:**
+    c. **Poblar la base de datos con datos de semilla:**
     ```bash
     python backend/seed_db.py
     ```

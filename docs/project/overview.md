@@ -151,10 +151,7 @@ POST /api/validar
 - Diseño moderno con gradiente verde institucional
 - Header con logo y información del usuario
 - Avatar con iniciales del primer nombre y primer apellido
-- Tres tarjetas de actividades principales:
-  - **Preunal**: Simulacro Universidad Nacional
-  - **Preicfes**: Simulacro Pruebas Saber
-  - **Laboratorios**: Pruebas interactivas
+- Carga dinámica de tarjetas de exámenes disponibles según el grado del usuario.
 - Botón de cerrar sesión
 - Diseño responsivo para móviles
 
@@ -209,6 +206,7 @@ GET /api/usuario/:codigo   // Obtener datos del usuario
 
 ##### Exámenes
 ```javascript
+GET /api/examenes/grado/:grado      // Listar exámenes (cuadernillos) disponibles para un grado específico
 GET /api/examenes                    // Listar áreas disponibles
 GET /api/examenes/:area             // Información de área específica
 POST /api/examenes/:area/iniciar    // Iniciar examen
