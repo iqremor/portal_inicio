@@ -1,49 +1,50 @@
-{
-  "usuarios_permitidos": [
-  "IEM0601",
-  "IEM0702",
-  "IEM0803",
-  "IEM0901",
-  "IEM1001",
-  "IEM1101"
-  ],
-  "nombres": {
-    "IEM0601": {
-      "nombre_completo": "Ana María García",
-      "grado": "6",
-      "activo": true,
-      "fecha_registro": "2025-01-01"
-    },
-    "IEM0702": {
-      "nombre_completo": "Carlos Eduardo López",
-      "grado": "7", 
-      "activo": true,
-      "fecha_registro": "2025-01-01"
-    },
-    "IEM0803": {
-      "nombre_completo": "María José Rodríguez",
-      "grado": "8",
-      "activo": true,
-      "fecha_registro": "2025-01-01"
-    },
-    "IEM0901": {
-      "nombre_completo": "Andrés Felipe Gomez",
-      "grado": "9",
-      "activo": true,
-      "fecha_registro": "2025-01-01"
-    },
-    "IEM1001": {
-      "nombre_completo": "Laura Sofía Hernández",
-      "grado": "10",
-      "activo": true,
-      "fecha_registro": "2025-01-01"
-    },
-    "IEM1101": {
-      "nombre_completo": "Maria Vargas",
-      "grado": "11",
-      "activo": true,
-      "fecha_registro": "2025-01-01"
-    }
+[
+  {
+    "codigo": "IEM0601",
+    "nombre_completo": "Ana María García",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "2025-01-01",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0702",
+    "nombre_completo": "Carlos Eduardo López",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "2025-01-01",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0803",
+    "nombre_completo": "María José Rodríguez",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "2025-01-01",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0901",
+    "nombre_completo": "Andrés Felipe Gomez",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "2025-01-01",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1001",
+    "nombre_completo": "Laura Sofía Hernández",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "2025-01-01",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1101",
+    "nombre_completo": "Maria Vargas",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "2025-01-01",
+    "role": "USER"
   }
-}
-
+]

@@ -85,25 +85,83 @@ Sistema web para evaluaciones académicas que permite a estudiantes realizar pru
 
 ## Flujo de la Aplicación
 
-1. **Autenticación**
-   - Usuario ingresa código IEM
-   - Validación en frontend y backend
-   - Redirección a dashboard
-
-2. **Selección de Examen**
-   - Lista de áreas disponibles
-   - Información del examen (tiempo, preguntas)
-   - Confirmación para iniciar
-
-3. **Realización del Examen**
-   - Temporizador activo
-   - Navegación entre preguntas
-   - Guardado automático de respuestas
-
-4. **Finalización**
-   - Cálculo de puntuación
-   - Almacenamiento de resultados
-   - Mostrar resultados al estudiante
+```mermaid
+flowchart TD
+    A[Usuario accede a la aplicación] --> B[Página LOGIN]
+    
+    B --> C{Ingresa ID válido?}
+    C -->|No| D[Mostrar error<br/>ID no encontrado]
+    D --> B
+    C -->|Sí| E[Validar usuario activo<br/>y obtener grado]
+    
+    E --> F{Usuario activo?}
+    F -->|No| G[Mostrar error<br/>Usuario inactivo]
+    G --> B
+    F -->|Sí| H[Página MAIN]
+    
+    H --> I[Mostrar exámenes disponibles<br/>para el grado del usuario]
+    I --> J[Usuario selecciona examen]
+    
+    J --> K[Backend verifica intentos<br/>restantes para el examen]
+    K --> L{Intentos disponibles?}
+    L -->|No| M[Mostrar mensaje<br/>Sin intentos restantes]
+    M --> N[Botón: Volver a MAIN]
+    N --> H
+    
+    L -->|Sí| O[Seleccionar cuadernillo<br/>aleatorio para el grado]
+    O --> P[Seleccionar 10 preguntas<br/>aleatorias del banco]
+    P --> Q[Registrar inicio de intento<br/>en base de datos]
+    Q --> R[Página EXAM]
+    
+    R --> S[Inicializar timer<br/>4 min por pregunta]
+    S --> T[Mostrar pregunta actual<br/>imagen del cuadernillo]
+    
+    T --> U[Timer contando]
+    U --> V{Han pasado 3 minutos?}
+    V -->|No| W{Quedan 30 segundos?}
+    W -->|Sí| X[Mostrar advertencia<br/>tiempo restante]
+    W -->|No| U
+    X --> U
+    
+    V -->|Sí| Y[Habilitar botón SIGUIENTE]
+    Y --> Z[Usuario puede avanzar<br/>o esperar tiempo completo]
+    
+    Z --> AA{Se acabó el tiempo<br/>de la pregunta?}
+    AA -->|No| BB{Usuario presiona SIGUIENTE?}
+    BB -->|Sí| CC[Avanzar a siguiente pregunta]
+    BB -->|No| AA
+    
+    AA -->|Sí| CC
+    CC --> DD{Es la última pregunta?}
+    DD -->|No| T
+    DD -->|Sí| EE[Registrar fin de intento<br/>tiempo total empleado]
+    
+    EE --> FF[Reducir intentos restantes<br/>para este examen]
+    FF --> GG[Página RESULT]
+    
+    GG --> HH[Mostrar información del intento:<br/>- Cuadernillo usado<br/>- Tiempo empleado<br/>- Fecha/hora<br/>- Intentos restantes]
+    
+    HH --> II[Botón: Volver a MAIN]
+    II --> H
+    
+    %% Flujo de cierre de navegador/interrupción
+    R --> JJ{Usuario cierra navegador<br/>o pierde conexión?}
+    JJ -->|Sí| KK[Intento se considera<br/>como usado/fallido]
+    KK --> FF
+    
+    %% Estilos
+    classDef pageStyle fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef processStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef decisionStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef errorStyle fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef timerStyle fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    
+    class B,H,R,GG pageStyle
+    class E,I,K,O,P,Q,EE,FF,HH processStyle
+    class C,F,L,V,W,AA,BB,DD,JJ decisionStyle
+    class D,G,M errorStyle
+    class S,T,U,X,Y,Z,CC timerStyle
+```
 
 ## APIs del Backend
 

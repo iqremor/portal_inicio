@@ -1,57 +1,34 @@
 {
-  "matematicas": {
-    "nombre": "Matemáticas",
-    "descripcion": "Evaluación de conceptos matemáticos básicos y avanzados",
-    "tiempo_limite": 30,
-    "numero_preguntas": 10,
+  "matematicas_grado_6": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 6",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
-      "applicable_grades": ["6", "7", "8", "9", "10", "11"], 
-      "question_ids": [
-        "question_id_1"
-      ]
-    },
-  "ciencias_naturales": {
-    "nombre": "Ciencias Naturales",
-    "descripcion": "Evaluación de conceptos de biología, química y física",
-    "tiempo_limite": 25,
-    "numero_preguntas": 8,
-    "activo": true,
-    "applicable_grades": ["6", "7", "8", "9", "10", "11"], 
-      "question_ids": [
-        "question_id_2"
-      ]
+    "grado": "6",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_6_cuad_01"
   },
-  "ciencias_sociales": {
-    "nombre": "Ciencias Sociales",
-    "descripcion": "Evaluación de historia, geografía y educación cívica",
-    "tiempo_limite": 20,
-    "numero_preguntas": 6,
+  "matematicas_grado_7": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 7",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
-    "applicable_grades": ["6", "7", "8", "9", "10", "11"], 
-      "question_ids": [
-        "question_id_3"
-      ]
+    "grado": "7",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_7_cuad_02"
   },
-  "analisis_imagen": {
-    "nombre": "Análisis de Imagen",
-    "descripcion": "Evaluación de interpretación y análisis visual",
-    "tiempo_limite": 15,
-    "numero_preguntas": 5,
+  "ciencias_naturales_grado_6": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 6",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
-    "applicable_grades": ["6", "7", "8", "9", "10", "11"], 
-      "question_ids": [
-        "question_id_4"
-      ]
+    "grado": "6",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "ciencias_naturales_6_cuad_01"
   },
-  "comprension_textos": {
-    "nombre": "Comprensión de Textos",
-    "descripcion": "Evaluación de comprensión lectora y análisis textual",
-    "tiempo_limite": 25,
-    "numero_preguntas": 7,
+  "ciencias_naturales_grado_7": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 7",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
-    "applicable_grades": ["6", "7", "8", "9", "10", "11"], 
-      "question_ids": [
-        "question_id_5"
-      ]
+    "grado": "7",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "c_naturales_7_cuad_02"
+  }
 }
-

@@ -2,6 +2,20 @@
 
 [Este archivo contendrá un registro de todos los cambios significativos realizados en el proyecto.]
 
+## Sesión 6 - 15 de septiembre de 2025
+### Objetivos de la sesión:
+- 
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+### Finalización: [PENDIENTE]
+
 ## Sesión 1 - 13 de septiembre de 2025
 ### Objetivos de la sesión:
 - Iniciar el análisis del repositorio y configurar el proyecto según la plantilla `GEMINI.md`.

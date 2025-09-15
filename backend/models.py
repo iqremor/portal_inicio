@@ -69,6 +69,22 @@ class Activity(db.Model):
             'applicable_grades': self.applicable_grades
         }
 
+class Cuadernillo(db.Model):
+    __tablename__ = 'cuadernillos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    cuadernillo_id = db.Column(db.String(80), unique=True, nullable=False)
+    nombre = db.Column(db.String(200), nullable=False)
+    descripcion = db.Column(db.Text, nullable=True)
+    activo = db.Column(db.Boolean, default=True)
+    grado = db.Column(db.String(50), nullable=False)
+    area = db.Column(db.String(80), nullable=False)
+    dir_banco = db.Column(db.String(200), nullable=False)
+    total_preguntas_banco = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return f'<Cuadernillo {self.nombre}>'
+
 class Peticion(db.Model):
     __tablename__ = 'peticiones'
     

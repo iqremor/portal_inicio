@@ -117,14 +117,14 @@ local_settings.py
 db.sqlite3
 
 # Flask specific from backend
-backend/instance/
+# backend/instance/
 .webassets-cache
 
 # Scrapy stuff from backend
 .scrapy
 
 # Sphinx documentation from backend
-backend/docs/_build/
+# backend/docs/_build/
 
 # PyBuilder from backend
 backend/target/
@@ -176,7 +176,7 @@ dmypy.json
 key.py
 
 # Data files from backend (containing sensitive or generated data)
-backend/data/
+# backend/data/
 
 .tox/
 .coverage
