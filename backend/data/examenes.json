@@ -13,7 +13,37 @@
     "activo": true,
     "grado": "7",
     "area": "matematicas",
-    "cuadernillo_id": "mat_7_cuad_02"
+    "cuadernillo_id": "mat_7_cuad_01"
+  },
+  "matematicas_grado_8": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 8",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "8",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_8_cuad_01"
+  },"matematicas_grado_9": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 9",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "9",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_9_cuad_01"
+  },"matematicas_grado_10": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 10",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "10",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_10_cuad_01"
+  },
+  "matematicas_grado_11": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 11",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "11",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_11_cuad_01"
   },
   "ciencias_naturales_grado_6": {
     "nombre": "Cuadernillo de Ciencias Naturales - Grado 6",
@@ -21,7 +51,7 @@
     "activo": true,
     "grado": "6",
     "area": "ciencias_naturales",
-    "cuadernillo_id": "ciencias_naturales_6_cuad_01"
+    "cuadernillo_id": "c_naturales_6_cuad_01"
   },
   "ciencias_naturales_grado_7": {
     "nombre": "Cuadernillo de Ciencias Naturales - Grado 7",
@@ -29,6 +59,158 @@
     "activo": true,
     "grado": "7",
     "area": "ciencias_naturales",
-    "cuadernillo_id": "c_naturales_7_cuad_02"
+    "cuadernillo_id": "c_naturales_7_cuad_01"
+  },
+  "ciencias_naturales_grado_8": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 8",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "8",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "c_naturales_8_cuad_01"
+  },
+  "ciencias_naturales_grado_9": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 9",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "9",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "c_naturales_9_cuad_01"
+  },
+  "ciencias_naturales_grado_10": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 10",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "10",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "c_naturales_10_cuad_01"
+  },
+  "ciencias_naturales_grado_11": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 11",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "11",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "c_naturales_11_cuad_01"
+  },
+  "ciencias_sociales_grado_6": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 6",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "6",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_6_cuad_01"
+  },
+  "ciencias_sociales_grado_7": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 7",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "7",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_7_cuad_01"
+  },
+  "ciencias_sociales_grado_8": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 8",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "8",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_8_cuad_01"
+  },
+  "ciencias_sociales_grado_9": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 9",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "9",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_9_cuad_01"
+  },
+  "ciencias_sociales_grado_10": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 10",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "10",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_10_cuad_01"
+  },
+  "ciencias_sociales_grado_11": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 11",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "11",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_11_cuad_01"
+  },
+  "lenguaje_grado_6": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 6",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "6",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_6_cuad_01"
+  },
+  "lenguaje_grado_7": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 7",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "7",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_7_cuad_01"
+  },
+  "lenguaje_grado_8": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 8",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "8",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_8_cuad_01"
+  },
+  "lenguaje_grado_9": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 9",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "9",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_9_cuad_01"
+  },
+  "lenguaje_grado_10": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 10",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "10",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_10_cuad_01"
+  },
+  "lenguaje_grado_11": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 11",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "11",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_11_cuad_01"
+  },
+  "ingles_grado_9": {
+    "nombre": "Cuadernillo de Inglés - Grado 9",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "9",
+    "area": "ingles",
+    "cuadernillo_id": "ingles_9_cuad_01"
+  },
+  "ingles_grado_10": {
+    "nombre": "Cuadernillo de Inglés - Grado 10",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "10",
+    "area": "ingles",
+    "cuadernillo_id": "ingles_10_cuad_01"
+  },
+  "ingles_grado_11": {
+    "nombre": "Cuadernillo de Inglés - Grado 11",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "11",
+    "area": "ingles",
+    "cuadernillo_id": "ingles_11_cuad_01"
   }
 }

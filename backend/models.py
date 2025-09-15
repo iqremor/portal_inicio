@@ -85,6 +85,19 @@ class Cuadernillo(db.Model):
     def __repr__(self):
         return f'<Cuadernillo {self.nombre}>'
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'cuadernillo_id': self.cuadernillo_id,
+            'nombre': self.nombre,
+            'descripcion': self.descripcion,
+            'activo': self.activo,
+            'grado': self.grado,
+            'area': self.area,
+            'dir_banco': self.dir_banco,
+            'total_preguntas_banco': self.total_preguntas_banco
+        }
+
 class Peticion(db.Model):
     __tablename__ = 'peticiones'
     

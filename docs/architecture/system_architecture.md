@@ -24,25 +24,43 @@ Sistema web para evaluaciones académicas que permite a estudiantes realizar pru
   - API REST para frontend
 
 ### Base de Datos
-- **Tipo**: Archivos JSON (para simplicidad)
-- **Archivos**:
-  - `usuarios.json`: Códigos estudiantiles y datos de usuarios
-  - `examenes.json`: Banco de preguntas por área
-  - `resultados.json`: Historial de evaluaciones
-  - `configuracion.json`: Configuración del sistema
+- **Tipo**: Base de datos relacional **SQLite** gestionada con **Flask-SQLAlchemy**.
+- **Archivos de Semilla (Seeding)**: Los datos iniciales se cargan desde archivos JSON ubicados en `backend/data/`.
+  - `usuarios.json`: Define los usuarios iniciales.
+  - `cuadernillos.json`: Define las propiedades de los cuadernillos estáticos.
+  - `examenes.json`: Define los exámenes que se presentan a los usuarios.
 
 ## Estructura de Datos
 
+La estructura de datos principal ahora reside en los modelos de SQLAlchemy. Los siguientes ejemplos de JSON muestran el formato utilizado para el seeding de la base de datos.
+
 ### usuarios.json
 ```json
+[
+  {
+    "codigo": "IEM0601",
+    "nombre_completo": "Ana María García",
+    "grado": "6",
+    "activo": true,
+    "role": "USER"
+  }
+]
+```
+
+### cuadernillos.json
+```json
 {
-  "usuarios_permitidos": ["IEM1234", "IEM5678"],
-  "nombres": {
-    "IEM1234": {
-      "nombre_completo": "Juan Pérez",
-      "grado": "10A",
-      "activo": true
-    }
+  "matematicas": {
+    "descripcion": "Evaluación de conceptos matemáticos básicos",
+    "activo": true,
+    "cuadernillos_disponibles": [
+      {
+        "grado": "6",
+        "cuadernillo_id": "mat_6_cuad_01",
+        "dir_banco": "/data/sexto/matematicas/",
+        "total_preguntas_banco": 20
+      }
+    ]
   }
 }
 ```
@@ -50,36 +68,14 @@ Sistema web para evaluaciones académicas que permite a estudiantes realizar pru
 ### examenes.json
 ```json
 {
-  "matematicas": {
-    "nombre": "Matemáticas",
-    "descripcion": "Evaluación de conceptos matemáticos",
-    "tiempo_limite": 30,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple",
-        "pregunta": "¿Cuánto es 2 + 2?",
-        "opciones": ["3", "4", "5", "6"],
-        "respuesta_correcta": 1,
-        "puntos": 1
-      }
-    ]
+  "matematicas_grado_6": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 6",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "6",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_6_cuad_01"
   }
-}
-```
-
-### resultados.json
-```json
-{
-  "IEM1234": [
-    {
-      "fecha": "2025-01-08T10:30:00Z",
-      "area": "matematicas",
-      "puntuacion": 85,
-      "tiempo_usado": 25,
-      "respuestas": [1, 0, 2, 1]
-    }
-  ]
 }
 ```
 

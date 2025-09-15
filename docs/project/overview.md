@@ -119,8 +119,8 @@ portal_inicio/
 - **Font Awesome 6.0.0**: Iconografía
 
 #### Base de Datos
-- **SQLite**: Base de datos relacional ligera para desarrollo.
-- **JSON Files**: Almacenamiento en archivos JSON para simplicidad (en desuso).
+- **SQLite**: Base de datos relacional ligera para desarrollo, gestionada con **Flask-SQLAlchemy**.
+- **JSON Files**: Utilizados únicamente para la inicialización (seeding) de la base de datos.
 
 ## Funcionalidades Implementadas
 
@@ -227,6 +227,8 @@ GET /api/resultados/:codigo/:resultado_id // Resultado específico
 
 ## Base de Datos
 
+La estructura de datos principal ahora reside en los modelos de SQLAlchemy. Los siguientes ejemplos de JSON muestran el formato utilizado para el seeding de la base de datos.
+
 ### Estructura de Usuarios (Modelo SQLAlchemy)
 ```python
 class User(db.Model):
@@ -237,45 +239,15 @@ class User(db.Model):
     activo = db.Column(db.Boolean, default=True)
 ```
 
-### Estructura de Exámenes (examenes.json)
-```json
-{
-  "matematicas": {
-    "nombre": "Matemáticas",
-    "descripcion": "Evaluación de conceptos matemáticos",
-    "tiempo_limite": 30,
-    "numero_preguntas": 10,
-    "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple_choice",
-        "pregunta": "¿Cuál es el resultado de 2+2?",
-        "opciones": ["3", "4", "5", "6"],
-        "respuesta_correcta": 1,
-        "puntos": 2
-      }
-    ]
-  }
-}
-```
-
-### Estructura de Resultados (resultados.json)
-```json
-{
-  "IEM1001": [
-    {
-      "id": "uuid-resultado",
-      "fecha": "2025-08-15T10:30:00Z",
-      "area": "matematicas",
-      "puntuacion": 18,
-      "puntuacion_maxima": 20,
-      "porcentaje": 90,
-      "tiempo_usado": 25,
-      "estado": "completado"
-    }
-  ]
-}
+### Estructura de Cuadernillos (Modelo SQLAlchemy)
+```python
+class Cuadernillo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    cuadernillo_id = db.Column(db.String(80), unique=True, nullable=False)
+    nombre = db.Column(db.String(200), nullable=False)
+    grado = db.Column(db.String(50), nullable=False)
+    area = db.Column(db.String(80), nullable=False)
+    dir_banco = db.Column(db.String(200), nullable=False)
 ```
 
 ## Configuración y Despliegue

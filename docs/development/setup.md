@@ -23,14 +23,19 @@
     ```
 
 4.  **Inicializar la Base de Datos:**
-    Este es un paso crucial que prepara la base de datos por primera vez.
+    Este es un paso crucial que prepara la base de datos por primera vez. Se realiza en dos pasos:
+
+    a. **Crear las tablas de la base de datos:**
     ```bash
-    flask init-db
+    python backend/init_db.py
     ```
-    Este comando:
-    - Crea el archivo de base de datos `data/portal_academico.db`.
-    - Define toda la estructura de tablas (Usuarios, Grados, Áreas, etc.).
-    - Puebla las tablas con los datos iniciales extraídos de los archivos `data/usuarios.json` y `data/examenes.json`.
+    Este comando crea el archivo de la base de datos SQLite y todas las tablas necesarias.
+
+    b. **Poblar la base de datos con datos de semilla:**
+    ```bash
+    python backend/seed_db.py
+    ```
+    Este comando lee los archivos JSON de `backend/data` y los inserta en las tablas correspondientes.
 
 ### Uso
 1.  **Iniciar el servidor Flask:**
