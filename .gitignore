@@ -7,6 +7,15 @@ __pycache__/
 env/
 venv/
 pip-log.txt
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python/
+env/
+venv/
+pip-log.txt
 pip-delete-this-directory/
 .tox/
 .coverage
@@ -47,18 +56,171 @@ demo/
 
 
 # Database files
-*.db
-*.sqlite
-*.sqlite3
-data/*.db
-data/*.sqlite
-data/*.sqlite3
-data/*.backup
-data/*.bak
+
 
 # Data files (containing sensitive or generated data)
 # These files contain sample user data and should not be committed to a public repository.
-data/*.json
+
+# Environment variables
+.env
+.flaskenv
+
+# Other common ignores
+*.bak
+*.backup
+*.old
+
+# assets
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.svg
+
+# Python specific from backend
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging from backend
+.Python
+downloads/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+.installed.cfg
+*.egg
+
+# PyInstaller from backend
+*.manifest
+*.spec
+
+# Installer logs from backend
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports from backend
+htmlcov/
+.nox/
+*.cover
+.hypothesis/
+
+# Translations from backend
+*.mo
+*.pot
+
+# Django stuff from backend (general database ignore)
+local_settings.py
+db.sqlite3
+
+# Flask specific from backend
+# backend/instance/
+.webassets-cache
+
+# Scrapy stuff from backend
+.scrapy
+
+# Sphinx documentation from backend
+# backend/docs/_build/
+
+# PyBuilder from backend
+backend/target/
+
+# Jupyter Notebook from backend
+.ipynb_checkpoints
+
+# pyenv from backend
+.python-version
+
+# celery from backend
+celerybeat-schedule
+
+# SageMath parsed files from backend
+*.sage.py
+
+# Environments from backend
+.venv
+ENV/
+env.bak
+venv.bak
+
+# Spyder project settings from backend
+.spyderproject
+.spyproject
+
+# Rope project settings from backend
+.ropeproject
+
+# mkdocs documentation from backend
+backend/site/
+
+# mypy from backend
+.dmypy.json
+dmypy.json
+
+# Pyre type checker from backend
+.pyre/
+
+# Video assets from backend
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.wmv
+*.flv
+
+# Temporary/Utility Scripts from backend
+key.py
+
+# Data files from backend (containing sensitive or generated data)
+# backend/data/
+
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+.benchmarks
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Flask specific
+instance/
+.flaskenv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Logs and temporary files
+*.log
+*.tmp
+tmp/
+temp/
+demo/
+
+
+
+# Database files
+
+
+# Data files (containing sensitive or generated data)
+# These files contain sample user data and should not be committed to a public repository.
 
 # Environment variables
 .env

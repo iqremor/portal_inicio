@@ -1,0 +1,56 @@
+/* Estilos generales de layout para el Dashboard */
+
+.dashboard-body {
+    background-color: #2d5016; /* Fallback color */
+    background-image: url('/frontend/css/assets/images/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* To keep the background fixed while scrolling */
+    min-height: 100vh;
+}
+
+.dashboard-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Content */
+.dashboard-main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Footer del Dashboard */
+.dashboard-footer {
+    background: rgba(27, 85, 27, 0.432);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 2rem;
+    margin-top: auto;
+}
+
+.dashboard-footer .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+}
+
+.dashboard-footer .footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.dashboard-footer .footer-links span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}

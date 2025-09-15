@@ -5,7 +5,7 @@
 **Nombre del Proyecto:** Portal de Evaluación Académica IEM  
 **Versión:** 1.0.0  
 **Fecha de Creación:** Agosto 2025  
-**Tecnologías:** Node.js, Express.js, HTML5, CSS3, JavaScript ES6  
+**Tecnologías:** Python, Flask, HTML5, CSS3, JavaScript ES6  
 **Estado:** En Desarrollo - Funcionalidad Básica Implementada  
 
 ## Descripción del Proyecto
@@ -106,14 +106,11 @@ portal_inicio/
 ### Tecnologías Utilizadas
 
 #### Backend
-- **Node.js 20.18.0**: Entorno de ejecución JavaScript
-- **Express.js 4.19.2**: Framework web para Node.js
-- **CORS**: Middleware para permitir peticiones cross-origin
-- **Helmet**: Middleware de seguridad
-- **Morgan**: Logger de peticiones HTTP
-- **Body-parser**: Parser de cuerpos de peticiones
-- **Moment.js**: Manejo de fechas y tiempo
-- **UUID**: Generación de identificadores únicos
+- **Python 3.11**: Lenguaje de programación.
+- **Flask 2.2.2**: Framework web para Python.
+- **Flask-SQLAlchemy**: Extensión para el manejo de bases de datos.
+- **Flask-Migrate**: Extensión para migraciones de bases de datos.
+- **Flask-Admin**: Extensión para la creación de interfaces de administración.
 
 #### Frontend
 - **HTML5**: Estructura de las páginas
@@ -122,11 +119,8 @@ portal_inicio/
 - **Font Awesome 6.0.0**: Iconografía
 
 #### Base de Datos
-- **JSON Files**: Almacenamiento en archivos JSON para simplicidad
-  - `usuarios.json`: Información de estudiantes
-  - `examenes.json`: Configuración de áreas de evaluación
-  - `resultados.json`: Historial de resultados
-  - `configuracion.json`: Configuración del sistema
+- **SQLite**: Base de datos relacional ligera para desarrollo, gestionada con **Flask-SQLAlchemy**.
+- **JSON Files**: Utilizados únicamente para la inicialización (seeding) de la base de datos.
 
 ## Funcionalidades Implementadas
 
@@ -140,9 +134,8 @@ portal_inicio/
 
 #### Archivos Involucrados
 - `index.html`: Interfaz de login
-- `frontend/js/script.js`: Lógica de validación
-- `frontend/js/validacion.js`: Funciones auxiliares
-- `backend/server.js`: API de validación
+- `frontend/js/pages/login.js`: Lógica de validación
+- `backend/app.py`: API de validación
 
 #### API Endpoints
 ```javascript
@@ -158,17 +151,14 @@ POST /api/validar
 - Diseño moderno con gradiente verde institucional
 - Header con logo y información del usuario
 - Avatar con iniciales del primer nombre y primer apellido
-- Tres tarjetas de actividades principales:
-  - **Preunal**: Simulacro Universidad Nacional
-  - **Preicfes**: Simulacro Pruebas Saber
-  - **Laboratorios**: Pruebas interactivas
+- Carga dinámica de tarjetas de exámenes disponibles según el grado del usuario.
 - Botón de cerrar sesión
 - Diseño responsivo para móviles
 
 #### Archivos Involucrados
-- `frontend/pages/inicio.html`: Estructura del dashboard
+- `frontend/pages/dashboard.html`: Estructura del dashboard
 - `frontend/css/dashboard.css`: Estilos específicos
-- `frontend/js/dashboard.js`: Lógica de interacción
+- `frontend/js/pages/dashboard.js`: Lógica de interacción
 
 #### Funciones JavaScript Principales
 ```javascript
@@ -201,7 +191,7 @@ class Dashboard {
 #### Archivos Involucrados
 - `frontend/pages/examen.html`: Interfaz de examen
 - `frontend/css/examen.css`: Estilos de examen
-- `frontend/js/examen.js`: Lógica de examen
+- `frontend/js/pages/exam.js`: Lógica de examen
 
 ### 4. API Backend
 
@@ -216,6 +206,7 @@ GET /api/usuario/:codigo   // Obtener datos del usuario
 
 ##### Exámenes
 ```javascript
+GET /api/examenes/grado/:grado      // Listar exámenes (cuadernillos) disponibles para un grado específico
 GET /api/examenes                    // Listar áreas disponibles
 GET /api/examenes/:area             // Información de área específica
 POST /api/examenes/:area/iniciar    // Iniciar examen
@@ -230,126 +221,67 @@ GET /api/resultados/:codigo/:resultado_id // Resultado específico
 ```
 
 #### Middleware Implementado
-- **CORS**: Permite peticiones desde cualquier origen
-- **Helmet**: Seguridad básica HTTP
-- **Morgan**: Logging de peticiones
-- **Body Parser**: Procesamiento de JSON y URL-encoded
-- **Static Files**: Servir archivos del frontend
+- **Flask-CORS**: Permite peticiones desde cualquier origen
 
 ## Base de Datos
 
-### Estructura de Usuarios (usuarios.json)
-```json
-{
-  "usuarios_permitidos": ["IEM1001", "IEM1002", "IEM1003"],
-  "nombres": {
-    "IEM1001": {
-      "nombre_completo": "Ana María García",
-      "grado": "9A",
-      "activo": true
-    }
-  }
-}
+La estructura de datos principal ahora reside en los modelos de SQLAlchemy. Los siguientes ejemplos de JSON muestran el formato utilizado para el seeding de la base de datos.
+
+### Estructura de Usuarios (Modelo SQLAlchemy)
+```python
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    codigo = db.Column(db.String(20), unique=True, nullable=False)
+    nombre_completo = db.Column(db.String(120), nullable=False)
+    grado = db.Column(db.String(10), nullable=False)
+    activo = db.Column(db.Boolean, default=True)
 ```
 
-### Estructura de Exámenes (examenes.json)
-```json
-{
-  "matematicas": {
-    "nombre": "Matemáticas",
-    "descripcion": "Evaluación de conceptos matemáticos",
-    "tiempo_limite": 30,
-    "numero_preguntas": 10,
-    "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple_choice",
-        "pregunta": "¿Cuál es el resultado de 2+2?",
-        "opciones": ["3", "4", "5", "6"],
-        "respuesta_correcta": 1,
-        "puntos": 2
-      }
-    ]
-  }
-}
-```
-
-### Estructura de Resultados (resultados.json)
-```json
-{
-  "IEM1001": [
-    {
-      "id": "uuid-resultado",
-      "fecha": "2025-08-15T10:30:00Z",
-      "area": "matematicas",
-      "puntuacion": 18,
-      "puntuacion_maxima": 20,
-      "porcentaje": 90,
-      "tiempo_usado": 25,
-      "estado": "completado"
-    }
-  ]
-}
+### Estructura de Cuadernillos (Modelo SQLAlchemy)
+```python
+class Cuadernillo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    cuadernillo_id = db.Column(db.String(80), unique=True, nullable=False)
+    nombre = db.Column(db.String(200), nullable=False)
+    grado = db.Column(db.String(50), nullable=False)
+    area = db.Column(db.String(80), nullable=False)
+    dir_banco = db.Column(db.String(200), nullable=False)
 ```
 
 ## Configuración y Despliegue
 
 ### Requisitos del Sistema
-- Node.js >= 18.0.0
-- NPM >= 8.0.0
-- Puerto 8000 disponible
+- Python >= 3.10
+- pip >= 22.0
+- Puerto 5000 disponible
 
 ### Instalación
 ```bash
 # Clonar o descargar el proyecto
-cd plataforma_examenes
+cd portal_inicio
+
+# Crear y activar un entorno virtual
+python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
 
 # Instalar dependencias
-npm install
+pip install -r requirements.txt
 
 # Iniciar servidor
-npm start
+flask run
 ```
 
 ### Variables de Entorno
 ```bash
-PORT=8000                    # Puerto del servidor (opcional)
-NODE_ENV=development         # Entorno de ejecución
-```
-
-### Archivos de Configuración
-
-#### package.json
-```json
-{
-  "name": "portal-evaluacion-iem",
-  "version": "1.0.0",
-  "description": "Portal de evaluación académica para IEM",
-  "main": "backend/server.js",
-  "scripts": {
-    "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js"
-  },
-  "dependencies": {
-    "express": "^4.19.2",
-    "cors": "^2.8.5",
-    "helmet": "^7.1.0",
-    "morgan": "^1.10.0",
-    "body-parser": "^1.20.2",
-    "moment": "^2.30.1",
-    "uuid": "^10.0.0"
-  }
-}
+FLASK_APP=backend/app.py
+FLASK_ENV=development         # Entorno de ejecución
 ```
 
 ## Seguridad
 
 ### Medidas Implementadas
-- **Helmet.js**: Headers de seguridad HTTP
-- **CORS configurado**: Control de acceso cross-origin
 - **Validación de entrada**: Verificación de códigos estudiantiles
-- **Prevención de inyección**: Uso de parámetros seguros
+- **Prevención de inyección**: Uso de parámetros seguros en SQLAlchemy
 
 ### Medidas Pendientes
 - Autenticación con tokens JWT
@@ -361,8 +293,7 @@ NODE_ENV=development         # Entorno de ejecución
 ## Rendimiento
 
 ### Optimizaciones Implementadas
-- Archivos estáticos servidos por Express
-- Compresión de respuestas HTTP
+- Archivos estáticos servidos por Flask
 - Cache de archivos CSS/JS en navegador
 
 ### Optimizaciones Pendientes
@@ -380,30 +311,28 @@ NODE_ENV=development         # Entorno de ejecución
 - **Pruebas E2E**: No implementadas
 
 ### Recomendaciones
-- Implementar Jest para pruebas unitarias
-- Usar Supertest para pruebas de API
-- Cypress para pruebas end-to-end
-- Cobertura de código con Istanbul
+- Implementar Pytest para pruebas unitarias y de integración.
+- Usar Selenium o Cypress para pruebas end-to-end.
+- Cobertura de código con coverage.py.
 
 ## Monitoreo y Logging
 
 ### Implementado
-- **Morgan**: Logging de peticiones HTTP
-- **Console.log**: Logging básico de errores
+- Logging básico de Flask
 
 ### Recomendaciones
-- Winston para logging estructurado
-- Monitoreo de performance
-- Alertas de errores
-- Métricas de uso
+- Logging estructurado con `logging` de Python.
+- Monitoreo de performance con herramientas como `Flask-MonitoringDashboard`.
+- Alertas de errores.
+- Métricas de uso.
 
 ## Mantenimiento
 
 ### Tareas Regulares
-- Backup de archivos JSON
-- Limpieza de logs antiguos
-- Actualización de dependencias
-- Revisión de seguridad
+- Backup de la base de datos.
+- Limpieza de logs antiguos.
+- Actualización de dependencias.
+- Revisión de seguridad.
 
 ### Versionado
 - Usar Git para control de versiones
@@ -445,7 +374,7 @@ NODE_ENV=development         # Entorno de ejecución
 
 **Desarrollador:** Manus AI  
 **Fecha de Documentación:** 15 de Agosto de 2025  
-**Versión de Documentación:** 1.0  
+**Versión de Documentación:** 1.1 (Actualizado el 14 de Septiembre de 2025)
 
 ---
 

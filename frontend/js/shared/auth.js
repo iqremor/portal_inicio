@@ -31,3 +31,17 @@ export function checkSession() {
     }
     return { active: false };
 }
+
+import { logout } from '../api/index.js';
+import { showNotification } from '../components/notification.js';
+
+export async function handleLogout(currentUser) {
+    if (currentUser && currentUser.codigo) {
+        await logout(currentUser.codigo);
+    }
+    clearSession();
+    showNotification('Sesión cerrada correctamente', 'info');
+    setTimeout(() => {
+        window.location.href = '/frontend/pages/login.html';
+    }, 1000);
+}

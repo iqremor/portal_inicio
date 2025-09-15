@@ -1,199 +1,216 @@
 {
-  "matematicas": {
-    "nombre": "Matemáticas",
-    "descripcion": "Evaluación de conceptos matemáticos básicos y avanzados",
-    "tiempo_limite": 30,
-    "numero_preguntas": 10,
+  "matematicas_grado_6": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 6",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es el resultado de 15 + 27?",
-        "opciones": ["40", "42", "44", "46"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 2,
-        "tipo": "multiple", 
-        "pregunta": "Si x = 5, ¿cuál es el valor de 3x + 2?",
-        "opciones": ["15", "17", "19", "21"],
-        "respuesta_correcta": 1,
-        "puntos": 2,
-        "dificultad": "medio"
-      },
-      {
-        "id": 3,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es la raíz cuadrada de 144?",
-        "opciones": ["10", "11", "12", "13"],
-        "respuesta_correcta": 2,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 4,
-        "tipo": "multiple",
-        "pregunta": "En un triángulo rectángulo, si un cateto mide 3 y el otro 4, ¿cuánto mide la hipotenusa?",
-        "opciones": ["5", "6", "7", "8"],
-        "respuesta_correcta": 0,
-        "puntos": 2,
-        "dificultad": "medio"
-      },
-      {
-        "id": 5,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es el 20% de 250?",
-        "opciones": ["40", "45", "50", "55"],
-        "respuesta_correcta": 2,
-        "puntos": 1,
-        "dificultad": "facil"
-      }
-    ]
+    "grado": "6",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_6_cuad_01"
   },
-  "ciencias_naturales": {
-    "nombre": "Ciencias Naturales",
-    "descripcion": "Evaluación de conceptos de biología, química y física",
-    "tiempo_limite": 25,
-    "numero_preguntas": 8,
+  "matematicas_grado_7": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 7",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es la unidad básica de la vida?",
-        "opciones": ["Átomo", "Célula", "Molécula", "Tejido"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 2,
-        "tipo": "multiple",
-        "pregunta": "¿Qué gas es esencial para la respiración?",
-        "opciones": ["Nitrógeno", "Dióxido de carbono", "Oxígeno", "Hidrógeno"],
-        "respuesta_correcta": 2,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 3,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es la fórmula química del agua?",
-        "opciones": ["H2O", "CO2", "NaCl", "CH4"],
-        "respuesta_correcta": 0,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 4,
-        "tipo": "multiple",
-        "pregunta": "¿Qué proceso realizan las plantas para producir su alimento?",
-        "opciones": ["Respiración", "Digestión", "Fotosíntesis", "Fermentación"],
-        "respuesta_correcta": 2,
-        "puntos": 2,
-        "dificultad": "medio"
-      }
-    ]
+    "grado": "7",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_7_cuad_01"
   },
-  "ciencias_sociales": {
-    "nombre": "Ciencias Sociales",
-    "descripcion": "Evaluación de historia, geografía y educación cívica",
-    "tiempo_limite": 20,
-    "numero_preguntas": 6,
+  "matematicas_grado_8": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 8",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple",
-        "pregunta": "¿En qué año se independizó Colombia?",
-        "opciones": ["1810", "1819", "1820", "1821"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "medio"
-      },
-      {
-        "id": 2,
-        "tipo": "multiple",
-        "pregunta": "¿Cuál es la capital de Colombia?",
-        "opciones": ["Medellín", "Cali", "Bogotá", "Barranquilla"],
-        "respuesta_correcta": 2,
-        "puntos": 1,
-        "dificultad": "facil"
-      },
-      {
-        "id": 3,
-        "tipo": "multiple",
-        "pregunta": "¿Quién fue el libertador de Colombia?",
-        "opciones": ["Antonio Nariño", "Simón Bolívar", "Francisco de Paula Santander", "Camilo Torres"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "facil"
-      }
-    ]
+    "grado": "8",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_8_cuad_01"
+  },"matematicas_grado_9": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 9",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "9",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_9_cuad_01"
+  },"matematicas_grado_10": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 10",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "10",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_10_cuad_01"
   },
-  "analisis_imagen": {
-    "nombre": "Análisis de Imagen",
-    "descripcion": "Evaluación de interpretación y análisis visual",
-    "tiempo_limite": 15,
-    "numero_preguntas": 5,
+  "matematicas_grado_11": {
+    "nombre": "Cuadernillo de Matemáticas - Grado 11",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple",
-        "pregunta": "Observa la imagen de un gráfico de barras que muestra ventas por mes. ¿En qué mes se registraron las mayores ventas?",
-        "imagen": "/images/grafico_ventas.png",
-        "opciones": ["Enero", "Marzo", "Junio", "Diciembre"],
-        "respuesta_correcta": 2,
-        "puntos": 2,
-        "dificultad": "medio"
-      },
-      {
-        "id": 2,
-        "tipo": "multiple",
-        "pregunta": "En la imagen del mapa, ¿qué representa el color azul?",
-        "imagen": "/images/mapa_colombia.png",
-        "opciones": ["Montañas", "Ríos y océanos", "Ciudades", "Carreteras"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "facil"
-      }
-    ]
+    "grado": "11",
+    "area": "matematicas",
+    "cuadernillo_id": "mat_11_cuad_01"
   },
-  "comprension_textos": {
-    "nombre": "Comprensión de Textos",
-    "descripcion": "Evaluación de comprensión lectora y análisis textual",
-    "tiempo_limite": 25,
-    "numero_preguntas": 7,
+  "ciencias_naturales_grado_6": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 6",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
-    "preguntas": [
-      {
-        "id": 1,
-        "tipo": "multiple",
-        "pregunta": "Lee el siguiente texto: 'El agua es fundamental para la vida. Sin ella, ningún ser vivo podría existir. Cubre aproximadamente el 70% de la superficie terrestre.' ¿Cuál es la idea principal del texto?",
-        "opciones": [
-          "El agua cubre el 70% de la Tierra",
-          "Los seres vivos necesitan agua",
-          "La importancia vital del agua",
-          "La superficie terrestre es acuática"
-        ],
-        "respuesta_correcta": 2,
-        "puntos": 2,
-        "dificultad": "medio"
-      },
-      {
-        "id": 2,
-        "tipo": "multiple",
-        "pregunta": "Según el texto anterior, ¿qué porcentaje de la superficie terrestre cubre el agua?",
-        "opciones": ["60%", "70%", "80%", "90%"],
-        "respuesta_correcta": 1,
-        "puntos": 1,
-        "dificultad": "facil"
-      }
-    ]
+    "grado": "6",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "c_naturales_6_cuad_01"
+  },
+  "ciencias_naturales_grado_7": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 7",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "7",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "c_naturales_7_cuad_01"
+  },
+  "ciencias_naturales_grado_8": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 8",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "8",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "c_naturales_8_cuad_01"
+  },
+  "ciencias_naturales_grado_9": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 9",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "9",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "c_naturales_9_cuad_01"
+  },
+  "ciencias_naturales_grado_10": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 10",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "10",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "c_naturales_10_cuad_01"
+  },
+  "ciencias_naturales_grado_11": {
+    "nombre": "Cuadernillo de Ciencias Naturales - Grado 11",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "11",
+    "area": "ciencias_naturales",
+    "cuadernillo_id": "c_naturales_11_cuad_01"
+  },
+  "ciencias_sociales_grado_6": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 6",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "6",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_6_cuad_01"
+  },
+  "ciencias_sociales_grado_7": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 7",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "7",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_7_cuad_01"
+  },
+  "ciencias_sociales_grado_8": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 8",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "8",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_8_cuad_01"
+  },
+  "ciencias_sociales_grado_9": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 9",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "9",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_9_cuad_01"
+  },
+  "ciencias_sociales_grado_10": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 10",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "10",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_10_cuad_01"
+  },
+  "ciencias_sociales_grado_11": {
+    "nombre": "Cuadernillo de Ciencias Sociales - Grado 11",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "11",
+    "area": "ciencias_sociales",
+    "cuadernillo_id": "c_sociales_11_cuad_01"
+  },
+  "lenguaje_grado_6": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 6",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "6",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_6_cuad_01"
+  },
+  "lenguaje_grado_7": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 7",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "7",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_7_cuad_01"
+  },
+  "lenguaje_grado_8": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 8",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "8",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_8_cuad_01"
+  },
+  "lenguaje_grado_9": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 9",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "9",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_9_cuad_01"
+  },
+  "lenguaje_grado_10": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 10",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "10",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_10_cuad_01"
+  },
+  "lenguaje_grado_11": {
+    "nombre": "Cuadernillo de Lenguaje - Grado 11",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "11",
+    "area": "lenguaje",
+    "cuadernillo_id": "lenguaje_11_cuad_01"
+  },
+  "ingles_grado_9": {
+    "nombre": "Cuadernillo de Inglés - Grado 9",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "9",
+    "area": "ingles",
+    "cuadernillo_id": "ingles_9_cuad_01"
+  },
+  "ingles_grado_10": {
+    "nombre": "Cuadernillo de Inglés - Grado 10",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "10",
+    "area": "ingles",
+    "cuadernillo_id": "ingles_10_cuad_01"
+  },
+  "ingles_grado_11": {
+    "nombre": "Cuadernillo de Inglés - Grado 11",
+    "descripcion": "Lee las preguntas de las imágenes y responde.",
+    "activo": true,
+    "grado": "11",
+    "area": "ingles",
+    "cuadernillo_id": "ingles_11_cuad_01"
   }
 }
-

@@ -4,17 +4,12 @@ import shutil
 import time
 import logging
 from functools import wraps
-import os
-import shutil
-import time
-import logging
-from functools import wraps
 from flask import (
     Blueprint, send_from_directory, abort, jsonify, flash,
     render_template_string, session, redirect, url_for, request, render_template
 )
 import json
-from models import db, User, UserRole, ConfiguracionSistema
+from models import db, User, UserRole, ConfiguracionSistema, Cuadernillo
 
 # Función para cargar los usuarios desde el archivo JSON
 def load_users_from_json():
@@ -206,3 +201,16 @@ def favicon():
 def api_promote_site():
     """API endpoint para promover el sitio de prueba a principal."""
     return promote_to_main()
+
+@web_main_bp.route('/api/examenes/grado/<string:grado>')
+def get_examenes_por_grado(grado):
+    """
+    Devuelve una lista de exámenes (cuadernillos) para un grado específico.
+    """
+    # Filtrar cuadernillos por el grado proporcionado y que estén activos
+    examenes = Cuadernillo.query.filter_by(grado=grado, activo=True).all()
+    
+    # Convertir los objetos a una lista de diccionarios
+    examenes_dict = [examen.to_dict() for examen in examenes]
+    
+    return jsonify(examenes_dict)

@@ -1,7 +1,35 @@
-<header class="header">
-    <div class="logo-container">
-        <i class="fas fa-graduation-cap logo-icon"></i>
-        <h1 class="logo-text">Portal IEM</h1>
+<header class="main-header">
+    <div class="main-header__content">
+
+        <!-- 1. Escudo (Izquierda) -->
+        <div class="main-header__logo">
+            <a href="/dashboard" aria-label="Ir al inicio del portal">
+                <img src="../css/assets/images/escudo_sinfondo.png" alt="Escudo del Colegio" class="main-header__logo-icon">
+            </a>
+        </div>
+
+        <!-- 2. Título y Eslogan (Centro) -->
+        <div class="main-header__title-group">
+            <h1 class="main-header__title">Institución Educativa Mojarras</h1>
+            <span class="main-header__slogan">Convivencia y Superación</span>
+        </div>
+        
+        <!-- 3. Sección de Usuario (Derecha) -->
+        <div class="main-header__user">
+            <!-- Datos del Usuario -->
+            <div class="main-header__user-info">
+                <div class="main-header__user-avatar" id="userAvatar"></div>
+                <div class="main-header__user-details">
+                    <span class="main-header__user-name" id="userName"></span>
+                    <span class="main-header__user-grade" id="userGrade"></span>
+                </div>
+            </div>
+            <!-- Botón de Logout -->
+            <button class="main-header__logout-btn" aria-label="Cerrar Sesión">
+                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                <span>Cerrar Sesión</span>
+            </button>
+        </div>
+
     </div>
-    <p class="subtitle">Sistema de Evaluación Académica</p>
 </header>

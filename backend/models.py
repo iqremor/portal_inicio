@@ -48,18 +48,54 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
     
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'<ExamSession {self.id} - User {self.user_id} - Exam {self.exam_id}>'
+
+class Activity(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    data_activity_id = db.Column(db.String(80), unique=True, nullable=False)
+    applicable_grades = db.Column(db.String(200), nullable=True) # e.g., "6,7,8,9,10,11"
+
+    def __repr__(self):
+        return '<Activity %r>' % self.name
     
     def to_dict(self):
         return {
             'id': self.id,
-            'codigo': self.codigo, # Incluir nuevo campo
-            'username': self.username,
-            'nombre_completo': self.nombre_completo, # Incluir nuevo campo
-            'grado': self.grado, # Incluir nuevo campo
-            'role': self.role.value,
-            'created_at': self.created_at.isoformat(),
-            'is_active': self.is_active
+            'name': self.name,
+            'description': self.description,
+            'data_activity_id': self.data_activity_id,
+            'applicable_grades': self.applicable_grades
+        }
+
+class Cuadernillo(db.Model):
+    __tablename__ = 'cuadernillos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    cuadernillo_id = db.Column(db.String(80), unique=True, nullable=False)
+    nombre = db.Column(db.String(200), nullable=False)
+    descripcion = db.Column(db.Text, nullable=True)
+    activo = db.Column(db.Boolean, default=True)
+    grado = db.Column(db.String(50), nullable=False)
+    area = db.Column(db.String(80), nullable=False)
+    dir_banco = db.Column(db.String(200), nullable=False)
+    total_preguntas_banco = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return f'<Cuadernillo {self.nombre}>'
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'cuadernillo_id': self.cuadernillo_id,
+            'nombre': self.nombre,
+            'descripcion': self.descripcion,
+            'activo': self.activo,
+            'grado': self.grado,
+            'area': self.area,
+            'dir_banco': self.dir_banco,
+            'total_preguntas_banco': self.total_preguntas_banco
         }
 
 class Peticion(db.Model):

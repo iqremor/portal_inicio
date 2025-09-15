@@ -1,0 +1,99 @@
+/* Activities Section */
+.activities-section {
+    margin-bottom: 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+    display: flex; /* Added */
+    flex-wrap: wrap; /* Added */
+    justify-content: center; /* Added for centering cards */
+    gap: 2rem; /* Added for spacing between cards */
+}
+
+.activities-title {
+    font-size: 3rem;
+    font-weight: 600;
+    color: var(--text-white);
+    text-align: center;
+    margin-bottom: 3rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+
+.activity-card {
+    background: rgba(27, 85, 27, 0.432);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 320px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.activity-card:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.activity-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 1rem;
+}
+
+.activity-card p {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+    margin-bottom: 2rem;
+}
+
+.activity-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-white);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 2rem;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.activity-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for the "Iniciar Examen" button */
+.start-exam-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Added for centering text */
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-white);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius); /* Using variable from base/variables.css */
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition); /* Using variable from base/variables.css */
+    width: 100%; /* Make button full width of card */
+    margin-top: auto; /* Push button to bottom of flex container */
+}
+
+.start-exam-btn:hover {
+    background: rgba(22, 71, 2, 0.575);
+    transform: translateY(-1px);
+}
