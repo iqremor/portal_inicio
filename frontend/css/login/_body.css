@@ -89,6 +89,7 @@ input[type="text"] {
     transition: var(--transition);
     background: var(--bg-primary);
     color: var(--text-primary);
+    text-transform: uppercase; /* Added */
 }
 
 input[type="text"]:focus {
@@ -114,20 +115,20 @@ input[type="text"]:invalid {
     justify-content: center;
     gap: 0.5rem;
     padding: 0.875rem 1.5rem;
-    background: var(--primary-color);
+    background: rgba(1, 66, 1, 0.966);
     color: var(--text-white);
     border: none;
     border-radius: var(--border-radius);
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
-    transition: var(--transition);
+    transition: rgba(8, 78, 8, 0.781);
     position: relative;
     overflow: hidden;
 }
 
 .btn-primary:hover {
-    background: var(--primary-dark);
+    background: rgba(136, 128, 11, 0.829);
     transform: translateY(-1px);
     box-shadow: var(--shadow-lg);
 }
@@ -162,9 +163,9 @@ input[type="text"]:invalid {
 }
 
 .mensaje.success {
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--accent-color);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    background: rgba(2, 44, 2, 0.692);
+    color: white;
+    border: 1px solid rgba(0, 22, 0, 0.473);
 }
 
 .mensaje.error {
@@ -313,3 +314,12 @@ input[type="text"]:invalid {
 .info-card:nth-child(1) { animation-delay: 0.1s; }
 .info-card:nth-child(2) { animation-delay: 0.2s; }
 .info-card:nth-child(3) { animation-delay: 0.3s; }
+
+/* Specific background for login page */
+body.login-body {
+    background-image: url('../assets/images/ensayo3.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}

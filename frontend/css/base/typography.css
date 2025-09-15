@@ -2,11 +2,7 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
     color: var(--text-primary);
-    background-image: url('../assets/images/ensayo3.png'); /* Path to your image */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed; /* Keeps background fixed on scroll */
+    background-color: var(--primary-dark); /* Changed to dark green color */
     min-height: 100vh;
     overflow-x: hidden;
 }
