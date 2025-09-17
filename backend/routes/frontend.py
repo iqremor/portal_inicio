@@ -13,7 +13,3 @@ def serve_frontend_pages(filename):
     """Sirve archivos estáticos desde la carpeta frontend/pages."""
     return send_from_directory(os.path.join(frontend_bp.static_folder, 'pages'), filename)
 
-@frontend_bp.route('/<path:filename>')
-def serve_frontend_static(filename):
-    """Sirve archivos estáticos desde la carpeta frontend."""
-    return send_from_directory(frontend_bp.static_folder, filename)
