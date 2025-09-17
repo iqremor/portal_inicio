@@ -72,6 +72,16 @@ async function main() {
         const examData = await response.json();
         state.examData = examData; // Guardar examData en el estado para usarlo en handleStartQuiz
 
+        // FIX: Format subject name for display
+        if (examData.config && examData.config.subject) {
+            let subject = examData.config.subject;
+            // Capitalize first letter
+            subject = subject.charAt(0).toUpperCase() + subject.slice(1);
+            // Replace underscores with spaces
+            subject = subject.replace(/_/g, ' ');
+            examData.config.subject = subject;
+        }
+
         mostrarPaginaInicio(examData.config); // <--- MODIFICADO: Pasar examData.config a mostrarPaginaInicio
 
     } catch (error) {

@@ -154,12 +154,15 @@ class Dashboard {
             card.className = 'activity-card';
             const isActive = exam.activo; // Usar el flag 'activo' que viene del backend
 
+            // FIX: Remove grade from exam name for display
+            const displayName = exam.nombre.split(' - Grado')[0];
+
             card.innerHTML = `
                 <div class="activity-icon">
                     <i class="fas fa-file-alt"></i>
                 </div>
                 <div class="activity-info">
-                    <h3>${exam.nombre}</h3>
+                    <h3>${displayName}</h3>
                     <p>${exam.descripcion}</p>
                 </div>
                 <button 

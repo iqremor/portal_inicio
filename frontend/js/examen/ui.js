@@ -99,13 +99,11 @@ export function mostrarPaginaInicio(examDetails) {
     contenedorApp.innerHTML = `
         <div style="text-align: center; animation: fadeIn 0.5s ease-out;">
             <h1>Prueba Saber</h1>
-            <h2 style="font-size: 2rem; color: #ff6b35; text-align: center;">${examDetails.subject}: Grado ${examDetails.Grado}</h2>
+            <h2 style="font-size: 2rem; color: #ff6b35; text-align: center;">${examDetails.subject}</h2>
             <p style="font-size: 1.1em; line-height: 1.6; color: #0a0a0aff; max-width: 600px; margin: 1rem auto 2rem;">
                 Esta prueba consta de <strong>${examDetails.numQuestions} preguntas</strong>. 
                 En cada una encontrarás una situación en la que tendrás que aplicar tus
                 conocimientos para tomar decisiones y elegir la respuesta correcta.
-                <br><br>
-                <strong style="color: #0275d8;">Intentos restantes: ${intentosRestantes} de ${examDetails.numIntentos}</strong>
             </p>
             <button id="btnIniciarQuiz" class="btn btn-primary">Iniciar</button>
         </div>
