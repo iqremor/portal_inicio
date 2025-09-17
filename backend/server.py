@@ -211,15 +211,15 @@ def run(host, port, debug, reload, open_browser):
                                 if admin_users:
                                     click.echo(click.style("\nUsuarios Administradores:", fg='cyan', bold=True))
                                     for user in admin_users:
-                                        click.echo(f"- ID: {user.id}, Usuario: {click.style(user.username, fg='green')}, Email: {user.email}")
+                                        click.echo(f"- ID: {user.id}, Usuario: {click.style(user.username, fg='green')}")
                                 else:
                                     click.echo(click.style("No hay usuarios administradores registrados en la base de datos.", fg='yellow'))
                             click.echo(click.style("\n--- Fin de la lista de administradores ---", fg='cyan', bold=True))
 
                         elif subcommand == 'add':
-                            click.echo(click.style("\n--- Añadir Nuevo Administrador ---", fg='cyan', bold=True))
+                            click.echo(click.style("--- Añadir Nuevo Administrador ---", fg='cyan', bold=True))
                             username = click.prompt(click.style('Ingrese el nombre de usuario para el nuevo administrador', fg='green'))
-                            email = click.prompt(click.style('Ingrese el email para el nuevo administrador', fg='green'))
+                            codigo = click.prompt(click.style('Ingrese el código para el nuevo administrador', fg='green'))
                             password = click.prompt(click.style('Ingrese la contraseña para el nuevo administrador', fg='green'), hide_input=True, confirmation_prompt=True)
                             
                             app = create_app()
@@ -228,12 +228,12 @@ def run(host, port, debug, reload, open_browser):
                                 if existing_user:
                                     click.echo(click.style(f"Error: El usuario '{username}' ya existe.", fg='red'))
                                 else:
-                                    new_admin = User(username=username, email=email, role=UserRole.ADMIN)
+                                    new_admin = User(username=username, codigo=codigo, role=UserRole.ADMIN)
                                     new_admin.set_password(password)
                                     db.session.add(new_admin)
                                     db.session.commit()
                                     click.echo(click.style(f"Usuario administrador '{username}' añadido exitosamente.", fg='green'))
-                            click.echo(click.style("\n--- Fin de añadir administrador ---", fg='cyan', bold=True))
+                            click.echo(click.style("--- Fin de añadir administrador ---", fg='cyan', bold=True))
 
                         elif subcommand == 'set-password':
                             click.echo(click.style("\n--- Cambiar Contraseña de Administrador ---", fg='cyan', bold=True))

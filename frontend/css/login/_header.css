@@ -1,20 +1,21 @@
 /* Header */
 .header {
-    padding: 2rem 1rem;
-     background: rgba(27, 85, 27, 0.432);
+    padding: 0.4rem 1rem;
+    background: rgba(27, 85, 27, 0.432);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 150px;
 }
 
 .logo-container {
     display: flex;
     align-items: center;
     justify-content: flex-start; /* Cambié de center a flex-start */
-    gap: 2rem; /* Aumenté el gap para mejor separación */
-    margin-bottom: 0.5rem;
+    gap: 1rem; /* Aumenté el gap para mejor separación */
+    margin-bottom: 0.25rem;
     width: 100%;
     max-width: 1200px; /* Limitar el ancho máximo */
     position: relative; /* Para posicionamiento absoluto del text-group */
@@ -38,7 +39,7 @@
 }
 
 .logo-text {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--text-white);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -47,7 +48,7 @@
 }
 
 .subtitle {
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: rgba(255, 255, 255, 0.9);
     font-weight: 400;
     margin: 0;
