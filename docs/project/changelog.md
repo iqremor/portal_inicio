@@ -183,3 +183,35 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Aplicación de un color de fondo específico al header, footer y tarjetas.
 - Modificación del estilo de `activities-section` para que se vea como un contenedor transparente con borde blanco.
 - Revisión de rutas y etiquetas en `frontend//**` para asegurar la compatibilidad con la nueva estructura CSS.
+
+## Sesión 8 - 16 de septiembre de 2025
+### Objetivos de la sesión:
+- Ajustar el modelo `User` para eliminar el campo `email`.
+- Corregir la lógica de creación de usuarios administradores en la CLI para solicitar el `codigo` y no el `email`.
+- Actualizar la visualización de usuarios administradores en la CLI para no mostrar el `email`.
+- Actualizar las dependencias del proyecto (`requirements.txt`).
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+
+### Acciones Realizadas:
+- Se eliminó el campo `email` del modelo `User` en `backend/models.py` para que no sea un campo requerido.
+- Se modificó el comando `admin add` en `backend/server.py` para solicitar el `codigo` del nuevo administrador en lugar del `email`.
+- Se actualizó la creación de usuarios administradores en `backend/server.py` para pasar el `codigo` al constructor del modelo `User`.
+- Se eliminó la visualización del campo `email` al listar usuarios administradores en el comando `admin show` de `backend/server.py`.
+- Se actualizaron las dependencias en `requirements.txt`.
+
+### Próximo a implementar:
+- Revisión de usuarios conectados.
+- Monitoreo del tráfico de usuarios.
+- Desconexión de usuarios duplicados.
+- Todas estas funcionalidades serán gestionadas a través del panel de administración de Flask-Admin.
+
+### Finalización: 16 de septiembre de 2025
