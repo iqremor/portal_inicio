@@ -61,7 +61,7 @@ async function main() {
         state.attemptCount = await obtenerNumeroDeIntentos(sessionId, areaId);
         
         // --- MODIFICADO: Mover la llamada a la API aquí para obtener examData antes de mostrarPaginaInicio ---
-        const apiUrl = `/api/examenes/start?sessionId=${sessionId}&areaId=${areaId}&grade=${state.currentUser.grado}`;
+        const apiUrl = `/api/examenes/start?sessionId=${sessionId}&areaId=${areaId}&grade=${state.currentUser.grado}&userCodigo=${userCode}`;
 
         const response = await fetch(apiUrl);
         

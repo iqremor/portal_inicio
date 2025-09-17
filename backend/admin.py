@@ -9,7 +9,7 @@ from flask_admin.model import typefmt # Para formatear tipos de datos en las vis
 from werkzeug.security import generate_password_hash # Para hashear contraseñas
 from wtforms import PasswordField, TextAreaField, SelectField # Para campos de formulario personalizados
 from wtforms.validators import DataRequired, Email # Para validación de formularios
-from datetime import datetime # Para manejar fechas y horas
+from datetime import datetime, timedelta # Para manejar fechas y horas
 import os # Para manejo de rutas y archivos
 import os.path as op
 from flask import redirect, url_for, request, session, flash, render_template # Added session, flash, render_template
@@ -91,6 +91,7 @@ class MyAdminIndexView(AdminIndexView):
             if user and user.check_password(password):
                 session['logged_in'] = True
                 session['admin_user_id'] = user.id # Store admin user ID in session
+                session['user_role'] = user.role.value # <-- AÑADIR ESTA LÍNEA
                 if self.admin.app.debug:
                     print(f"DEBUG: After setting session['logged_in'] in POST: {session.get('logged_in')}") # Debug print
                     print(f"DEBUG: Full session object after login: {dict(session)}") # Print full session
@@ -122,7 +123,7 @@ class UserModelView(ModelView):
     def is_accessible(self):
         """Verifica si el usuario tiene acceso al panel de administración"""
         from flask import session
-        return session.get('logged_in') and session.get('user_role') == 'ADMIN'
+        return session.get('logged_in') and session.get('user_role') == 'admin'
     
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
@@ -211,7 +212,7 @@ class PeticionModelView(ModelView):
     def is_accessible(self):
         """Verifica si el usuario tiene acceso al panel de administración"""
         from flask import session
-        return session.get('logged_in') and session.get('user_role') == 'ADMIN'
+        return session.get('logged_in') and session.get('user_role') == 'admin'
     
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
@@ -269,7 +270,7 @@ class ComentarioModelView(ModelView):
     def is_accessible(self):
         """Verifica si el usuario tiene acceso al panel de administración"""
         from flask import session
-        return session.get('logged_in') and session.get('user_role') == 'ADMIN'
+        return session.get('logged_in') and session.get('user_role') == 'admin'
     
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
@@ -301,26 +302,53 @@ class ConfiguracionSistemaView(ModelView):
     def is_accessible(self):
         """Verifica si el usuario tiene acceso al panel de administración"""
         from flask import session
-        return session.get('logged_in') and session.get('user_role') == 'ADMIN'
+        return session.get('logged_in') and session.get('user_role') == 'admin'
     
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
         from flask import redirect, url_for
         return redirect(url_for('web_main.login', next=request.url))
-    # form_args = {
-    #     'descripcion': {
-    #         'render_kw': {
-    #             'style': 'width: 100%'
-    #         }
-    #     }
-    # }
-    # # Hacer la clave de solo lectura en el formulario de edición
-    # form_edit_rules = ('valor', 'descripcion')
-    # form_create_rules = ('clave', 'valor', 'descripcion')
+
+# Vista para Sesiones Activas
+class ActiveSessionView(ModelView):
+    list_template = 'admin/active_session_list.html'
+    # Deshabilitar la creación y edición manual desde el panel
+    can_create = False
+    can_edit = False
+    can_delete = True # Permitir eliminar para forzar el logout
+
+    # Columnas a mostrar en la lista
+    column_list = ('user.nombre_completo', 'login_time', 'last_seen', 'ip_address', 'user_agent', 'cuadernillo.nombre') # Added cuadernillo.nombre
+    
+    # Etiquetas más amigables para las columnas
+    column_labels = {
+        'user.nombre_completo': 'Usuario',
+        'login_time': 'Hora de Inicio',
+        'last_seen': 'Última Actividad',
+        'ip_address': 'Dirección IP',
+        'user_agent': 'Navegador/Dispositivo',
+        'cuadernillo.nombre': 'Examen Actual' # Added label
+    }
+    
+    # Ordenar por defecto por la última actividad
+    column_default_sort = ('last_seen', True)
+
+    # Formateo de fechas
+    column_type_formatters = {
+        datetime: lambda view, value, name: (value - timedelta(hours=5)).strftime('%d/%m/%Y %H:%M:%S') if value else ''
+    }
+
+    def is_accessible(self):
+        """Verifica si el usuario tiene acceso."""
+        return session.get('logged_in') and session.get('user_role') == 'admin'
+    
+    def inaccessible_callback(self, name, **kwargs):
+        """Redirige a la página de login cuando no hay acceso."""
+        return redirect(url_for('web_main.login', next=request.url))
 
 def init_admin(app):
     """Inicializa Flask-Admin."""
-    from models import db, User, Peticion, Comentario, ConfiguracionSistema, Log
+    from models import db, User, Peticion, Comentario, ConfiguracionSistema, Log, ActiveSession
     
     admin = Admin(
         app, 
@@ -335,6 +363,7 @@ def init_admin(app):
     admin.add_view(ComentarioModelView(Comentario, db.session, name='Comentarios'))
     admin.add_view(ConfiguracionSistemaView(ConfiguracionSistema, db.session, name='Configuración'))
     admin.add_view(ModelView(Log, db.session, name='Logs del Sistema'))
+    admin.add_view(ActiveSessionView(ActiveSession, db.session, name='Sesiones Activas'))
     
     # Añadir vista de gestión de archivos para la carpeta 'templates/web_test'
     path = op.join(op.dirname(__file__), 'web_test')

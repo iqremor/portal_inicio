@@ -13,7 +13,6 @@
 - Creación del directorio `prototype/`.
 - Reestructuración de las ramas de Git a `main`, `develop`, `debug`.
 - Identificación de áreas críticas y recomendaciones prioritarias para el proyecto.
-
 ### Estado del Proyecto al Final de la Sesión:
 - **Backend:** Python Flask.
 - **Ramas Git:** `main`, `develop`, `debug` configuradas.

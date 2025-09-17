@@ -210,6 +210,24 @@ class Log(db.Model):
             'created_at': self.created_at.isoformat()
         }
 
+class ActiveSession(db.Model):
+    __tablename__ = 'active_sessions'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    session_id = db.Column(db.String(256), unique=True, nullable=False)
+    login_time = db.Column(db.DateTime, default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    ip_address = db.Column(db.String(45))
+    user_agent = db.Column(db.String(256))
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey('cuadernillos.id'), nullable=True)
+
+    # Relaciones
+    user = db.relationship('User', backref=db.backref('active_sessions', lazy=True))
+    cuadernillo = db.relationship('Cuadernillo')
+
+    def __repr__(self):
+        return f'<ActiveSession para {self.user.username}>'
+
 # Función para inicializar la base de datos
 def init_db(app):
     """Inicializa la base de datos con la aplicación Flask"""

@@ -9,7 +9,8 @@ from flask import (
     render_template_string, session, redirect, url_for, request, render_template
 )
 import json
-from models import db, User, UserRole, ConfiguracionSistema, Cuadernillo
+from models import db, User, UserRole, ConfiguracionSistema, Cuadernillo, ActiveSession
+import secrets
 
 # Función para cargar los usuarios desde el archivo JSON
 def load_users_from_json():
@@ -93,6 +94,26 @@ def validar_usuario():
     user = User.query.filter_by(codigo=codigo).first()
 
     if user and user.is_active:
+        # --- INICIO DE LA MODIFICACIÓN ---
+        # 1. Verificar si ya existe una sesión activa para este usuario.
+        existing_session = ActiveSession.query.filter_by(user_id=user.id).first()
+        if existing_session:
+            # Si ya existe, no permitir el nuevo login.
+            return jsonify({
+                "permitido": False, 
+                "mensaje": "Este usuario ya tiene una sesión activa en otro dispositivo."
+            }), 409 # 409 Conflict
+
+        # 2. Si no hay sesión, crear el nuevo registro.
+        new_session = ActiveSession(
+            user_id=user.id,
+            session_id=secrets.token_hex(16),  # Genera un ID de sesión único
+            ip_address=request.remote_addr,
+            user_agent=request.user_agent.string
+        )
+        db.session.add(new_session)
+        db.session.commit()
+        # --- FIN DE LA MODIFICACIÓN ---
         return jsonify({
             "permitido": True,
             "usuario": {
@@ -212,3 +233,22 @@ def get_examenes_por_grado(grado):
     examenes_dict = [examen.to_dict() for examen in examenes]
     
     return jsonify(examenes_dict)
+
+@web_main_bp.route('/api/logout', methods=['POST'])
+def api_logout():
+    """API endpoint para manejar el logout del estudiante."""
+    if not request.is_json:
+        return jsonify({"message": "Content-Type debe ser application/json"}), 400
+
+    data = request.get_json()
+    codigo = data.get('codigo')
+
+    if not codigo:
+        return jsonify({"message": "Código de usuario no proporcionado"}), 400
+
+    user = User.query.filter_by(codigo=codigo).first()
+    if user:
+        ActiveSession.query.filter_by(user_id=user.id).delete()
+        db.session.commit()
+    
+    return jsonify({"message": "Logout procesado"}), 200

@@ -1,6 +1,6 @@
 # backend/routes/api.py
 from flask import Blueprint, jsonify, request
-from models import Cuadernillo
+from models import Cuadernillo, User, ActiveSession, db
 import random
 
 api_bp = Blueprint('api_bp', __name__)
@@ -13,16 +13,33 @@ def start_examen():
     # Obtener parámetros de la URL (ej: /api/examenes/start?areaId=ciencias&grade=7)
     area_id = request.args.get('areaId')
     session_id = request.args.get('sessionId') # No se usa aún, pero se recibe
-    grade = request.args.get('grade') # <--- NUEVO: Obtener el grado de la petición
+    grade = request.args.get('grade')
+    user_codigo = request.args.get('userCodigo') # Obtener el código del usuario
 
-    if not area_id or not grade: # <--- MODIFICADO: Validar también el grado
-        return jsonify({"error": "Los parámetros 'areaId' y 'grade' son requeridos"}), 400
+    if not area_id or not grade or not user_codigo: # Validar también userCodigo
+        return jsonify({"error": "Los parámetros 'areaId', 'grade' y 'userCodigo' son requeridos"}), 400
 
     # Buscar el cuadernillo correspondiente en la base de datos, filtrando por área Y grado
     cuadernillo = Cuadernillo.query.filter_by(area=area_id, grado=grade).first() # <--- MODIFICADO
 
     if not cuadernillo:
         return jsonify({"error": f"No se encontró un cuadernillo para el área '{area_id}' y grado '{grade}'"}), 404
+
+    # --- INICIO DE LA MODIFICACIÓN ---
+    # 1. Encontrar al usuario y su sesión activa
+    user = User.query.filter_by(codigo=user_codigo).first()
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    active_session = ActiveSession.query.filter_by(user_id=user.id).first()
+    if not active_session:
+        # Esto no debería pasar si el login funciona correctamente, pero es una buena verificación
+        return jsonify({"error": "No se encontró una sesión activa para este usuario"}), 404
+
+    # 2. Actualizar la sesión activa con el cuadernillo_id
+    active_session.cuadernillo_id = cuadernillo.id
+    db.session.commit()
+    # --- FIN DE LA MODIFICACIÓN ---
 
     # Generar la lista de posibles preguntas
     total_preguntas = cuadernillo.total_preguntas_banco
@@ -61,5 +78,18 @@ def submit_exam():
     # Lógica para recibir respuestas, calcular nota y guardar en BD irá aquí
     # Por ahora, devolvemos un resultado de ejemplo
     data = request.get_json()
+    # Assuming 'codigo' is sent in the JSON body for identification
+    user_codigo = data.get('codigo') 
+
+    if not user_codigo:
+        return jsonify({"message": "Código de usuario no proporcionado para submit"}), 400
+
+    user = User.query.filter_by(codigo=user_codigo).first()
+    if user:
+        active_session = ActiveSession.query.filter_by(user_id=user.id).first()
+        if active_session:
+            active_session.cuadernillo_id = None # Clear the exam ID
+            db.session.commit()
+    
     print(f"Recibido para guardar: {data}")
     return jsonify({"message": "Examen recibido", "score": 0})
