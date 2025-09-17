@@ -42,11 +42,19 @@ def start_examen():
             "timerDuration": 240,
             "warningTime": 30,
             "nextButtonDelay": 1000,
-            "numIntentos": 3
+            "numIntentos": cuadernillo.total_preguntas_banco, # Usar total_preguntas_banco del cuadernillo
+            "subject": cuadernillo.area, # Asignatura del cuadernillo
+            "Grado": cuadernillo.grado, # Grado del cuadernillo
+            "numQuestions": len(preguntas_seleccionadas) # Número de preguntas seleccionadas
         }
     }
 
     return jsonify(exam_data)
+
+@api_bp.route('/test-api')
+def test_api_route():
+    print("--- DEBUG API: /test-api ALCANZADA ---")
+    return jsonify({"message": "API test successful!"})
 
 @api_bp.route('/examenes/attempts', methods=['GET'])
 def get_attempts():

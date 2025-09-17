@@ -20,37 +20,18 @@ function mostrarErrorCarga(mensaje) {
 
 // Esta función se pasa al módulo UI y se ejecuta cuando el usuario hace clic en "Iniciar"
 async function handleStartQuiz() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const areaId = urlParams.get('area');
-    const sessionId = urlParams.get('id'); 
-    const userGrade = state.currentUser ? state.currentUser.grado : null; 
-
-    if (!userGrade) {
-        mostrarErrorCarga("No se pudo obtener el grado del usuario para iniciar el examen.");
+    console.log("--- DEBUG FRONTEND: handleStartQuiz INICIADA ---");
+    
+    // Ya no necesitamos hacer fetch aquí, los datos ya están en state.examData
+    if (!state.examData) {
+        mostrarErrorCarga("Error: Datos del examen no cargados previamente.");
         return;
     }
 
-    try {
-        const appContainer = document.getElementById('app');
-        appContainer.innerHTML = `<div style="text-align: center; padding: 2rem;">Cargando examen...</div>`;
+    const appContainer = document.getElementById('app');
+    appContainer.innerHTML = `<div style="text-align: center; padding: 2rem;">Cargando examen...</div>`;
 
-        const apiUrl = `/api/examenes/start?sessionId=${sessionId}&areaId=${areaId}&grade=${userGrade}`;
-        console.log(`--- DEBUG FRONTEND: Solicitando examen a la URL: ${apiUrl} ---`); // <--- NUEVO DEBUG
-
-        const response = await fetch(apiUrl);
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `Error del servidor: ${response.status}`);
-        }
-        const examData = await response.json();
-
-        iniciarQuiz(examData);
-
-    } catch (error) {
-        console.error("Error al cargar los datos del examen:", error);
-        mostrarErrorCarga(`No se pudieron cargar las preguntas del examen. ${error.message}`);
-    }
+    iniciarQuiz(state.examData); // <--- MODIFICADO: Usar datos ya cargados
 }
 
 // Función principal que se ejecuta al cargar la página
@@ -67,7 +48,6 @@ async function main() {
         return;
     }
 
-    // Obtener el código de usuario de la sesión usando la función checkSession
     const session = checkSession();
     const userCode = session.codigo; 
 
@@ -82,7 +62,20 @@ async function main() {
 
         state.attemptCount = await obtenerNumeroDeIntentos(sessionId, areaId);
         
-        mostrarPaginaInicio();
+        // --- MODIFICADO: Mover la llamada a la API aquí para obtener examData antes de mostrarPaginaInicio ---
+        const apiUrl = `/api/examenes/start?sessionId=${sessionId}&areaId=${areaId}&grade=${state.currentUser.grado}`;
+        console.log(`--- DEBUG FRONTEND: Solicitando examen a la URL: ${apiUrl} ---`);
+
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `Error del servidor: ${response.status}`);
+        }
+        const examData = await response.json();
+        state.examData = examData; // Guardar examData en el estado para usarlo en handleStartQuiz
+
+        mostrarPaginaInicio(examData.config); // <--- MODIFICADO: Pasar examData.config a mostrarPaginaInicio
 
     } catch (error) {
         console.error("Error al verificar los intentos o cargar datos de usuario:", error);
