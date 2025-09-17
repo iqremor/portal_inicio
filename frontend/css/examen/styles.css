@@ -24,11 +24,4 @@
 /* 6. Estilos responsivos (deben ir al final para sobreescribir) */
 @import url('responsive.css');
 
-/* --- DEBUG: Botón Iniciar para depuración --- */
-#btnIniciarQuiz {
-    background-color: red !important;
-    color: yellow !important;
-    border: 5px solid blue !important;
-    z-index: 9999 !important;
-    position: relative !important;
-}
+

@@ -20,8 +20,6 @@ function mostrarErrorCarga(mensaje) {
 
 // Esta función se pasa al módulo UI y se ejecuta cuando el usuario hace clic en "Iniciar"
 async function handleStartQuiz() {
-    console.log("--- DEBUG FRONTEND: handleStartQuiz INICIADA ---");
-    
     // Ya no necesitamos hacer fetch aquí, los datos ya están en state.examData
     if (!state.examData) {
         mostrarErrorCarga("Error: Datos del examen no cargados previamente.");
@@ -64,7 +62,6 @@ async function main() {
         
         // --- MODIFICADO: Mover la llamada a la API aquí para obtener examData antes de mostrarPaginaInicio ---
         const apiUrl = `/api/examenes/start?sessionId=${sessionId}&areaId=${areaId}&grade=${state.currentUser.grado}`;
-        console.log(`--- DEBUG FRONTEND: Solicitando examen a la URL: ${apiUrl} ---`);
 
         const response = await fetch(apiUrl);
         

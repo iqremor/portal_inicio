@@ -129,10 +129,7 @@ def index_main():
     """Sirve el index.html del directorio raíz del proyecto."""
     return send_from_directory(project_root, 'index.html')
 
-# @web_main_bp.route('/<path:filename>')
-# def serve_static_main(filename):
-#     """Sirve archivos estáticos desde la carpeta web_main."""
-#     return send_from_directory(web_main_bp.static_folder, filename)
+
 
 # Rutas administrativas en el mismo blueprint principal
 @web_main_bp.route('/admin/promote-to-main', methods=['POST'])
@@ -208,16 +205,9 @@ def get_examenes_por_grado(grado):
     Devuelve una lista de TODOS los exámenes (cuadernillos) para un grado específico.
     Ahora incluye los activos y los inactivos para que el frontend decida cómo mostrarlos.
     """
-    print(f"--- DEBUG: Buscando exámenes para el grado: {grado} ---")
-    
     # Se elimina el filtro `activo=True` para obtener todos los cuadernillos del grado.
     examenes = Cuadernillo.query.filter_by(grado=grado).all()
     
-    if not examenes:
-        print(f"--- DEBUG: No se encontraron exámenes para el grado {grado}. ---")
-    else:
-        print(f"--- DEBUG: Encontrados {len(examenes)} exámenes para el grado {grado}. ---")
-
     # Convertir los objetos a una lista de diccionarios
     examenes_dict = [examen.to_dict() for examen in examenes]
     

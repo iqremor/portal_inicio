@@ -114,7 +114,6 @@ export function mostrarPaginaInicio(examDetails) {
     const btnIniciar = document.getElementById('btnIniciarQuiz');
     if (btnIniciar) {
         btnIniciar.addEventListener('click', doIniciarQuiz);
-        console.log("--- DEBUG UI: Listener adjuntado a btnIniciarQuiz ---"); // <--- NUEVO DEBUG
     }
 }
 

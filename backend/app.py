@@ -50,8 +50,4 @@ def create_app():
     app.register_blueprint(server_admin_bp)
     app.register_blueprint(api_bp, url_prefix='/api')
 
-    # --- DEBUG: Imprimir la ruta estática del blueprint de frontend ---
-    with app.app_context():
-        print(f"--- DEBUG: Ruta estática para 'frontend_bp': {app.blueprints['frontend'].static_folder}")
-
     return app

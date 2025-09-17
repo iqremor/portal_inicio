@@ -22,7 +22,6 @@ def start_examen():
     cuadernillo = Cuadernillo.query.filter_by(area=area_id, grado=grade).first() # <--- MODIFICADO
 
     if not cuadernillo:
-        print(f"--- DEBUG: Devolviendo 404 para area={area_id}, grade={grade} --- ")
         return jsonify({"error": f"No se encontró un cuadernillo para el área '{area_id}' y grado '{grade}'"}), 404
 
     # Generar la lista de posibles preguntas
@@ -50,11 +49,6 @@ def start_examen():
     }
 
     return jsonify(exam_data)
-
-@api_bp.route('/test-api')
-def test_api_route():
-    print("--- DEBUG API: /test-api ALCANZADA ---")
-    return jsonify({"message": "API test successful!"})
 
 @api_bp.route('/examenes/attempts', methods=['GET'])
 def get_attempts():
