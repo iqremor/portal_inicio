@@ -232,3 +232,12 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Se identificó que el archivo `frontend/js/examen/ui.js` contenía código duplicado, causando el error de redeclaración de importaciones.
 - Se corrigió el archivo `frontend/js/examen/ui.js` eliminando el contenido duplicado.
 ### Finalización: 17 de septiembre de 2025
+- mejoras y tareas para el futuro, basadas en la deuda técnica actual y
+  el trabajo que hemos realizado:
+
+   1. Implementar Herramientas de Calidad de Código y Testing:
+   2. Resolver Deuda Técnica Pendiente de Sesiones Anteriores:
+   3. Mejorar el Monitoreo de Tráfico de Usuarios en el Admin Panel:
+   4. Refinar la Gestión de Sesiones (Seguridad):
+   5. Habilitar Gestión de Exámenes desde el Panel Admin:
+   6. Mejorar Gestión de Sesiones desde el Panel Admin:
