@@ -2,6 +2,21 @@
 
 [Este archivo contendrá un registro de todos los cambios significativos realizados en el proyecto.]
 
+## Sesión 9 - 17 de septiembre de 2025
+### Objetivos de la sesión:
+- 
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+### Finalización: [PENDIENTE]
+
+
 ## Sesión 7 - 15 de septiembre de 2025
 ### Objetivos de la sesión:
 - Reorganizar el directorio `frontend/js` para mejorar la modularidad y mantenibilidad.
