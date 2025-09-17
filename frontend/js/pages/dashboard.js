@@ -142,7 +142,6 @@ class Dashboard {
         const activitiesSection = document.querySelector('.activities-section');
         if (!activitiesSection) return;
 
-        // Clear existing content in the activities section
         activitiesSection.innerHTML = '';
 
         if (exams.length === 0) {
@@ -153,6 +152,8 @@ class Dashboard {
         exams.forEach(exam => {
             const card = document.createElement('div');
             card.className = 'activity-card';
+            const isActive = exam.activo; // Usar el flag 'activo' que viene del backend
+
             card.innerHTML = `
                 <div class="activity-icon">
                     <i class="fas fa-file-alt"></i>
@@ -161,16 +162,31 @@ class Dashboard {
                     <h3>${exam.nombre}</h3>
                     <p>${exam.descripcion}</p>
                 </div>
-                <button class="start-exam-btn" data-cuadernillo-id="${exam.cuadernillo_id}">Iniciar Examen</button>
+                <button 
+                    class="start-exam-btn ${isActive ? '' : 'disabled'}" 
+                    data-area-id="${exam.area}"
+                    data-active="${isActive}"
+                >
+                    ${isActive ? 'Iniciar Examen' : 'No Disponible'}
+                </button>
             `;
             activitiesSection.appendChild(card);
         });
 
-        // Add event listeners to the new buttons
+        // Añadir event listeners a los botones
         document.querySelectorAll('.start-exam-btn').forEach(button => {
             button.addEventListener('click', (e) => {
-                const cuadernilloId = e.target.getAttribute('data-cuadernillo-id');
-                window.location.href = `/frontend/pages/examen.html?cuadernilloId=${cuadernilloId}`;
+                const isActive = e.target.getAttribute('data-active') === 'true';
+
+                if (!isActive) {
+                    showNotification('Este examen no se encuentra disponible actualmente.', 'info');
+                    return;
+                }
+                
+                const areaId = e.target.getAttribute('data-area-id');
+                // NOTA: El session ID '1' es un placeholder.
+                const sessionId = '1'; 
+                window.location.href = `/frontend/pages/examen.html?area=${areaId}&id=${sessionId}`;
             });
         });
     }

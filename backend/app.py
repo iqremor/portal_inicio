@@ -41,10 +41,13 @@ def create_app():
     from routes.web_test import web_test_bp
     from routes.server_admin import server_admin_bp
     from routes.frontend import frontend_bp
+    from routes.api import api_bp
 
+    # REORDENADO: Registrando frontend_bp primero para descartar conflictos
+    app.register_blueprint(frontend_bp)
     app.register_blueprint(web_main_bp, url_prefix='')
     app.register_blueprint(web_test_bp, url_prefix='/test')
     app.register_blueprint(server_admin_bp)
-    app.register_blueprint(frontend_bp)
+    app.register_blueprint(api_bp, url_prefix='/api')
 
     return app
