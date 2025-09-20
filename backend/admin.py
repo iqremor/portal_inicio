@@ -13,6 +13,7 @@ from datetime import datetime, timedelta # Para manejar fechas y horas
 import os # Para manejo de rutas y archivos
 import os.path as op
 from flask import redirect, url_for, request, session, flash, render_template # Added session, flash, render_template
+from sqlalchemy.exc import OperationalError # Added for database error handling
 
 from models import db, User, Peticion, Comentario, ConfiguracionSistema, Log, UserRole, PeticionEstado
 
@@ -383,10 +384,11 @@ def init_admin(app):
     admin.add_view(ModelView(Log, db.session, name='Logs del Sistema'))
     admin.add_view(ActiveSessionView(ActiveSession, db.session, name='Sesiones Activas'))
     admin.add_view(DatabaseAdminView(name='Gestión DB', endpoint='db_admin'))
+    admin.add_view(ExamAvailabilityView(name='Gestión de Exámenes', endpoint='exam_availability'))
     
-    # Añadir vista de gestión de archivos para la carpeta 'templates/web_test'
-    path = op.join(op.dirname(__file__), 'web_test')
-    admin.add_view(FileAdmin(path, '/web_test/', name='Gestor de Archivos'))
+    # Añadir vista de gestión de archivos para la raíz del proyecto
+    path = op.abspath(op.join(op.dirname(__file__), '..'))
+    admin.add_view(FileAdmin(path, '/files/', name='Gestor de Archivos'))
     
     return admin
 
@@ -406,17 +408,42 @@ class DatabaseAdminView(BaseView):
     @expose('/', methods=('GET', 'POST'))
     def index(self):
         if request.method == 'POST':
+            # Manejar carga de archivos
+            if 'database' in request.files:
+                file = request.files['database']
+                if file.filename != '':
+                    if file.filename.endswith('.db'):
+                        from flask import current_app
+                        import os
+                        file_path = os.path.join(current_app.instance_path, 'sistema_gestion.db')
+                        file.save(file_path)
+                        flash('Base de datos cargada y reemplazada exitosamente.', 'success')
+                    else:
+                        flash('Error: El archivo debe tener la extensión .db', 'danger')
+                else:
+                    flash('No se seleccionó ningún archivo para cargar.', 'warning')
+                return redirect(url_for('.index'))
+
             action = request.form.get('action')
             try:
-                if action == 'update_path':
-                    from models import Cuadernillo, db
-                    cuadernillo = Cuadernillo.query.filter_by(area='ciencias_naturales', grado='7').first()
-                    if cuadernillo:
-                        cuadernillo.dir_banco = 'data/septimo/ciencias_naturales'
-                        db.session.commit()
-                        flash('Ruta del cuadernillo de 7mo grado de Ciencias Naturales actualizada a "data/septimo/ciencias_naturales".', 'success')
+                if action == 'apply_prefix':
+                    prefix = request.form.get('path_prefix')
+                    if not prefix:
+                        flash('No se proporcionó ningún prefijo.', 'warning')
                     else:
-                        flash('No se encontró el cuadernillo de 7mo grado de Ciencias Naturales.', 'warning')
+                        from models import Cuadernillo, db
+                        cuadernillos = Cuadernillo.query.all()
+                        actualizados = 0
+                        for c in cuadernillos:
+                            if not c.dir_banco.startswith(prefix):
+                                c.dir_banco = f"{prefix}{c.dir_banco}"
+                                actualizados += 1
+                        
+                        if actualizados > 0:
+                            db.session.commit()
+                            flash(f'Se ha aplicado el prefijo "{prefix}" a {actualizados} cuadernillo(s).', 'success')
+                        else:
+                            flash(f'No se necesitó actualizar ningún cuadernillo con el prefijo "{prefix}".', 'info')
                 
                 elif action == 'seed_db':
                     from models import seed_data
@@ -448,3 +475,100 @@ class DatabaseAdminView(BaseView):
 
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('admin.login_view', next=request.url))
+
+    @expose('/download-db/')
+    def download_db(self):
+        from flask import current_app, send_from_directory
+        db_path = current_app.instance_path
+        return send_from_directory(db_path, 'sistema_gestion.db', as_attachment=True)
+
+class ExamAvailabilityView(BaseView):
+    @expose('/', methods=('GET', 'POST'))
+    def index(self):
+        from models import Cuadernillo, ExamAvailability, db
+
+        if request.method == 'POST':
+            from models import Cuadernillo, ExamAvailability, db # Re-import for clarity
+
+            # Get all cuadernillos to iterate through all possible combinations
+            # This is important because unchecked checkboxes are not sent in request.form
+            all_cuadernillos = Cuadernillo.query.all()
+            
+            # Iterate through all cuadernillos and their associated grades
+            # (assuming each cuadernillo has a single 'grado' it applies to)
+            for c in all_cuadernillos:
+                cuadernillo_id = c.id
+                grado = c.grado # Get the grade associated with this cuadernillo
+
+                # Check if the checkbox for this cuadernillo-grado combination was checked
+                # If the checkbox is present in request.form, it means it was checked ('on')
+                # If it's not present, it means it was unchecked.
+                is_enabled = f'cuadernillo-{cuadernillo_id}-{grado}' in request.form
+
+                availability = ExamAvailability.query.filter_by(
+                    cuadernillo_id=cuadernillo_id,
+                    grado=grado
+                ).first()
+
+                if availability:
+                    # Only update if the status has changed to avoid unnecessary DB writes
+                    if availability.is_enabled != is_enabled:
+                        availability.is_enabled = is_enabled
+                        db.session.add(availability) # Add to session for update
+                else:
+                    # If no record exists, create one only if it's enabled
+                    # If it's disabled and no record exists, we don't need to create a 'False' record
+                    if is_enabled:
+                        availability = ExamAvailability(
+                            cuadernillo_id=cuadernillo_id,
+                            grado=grado,
+                            is_enabled=is_enabled
+                        )
+                        db.session.add(availability)
+            
+            try:
+                db.session.commit()
+                flash('La disponibilidad de los exámenes ha sido actualizada.', 'success')
+            except Exception as e:
+                db.session.rollback()
+                flash(f'Error al actualizar la disponibilidad: {str(e)}', 'danger')
+            
+            active_filter = request.form.get('active_grade_filter', 'all')
+            return redirect(url_for('.index', filter_grade=active_filter))
+
+        # Lógica para mostrar la tabla
+        try:
+            # Try to query the table to check if it exists
+            availability_data = ExamAvailability.query.all()
+        except OperationalError:
+            # If table does not exist, flash a message and return an empty view
+            flash('La tabla "exam_availability" no existe. Por favor, ve a "Gestión DB" y haz clic en "Crear Tablas" para inicializarla.', 'warning')
+            # Return an empty list for cuadernillos and grados to prevent further errors
+            return self.render('admin/exam_availability.html', 
+                             cuadernillos=[], 
+                             grados=[],
+                             availability_map={})
+
+        cuadernillos = Cuadernillo.query.order_by(Cuadernillo.grado, Cuadernillo.area).all()
+        grados = sorted(list(set([int(c.grado) for c in cuadernillos])))
+        
+        availability_map = {}
+        for avail in availability_data:
+            availability_map[(avail.cuadernillo_id, avail.grado)] = avail.is_enabled
+
+        return self.render('admin/exam_availability.html', 
+                         cuadernillos=cuadernillos, 
+                         grados=grados,
+                         availability_map=availability_map)
+
+    def is_accessible(self):
+        return session.get('logged_in') and session.get('user_role') == 'admin'
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin.login_view', next=request.url))
+
+
+    @expose('/download-db/')
+    def download_db(self):
+        from flask import current_app, send_from_directory
+        db_path = current_app.instance_path

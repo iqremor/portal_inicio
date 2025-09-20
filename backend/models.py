@@ -237,6 +237,19 @@ class ActiveSession(db.Model):
     def __repr__(self):
         return f'<ActiveSession para {self.user.username}>'
 
+class ExamAvailability(db.Model):
+    __tablename__ = 'exam_availability'
+    id = db.Column(db.Integer, primary_key=True)
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey('cuadernillos.id'), nullable=False)
+    grado = db.Column(db.String(50), nullable=False)
+    is_enabled = db.Column(db.Boolean, default=True, nullable=False)
+
+    # Unique constraint to avoid duplicate entries
+    __table_args__ = (db.UniqueConstraint('cuadernillo_id', 'grado', name='_cuadernillo_grado_uc'),)
+
+    cuadernillo = db.relationship('Cuadernillo')
+
+
 # Función para inicializar la base de datos
 def init_db(app):
     """Inicializa la base de datos con la aplicación Flask"""

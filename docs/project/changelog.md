@@ -241,3 +241,17 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
    4. Refinar la Gestión de Sesiones (Seguridad):
    5. Habilitar Gestión de Exámenes desde el Panel Admin:
    6. Mejorar Gestión de Sesiones desde el Panel Admin:
+
+## Sesión 10 - 20 de septiembre de 2025
+### Objetivos de la sesión:
+- 
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+### Finalización: [PENDIENTE]

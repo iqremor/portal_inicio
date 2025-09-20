@@ -9,7 +9,7 @@ from flask import (
     render_template_string, session, redirect, url_for, request, render_template
 )
 import json
-from models import db, User, UserRole, ConfiguracionSistema, Cuadernillo, ActiveSession
+from models import db, User, UserRole, ConfiguracionSistema, Cuadernillo, ActiveSession, UserCuadernilloActivation
 import secrets
 
 # Función para cargar los usuarios desde el archivo JSON
@@ -226,11 +226,25 @@ def get_examenes_por_grado(grado):
     Devuelve una lista de TODOS los exámenes (cuadernillos) para un grado específico.
     Ahora incluye los activos y los inactivos para que el frontend decida cómo mostrarlos.
     """
-    # Se elimina el filtro `activo=True` para obtener todos los cuadernillos del grado.
+    user_codigo = request.args.get('user_codigo')
+    if not user_codigo:
+        return jsonify({"error": "Código de usuario no proporcionado"}), 400
+
+    user = User.query.filter_by(codigo=user_codigo).first()
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
     examenes = Cuadernillo.query.filter_by(grado=grado).all()
     
-    # Convertir los objetos a una lista de diccionarios
-    examenes_dict = [examen.to_dict() for examen in examenes]
+    examenes_dict = []
+    for examen in examenes:
+        examen_data = examen.to_dict()
+        activation = UserCuadernilloActivation.query.filter_by(
+            user_id=user.id,
+            cuadernillo_id=examen.id
+        ).first()
+        examen_data['activo'] = activation.is_active if activation else False
+        examenes_dict.append(examen_data)
     
     return jsonify(examenes_dict)
 

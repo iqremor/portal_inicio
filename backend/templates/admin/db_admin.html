@@ -9,17 +9,47 @@
     <div class="col-md-6">
       <div class="card">
         <div class="card-header">
+          <h4>Cargar y Descargar DB</h4>
+        </div>
+        <div class="card-body">
+          <!-- Cargar DB -->
+          <div class="action-item">
+            <h5>Cargar Nueva Base de Datos</h5>
+            <p class="text-danger"><strong>¡Advertencia!</strong> Esto reemplazará la base de datos actual con el archivo que subas. Se perderán todos los datos existentes.</p>
+            <form method="POST" enctype="multipart/form-data" onsubmit="return confirm('¿Estás seguro de que quieres reemplazar la base de datos actual? Esta acción no se puede deshacer.');">
+              <div class="form-group">
+                <input type="file" name="database" class="form-control-file" accept=".db">
+              </div>
+              <button type="submit" class="btn btn-warning">Cargar y Reemplazar</button>
+            </form>
+          </div>
+          <hr>
+          <!-- Descargar DB -->
+          <div class="action-item">
+            <h5>Descargar Copia de Seguridad</h5>
+            <p>Descarga una copia del archivo de la base de datos actual (<code>sistema_gestion.db</code>).</p>
+            <a href="{{ url_for('db_admin.download_db') }}" class="btn btn-success">Descargar Base de Datos</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
           <h4>Acciones Comunes</h4>
         </div>
         <div class="card-body">
           
-          <!-- Acción: Corregir Ruta -->
+          <!-- Acción: Corregir Rutas con Prefijo -->
           <div class="action-item">
-            <h5>Corregir Ruta del Cuadernillo de 7mo Grado</h5>
-            <p>Actualiza la ruta (`dir_banco`) del cuadernillo de Ciencias Naturales de 7mo grado al valor correcto: <code>data/septimo/ciencias_naturales</code>.</p>
-            <form method="POST" action="{{ url_for('.index') }}" onsubmit="return confirm('¿Estás seguro de que quieres actualizar esta ruta?');">
-              <input type="hidden" name="action" value="update_path">
-              <button type="submit" class="btn btn-primary">Ejecutar Corrección</button>
+            <h5>Añadir Prefijo a Rutas de Cuadernillos</h5>
+            <p>Escribe un prefijo (ej: <code>data/</code>) para añadirlo a todas las rutas de cuadernillos que no lo tengan. Útil para correcciones masivas.</p>
+            <form method="POST" action="{{ url_for('.index') }}" onsubmit="return confirm('¿Estás seguro de que quieres aplicar este prefijo a las rutas de la base de datos?');">
+              <input type="hidden" name="action" value="apply_prefix">
+              <div class="form-group">
+                <label for="path_prefix">Prefijo a aplicar:</label>
+                <input type="text" name="path_prefix" id="path_prefix" class="form-control" placeholder="ej: data/">
+              </div>
+              <button type="submit" class="btn btn-primary">Aplicar Prefijo</button>
             </form>
           </div>
 

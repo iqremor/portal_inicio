@@ -25,6 +25,13 @@ def start_examen():
     if not cuadernillo:
         return jsonify({"error": f"No se encontró un cuadernillo para el área '{area_id}' y grado '{grade}'"}), 404
 
+    # Verificar disponibilidad del examen
+    from models import ExamAvailability
+    availability = ExamAvailability.query.filter_by(cuadernillo_id=cuadernillo.id, grado=grade).first()
+    if availability and not availability.is_enabled:
+        return jsonify({"error": "Este examen no está disponible en este momento."}), 403
+
+
     # --- INICIO DE LA MODIFICACIÓN ---
     # 1. Encontrar al usuario y su sesión activa
     user = User.query.filter_by(codigo=user_codigo).first()

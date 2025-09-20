@@ -125,12 +125,15 @@ class Dashboard {
     }
 
     async loadExamsForGrade(grade) {
+        console.log('Solicitando exámenes para el grado:', grade);
         try {
-            const response = await fetch(`/api/examenes/grado/${grade}`);
+            const userCodigo = this.currentUser.codigo; // Obtener el código del usuario
+            const response = await fetch(`/api/examenes/grado/${grade}?user_codigo=${userCodigo}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const exams = await response.json();
+            console.log('Respuesta de la API de exámenes:', exams);
             this.renderExamCards(exams);
         } catch (error) {
             console.error('Error loading exams for grade:', error);
@@ -139,17 +142,27 @@ class Dashboard {
     }
 
     renderExamCards(exams) {
+        console.log('Exámenes recibidos:', JSON.stringify(exams, null, 2));
         const activitiesSection = document.querySelector('.activities-section');
         if (!activitiesSection) return;
 
-        activitiesSection.innerHTML = '';
-
-        if (exams.length === 0) {
-            activitiesSection.innerHTML = `<div class="no-exams"><i class="fas fa-book-open"></i><p>No hay exámenes disponibles para tu grado.</p></div>`;
-            return;
+        let examsContainer = activitiesSection.querySelector('.exams-container');
+        if (!examsContainer) {
+            examsContainer = document.createElement('div');
+            examsContainer.classList.add('exams-container');
+            activitiesSection.appendChild(examsContainer);
+        } else {
+            examsContainer.innerHTML = ''; // Limpiar exámenes existentes si se recargan
         }
 
-        exams.forEach(exam => {
+    const enabledExams = exams.filter(exam => exam.activo);
+
+    if (enabledExams.length === 0) {
+        examsContainer.innerHTML = '<p class="no-exams-message">No hay exámenes disponibles para tu grado en este momento.</p>';
+        return;
+    }
+
+    enabledExams.forEach(exam => {
             const card = document.createElement('div');
             card.className = 'activity-card';
             const isActive = exam.activo; // Usar el flag 'activo' que viene del backend
