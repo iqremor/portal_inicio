@@ -1,0 +1,86 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <h1>Gestión de la Base de Datos</h1>
+  <p class="lead">Ejecuta tareas de mantenimiento y administración sobre la base de datos.</p>
+
+  <div class="row">
+    <!-- Columna de Acciones Comunes -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h4>Acciones Comunes</h4>
+        </div>
+        <div class="card-body">
+          
+          <!-- Acción: Corregir Ruta -->
+          <div class="action-item">
+            <h5>Corregir Ruta del Cuadernillo de 7mo Grado</h5>
+            <p>Actualiza la ruta (`dir_banco`) del cuadernillo de Ciencias Naturales de 7mo grado al valor correcto: <code>data/septimo/ciencias_naturales</code>.</p>
+            <form method="POST" action="{{ url_for('.index') }}" onsubmit="return confirm('¿Estás seguro de que quieres actualizar esta ruta?');">
+              <input type="hidden" name="action" value="update_path">
+              <button type="submit" class="btn btn-primary">Ejecutar Corrección</button>
+            </form>
+          </div>
+
+          <hr>
+
+          <!-- Acción: Poblar DB -->
+          <div class="action-item">
+            <h5>Poblar Base de Datos (Seed)</h5>
+            <p>Ejecuta el script <code>seed_data()</code> para añadir los datos iniciales al sistema (usuarios, configuraciones, etc.). Es seguro ejecutarlo varias veces.</p>
+            <form method="POST" action="{{ url_for('.index') }}" onsubmit="return confirm('¿Estás seguro de que quieres poblar la base de datos con datos iniciales?');">
+              <input type="hidden" name="action" value="seed_db">
+              <button type="submit" class="btn btn-info">Poblar Base de Datos</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna de Acciones Peligrosas -->
+    <div class="col-md-6">
+      <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+          <h4>Acciones Peligrosas</h4>
+        </div>
+        <div class="card-body">
+
+          <!-- Acción: Crear Tablas -->
+          <div class="action-item">
+            <h5>Crear Todas las Tablas</h5>
+            <p>Ejecuta <code>create_all()</code> para crear las tablas definidas en los modelos. No afectará las tablas existentes.</p>
+            <form method="POST" action="{{ url_for('.index') }}" onsubmit="return confirm('¿Estás seguro de que quieres intentar crear las tablas?');">
+              <input type="hidden" name="action" value="create_tables">
+              <button type="submit" class="btn btn-warning">Crear Tablas</button>
+            </form>
+          </div>
+
+          <hr>
+
+          <!-- Acción: Eliminar Tablas -->
+          <div class="action-item">
+            <h5 class="text-danger">Eliminar Todas las Tablas</h5>
+            <p><strong>¡CUIDADO!</strong> Ejecuta <code>drop_all()</code>. Esto eliminará permanentemente todas las tablas y sus datos de la base de datos.</p>
+            <form method="POST" action="{{ url_for('.index') }}" onsubmit="return confirm('¡ADVERTENCIA! Estás a punto de eliminar TODAS las tablas y datos. Esta acción no se puede deshacer. ¿Estás completamente seguro?');">
+              <input type="hidden" name="action" value="drop_tables">
+              <button type="submit" class="btn btn-danger">Eliminar Todas las Tablas</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .action-item {
+      margin-bottom: 1.5rem;
+    }
+    .card {
+      margin-bottom: 1.5rem;
+    }
+  </style>
+
+{% endblock %}

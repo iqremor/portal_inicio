@@ -43,7 +43,14 @@ def start_examen():
 
     # Generar la lista de posibles preguntas
     total_preguntas = cuadernillo.total_preguntas_banco
-    base_path = f"/static/{cuadernillo.dir_banco}"
+    
+    if cuadernillo.dir_banco.startswith('data/'):
+        # Nuevo sistema: Servir desde el blueprint de data
+        path_sin_prefijo = cuadernillo.dir_banco.replace('data/', '', 1)
+        base_path = f"/data_files/{path_sin_prefijo}"
+    else:
+        # Sistema antiguo: Servir desde la carpeta static
+        base_path = f"/static/{cuadernillo.dir_banco}"
     
     image_filenames = [f"pregunta_{i:02d}.jpg" for i in range(1, total_preguntas + 1)]
     
@@ -93,3 +100,61 @@ def submit_exam():
     
     print(f"Recibido para guardar: {data}")
     return jsonify({"message": "Examen recibido", "score": 0})
+
+from functools import wraps
+from flask import session, redirect, url_for, flash
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in') or session.get('user_role') != 'admin':
+            flash('Se requieren permisos de administrador para esta acción.', 'danger')
+            return redirect(url_for('admin.login_view'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@api_bp.route('/users/<int:user_id>/cuadernillos/<int:cuadernillo_id>/toggle-activation', methods=['POST'])
+@admin_required
+def toggle_cuadernillo_activation(user_id, cuadernillo_id):
+    """
+    Activa o desactiva un cuadernillo para un usuario específico.
+    """
+    from models import UserCuadernilloActivation
+
+    # Verificar que el usuario y el cuadernillo existen
+    user = User.query.get(user_id)
+    cuadernillo = Cuadernillo.query.get(cuadernillo_id)
+
+    if not user or not cuadernillo:
+        return jsonify({"success": False, "message": "Usuario o cuadernillo no encontrado."}), 404
+
+    # Buscar el registro de activación
+    activation = UserCuadernilloActivation.query.filter_by(
+        user_id=user_id,
+        cuadernillo_id=cuadernillo_id
+    ).first()
+
+    if activation:
+        # Si existe, cambiar el estado
+        activation.is_active = not activation.is_active
+        new_status = activation.is_active
+    else:
+        # Si no existe, crear uno nuevo y activarlo
+        activation = UserCuadernilloActivation(
+            user_id=user_id,
+            cuadernillo_id=cuadernillo_id,
+            is_active=True
+        )
+        db.session.add(activation)
+        new_status = True
+
+    try:
+        db.session.commit()
+        return jsonify({
+            "success": True,
+            "message": f"Estado de activación del cuadernillo cambiado a {'Activo' if new_status else 'Inactivo'}.",
+            "is_active": new_status
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "message": f"Error al actualizar la base de datos: {str(e)}"}), 500

@@ -98,6 +98,15 @@ class Cuadernillo(db.Model):
             'total_preguntas_banco': self.total_preguntas_banco
         }
 
+class UserCuadernilloActivation(db.Model):
+    __tablename__ = 'user_cuadernillo_activation'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey('cuadernillos.id'), primary_key=True)
+    is_active = db.Column(db.Boolean, default=False, nullable=False)
+
+    user = db.relationship('User', backref=db.backref('cuadernillo_activations', cascade="all, delete-orphan"))
+    cuadernillo = db.relationship('Cuadernillo', backref=db.backref('user_activations', cascade="all, delete-orphan"))
+
 class Peticion(db.Model):
     __tablename__ = 'peticiones'
     

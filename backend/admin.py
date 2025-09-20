@@ -119,6 +119,7 @@ class UserModelView(ModelView):
     column_searchable_list = ['username']
     column_filters = ['role', 'is_active', 'created_at']
     column_editable_list = ['is_active', 'role']
+    edit_template = 'admin/user/edit.html'
     
     def is_accessible(self):
         """Verifica si el usuario tiene acceso al panel de administración"""
@@ -198,6 +199,23 @@ class UserModelView(ModelView):
         else:
             self.after_model_change(form, model, False)
         return True
+
+    def edit_form(self, obj=None):
+        form = super(UserModelView, self).edit_form(obj)
+        from models import Cuadernillo, UserCuadernilloActivation
+
+        # Obtener todos los cuadernillos
+        todos_los_cuadernillos = Cuadernillo.query.all()
+
+        # Obtener las activaciones para el usuario actual
+        activaciones = UserCuadernilloActivation.query.filter_by(user_id=obj.id).all()
+        activaciones_dict = {act.cuadernillo_id: act.is_active for act in activaciones}
+
+        # Añadir información al formulario para que esté disponible en la plantilla
+        form.cuadernillos = todos_los_cuadernillos
+        form.activaciones = activaciones_dict
+
+        return form
 
 # Vista personalizada para peticiones
 class PeticionModelView(ModelView):
@@ -364,6 +382,7 @@ def init_admin(app):
     admin.add_view(ConfiguracionSistemaView(ConfiguracionSistema, db.session, name='Configuración'))
     admin.add_view(ModelView(Log, db.session, name='Logs del Sistema'))
     admin.add_view(ActiveSessionView(ActiveSession, db.session, name='Sesiones Activas'))
+    admin.add_view(DatabaseAdminView(name='Gestión DB', endpoint='db_admin'))
     
     # Añadir vista de gestión de archivos para la carpeta 'templates/web_test'
     path = op.join(op.dirname(__file__), 'web_test')
@@ -382,3 +401,50 @@ class AdminDashboardView(BaseView):
 
 # La plantilla del dashboard ahora se carga desde templates/admin/index.html
 # y ya no es necesario generarla desde aquí. El código anterior ha sido eliminado.
+
+class DatabaseAdminView(BaseView):
+    @expose('/', methods=('GET', 'POST'))
+    def index(self):
+        if request.method == 'POST':
+            action = request.form.get('action')
+            try:
+                if action == 'update_path':
+                    from models import Cuadernillo, db
+                    cuadernillo = Cuadernillo.query.filter_by(area='ciencias_naturales', grado='7').first()
+                    if cuadernillo:
+                        cuadernillo.dir_banco = 'data/septimo/ciencias_naturales'
+                        db.session.commit()
+                        flash('Ruta del cuadernillo de 7mo grado de Ciencias Naturales actualizada a "data/septimo/ciencias_naturales".', 'success')
+                    else:
+                        flash('No se encontró el cuadernillo de 7mo grado de Ciencias Naturales.', 'warning')
+                
+                elif action == 'seed_db':
+                    from models import seed_data
+                    seed_data()
+                    flash('La base de datos ha sido poblada con datos iniciales (seeding).', 'success')
+
+                elif action == 'create_tables':
+                    from models import create_tables
+                    create_tables()
+                    flash('Todas las tablas han sido creadas en la base de datos.', 'success')
+
+                elif action == 'drop_tables':
+                    from models import drop_tables
+                    drop_tables()
+                    flash('¡ADVERTENCIA! Todas las tablas han sido eliminadas de la base de datos.', 'danger')
+                
+                else:
+                    flash('Acción desconocida.', 'danger')
+
+            except Exception as e:
+                flash(f'Ocurrió un error: {str(e)}', 'danger')
+
+            return redirect(url_for('.index'))
+
+        return self.render('admin/db_admin.html')
+
+    def is_accessible(self):
+        return session.get('logged_in') and session.get('user_role') == 'admin'
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin.login_view', next=request.url))
