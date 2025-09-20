@@ -116,6 +116,7 @@ def validar_usuario():
         # --- FIN DE LA MODIFICACIÓN ---
         return jsonify({
             "permitido": True,
+            "session_id": new_session.session_id, # Devolver el session_id
             "usuario": {
                 "codigo": user.codigo,
                 "nombre_completo": user.nombre_completo,
@@ -243,7 +244,25 @@ def get_examenes_por_grado(grado):
             user_id=user.id,
             cuadernillo_id=examen.id
         ).first()
-        examen_data['activo'] = activation.is_active if activation else False
+        # 1. Verificar UserCuadernilloActivation (específico del usuario)
+        user_activation = UserCuadernilloActivation.query.filter_by(
+            user_id=user.id,
+            cuadernillo_id=examen.id
+        ).first()
+        # Si no hay un registro específico para el usuario, asumimos que está activo por defecto
+        is_user_active = user_activation.is_active if user_activation else True 
+
+        # 2. Verificar ExamAvailability (general)
+        from models import ExamAvailability 
+        exam_availability = ExamAvailability.query.filter_by(
+            cuadernillo_id=examen.id,
+            grado=examen.grado 
+        ).first()
+        # Si no hay un registro de disponibilidad general, asumimos que está habilitado
+        is_general_available = exam_availability.is_enabled if exam_availability else True 
+
+        # El examen está activo si AMBAS condiciones son verdaderas
+        examen_data['activo'] = is_user_active and is_general_available
         examenes_dict.append(examen_data)
     
     return jsonify(examenes_dict)

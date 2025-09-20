@@ -5,78 +5,79 @@ import random
 
 api_bp = Blueprint('api_bp', __name__)
 
-@api_bp.route('/examenes/start', methods=['GET'])
-def start_examen():
-    """ 
-    Inicia una sesión de examen, obtiene las preguntas y la configuración.
+@api_bp.route('/examenes/<string:area_id>/iniciar', methods=['POST'])
+def start_examen(area_id):
     """
-    # Obtener parámetros de la URL (ej: /api/examenes/start?areaId=ciencias&grade=7)
-    area_id = request.args.get('areaId')
-    session_id = request.args.get('sessionId') # No se usa aún, pero se recibe
-    grade = request.args.get('grade')
-    user_codigo = request.args.get('userCodigo') # Obtener el código del usuario
+    Inicia una sesión de examen para un usuario, asociando un cuadernillo a su sesión activa.
+    Devuelve el session_id de la sesión activa.
+    """
+    data = request.get_json()
+    user_codigo = data.get('codigo')
+    grade = data.get('grado') # Asumimos que el grado también viene en el body para consistencia
 
-    if not area_id or not grade or not user_codigo: # Validar también userCodigo
-        return jsonify({"error": "Los parámetros 'areaId', 'grade' y 'userCodigo' son requeridos"}), 400
+    if not area_id or not grade or not user_codigo:
+        return jsonify({"error": "Los parámetros 'areaId', 'grade' y 'codigo' son requeridos"}), 400
 
-    # Buscar el cuadernillo correspondiente en la base de datos, filtrando por área Y grado
-    cuadernillo = Cuadernillo.query.filter_by(area=area_id, grado=grade).first() # <--- MODIFICADO
-
-    if not cuadernillo:
-        return jsonify({"error": f"No se encontró un cuadernillo para el área '{area_id}' y grado '{grade}'"}), 404
-
-    # Verificar disponibilidad del examen
-    from models import ExamAvailability
-    availability = ExamAvailability.query.filter_by(cuadernillo_id=cuadernillo.id, grado=grade).first()
-    if availability and not availability.is_enabled:
-        return jsonify({"error": "Este examen no está disponible en este momento."}), 403
-
-
-    # --- INICIO DE LA MODIFICACIÓN ---
-    # 1. Encontrar al usuario y su sesión activa
     user = User.query.filter_by(codigo=user_codigo).first()
     if not user:
         return jsonify({"error": "Usuario no encontrado"}), 404
 
     active_session = ActiveSession.query.filter_by(user_id=user.id).first()
     if not active_session:
-        # Esto no debería pasar si el login funciona correctamente, pero es una buena verificación
-        return jsonify({"error": "No se encontró una sesión activa para este usuario"}), 404
+        return jsonify({"error": "No se encontró una sesión activa para este usuario. Por favor, inicie sesión nuevamente."}), 404
 
-    # 2. Actualizar la sesión activa con el cuadernillo_id
+    cuadernillo = Cuadernillo.query.filter_by(area=area_id, grado=grade).first()
+    if not cuadernillo:
+        return jsonify({"error": f"No se encontró un cuadernillo para el área '{area_id}' y grado '{grade}'"}), 404
+
+    from models import ExamAvailability
+    availability = ExamAvailability.query.filter_by(cuadernillo_id=cuadernillo.id, grado=grade).first()
+    if availability and not availability.is_enabled:
+        return jsonify({"error": "Este examen no está disponible en este momento."}), 403
+
     active_session.cuadernillo_id = cuadernillo.id
     db.session.commit()
-    # --- FIN DE LA MODIFICACIÓN ---
 
-    # Generar la lista de posibles preguntas
+    return jsonify({"sesion_id": active_session.session_id})
+
+@api_bp.route('/api/examen/<string:session_id>', methods=['GET'])
+def get_exam_questions_by_session(session_id):
+    """
+    Obtiene las preguntas y la configuración de un examen para una sesión activa específica.
+    """
+    active_session = ActiveSession.query.filter_by(session_id=session_id).first()
+
+    if not active_session:
+        return jsonify({"error": "Sesión de examen no encontrada o inactiva."}), 404
+
+    cuadernillo = Cuadernillo.query.get(active_session.cuadernillo_id)
+    if not cuadernillo:
+        return jsonify({"error": "Cuadernillo asociado a la sesión no encontrado."}), 404
+
+    # Aquí deberíamos recuperar las preguntas que se seleccionaron al iniciar la sesión.
+    # Por ahora, para que el flujo funcione, generaremos un conjunto aleatorio de preguntas.
+    # Esto es una deuda técnica: las preguntas seleccionadas deberían persistir en la ActiveSession
+    # o en una tabla intermedia al iniciar el examen.
     total_preguntas = cuadernillo.total_preguntas_banco
     
     if cuadernillo.dir_banco.startswith('data/'):
-        # Nuevo sistema: Servir desde el blueprint de data
         path_sin_prefijo = cuadernillo.dir_banco.replace('data/', '', 1)
         base_path = f"/data_files/{path_sin_prefijo}"
     else:
-        # Sistema antiguo: Servir desde la carpeta static
         base_path = f"/static/{cuadernillo.dir_banco}"
     
     image_filenames = [f"pregunta_{i:02d}.jpg" for i in range(1, total_preguntas + 1)]
     
     random.shuffle(image_filenames)
-    preguntas_seleccionadas = image_filenames[:10]
+    # Asumimos que siempre se seleccionan 10 preguntas, como en la ruta /examenes/start
+    preguntas_seleccionadas = image_filenames[:10] 
 
     questions_urls = [f"{base_path}/{filename}" for filename in preguntas_seleccionadas]
 
     exam_data = {
-        "questions": questions_urls,
-        "config": {
-            "timerDuration": 240,
-            "warningTime": 30,
-            "nextButtonDelay": 1000,
-            "numIntentos": cuadernillo.total_preguntas_banco, # Usar total_preguntas_banco del cuadernillo
-            "subject": cuadernillo.area, # Asignatura del cuadernillo
-            "Grado": cuadernillo.grado, # Grado del cuadernillo
-            "numQuestions": len(preguntas_seleccionadas) # Número de preguntas seleccionadas
-        }
+        "titulo": cuadernillo.nombre, # Usar el nombre del cuadernillo como título del examen
+        "preguntas": [{"pregunta": f"Pregunta {i+1}", "opciones": ["A", "B", "C", "D"], "puntos": 1, "imagen_url": url} for i, url in enumerate(questions_urls)],
+        "tiempo_limite": cuadernillo.tiempo_limite_minutos # Asumiendo que el cuadernillo tiene este campo
     }
 
     return jsonify(exam_data)

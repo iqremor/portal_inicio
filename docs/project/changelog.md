@@ -254,4 +254,4 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
     - Dependencias no auditadas.
     - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
 - Tests: No hay testing framework configurado.
-### Finalización: [PENDIENTE]
+### Finalización: [PENDIENTE]clear
