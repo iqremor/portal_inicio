@@ -13,6 +13,10 @@
 
 {# 3. Definir el contenido principal de la página #}
 {% block body %}
+<div class="admin-container">
+  <aside class="sidebar">
+    {% include 'admin/_menu.html' %}
+  </aside>
   <main class="main-content">
     <header class="topbar">
         <div class="brand">
@@ -130,6 +134,7 @@
     </footer>
 
   </main>
+</div>
 {% endblock %}
 
 {# 4. Añadir nuestro JavaScript personalizado #}
