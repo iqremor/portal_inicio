@@ -76,8 +76,18 @@ def get_exam_questions_by_session(session_id):
 
     exam_data = {
         "titulo": cuadernillo.nombre, # Usar el nombre del cuadernillo como título del examen
-        "preguntas": [{"pregunta": f"Pregunta {i+1}", "opciones": ["A", "B", "C", "D"], "puntos": 1, "imagen_url": url} for i, url in enumerate(questions_urls)],
-        "tiempo_limite": cuadernillo.tiempo_limite_minutos # Asumiendo que el cuadernillo tiene este campo
+        "dir_banco": cuadernillo.dir_banco, # Añadir dir_banco
+        "total_preguntas_banco": cuadernillo.total_preguntas_banco, # Añadir total_preguntas_banco
+        "tiempo_limite": cuadernillo.tiempo_limite_minutos, # Asumiendo que el cuadernillo tiene este campo
+        "config": { # Añadir la configuración esperada por el frontend
+            "timerDuration": cuadernillo.tiempo_limite_minutos,
+            "warningTime": 30, # Valor fijo o configurable
+            "nextButtonDelay": 1000, # Valor fijo o configurable
+            "numIntentos": cuadernillo.total_preguntas_banco, # Usar total_preguntas_banco
+            "subject": cuadernillo.area,
+            "Grado": cuadernillo.grado,
+            "numQuestions": 10 # Asumir 10 preguntas seleccionadas para el examen
+        }
     }
 
     return jsonify(exam_data)

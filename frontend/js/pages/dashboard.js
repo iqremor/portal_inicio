@@ -154,7 +154,7 @@ class Dashboard {
                     ${isActive ? 'Iniciar Examen' : 'No Disponible'}
                 </button>
             `;
-            activitiesSection.appendChild(card);
+            examsContainer.appendChild(card);
         });
 
         // Añadir event listeners a los botones

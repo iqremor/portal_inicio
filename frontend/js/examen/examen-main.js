@@ -2,7 +2,7 @@ import { setup as setupUI, mostrarPaginaInicio, renderizarImagen, mostrarPaginaF
 import { setupQuiz, iniciarQuiz, siguienteImagen, iniciarTemporizador } from './cuestionario.js';
 import { obtenerNumeroDeIntentos } from './storage.js';
 import { state } from './state.js';
-import { fetchUserData } from '../api/index.js';
+import { fetchUserData, getExamQuestions } from '../api/index.js';
 import { checkSession } from '../shared/auth.js'; // <--- NUEVO: Importar checkSession
 
 // Función para mostrar un error de carga y detener la ejecución
@@ -60,17 +60,30 @@ async function main() {
 
         state.attemptCount = await obtenerNumeroDeIntentos(sessionId, areaId);
         
-        // --- MODIFICADO: Mover la llamada a la API aquí para obtener examData antes de mostrarPaginaInicio ---
-        const apiUrl = `/api/examenes/start?sessionId=${sessionId}&areaId=${areaId}&grade=${state.currentUser.grado}&userCodigo=${userCode}`;
-
-        const response = await fetch(apiUrl);
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `Error del servidor: ${response.status}`);
-        }
-        const examData = await response.json();
+        // --- MODIFICADO: Usar la nueva API GET para obtener examData ---
+        const examData = await getExamQuestions(sessionId);
         state.examData = examData; // Guardar examData en el estado para usarlo en handleStartQuiz
+
+        // --- Lógica para construir imageList dinámicamente ---
+        const imageBaseUrl = examData.dir_banco.startsWith('data/') ? 
+                             `/data_files/${examData.dir_banco.replace('data/', '', 1)}` : 
+                             `/static/${examData.dir_banco}`;
+        const totalImages = examData.total_preguntas_banco;
+        const imageList = Array.from({ length: totalImages }, (_, i) => {
+            const num = (i + 1).toString().padStart(2, '0');
+            return `${imageBaseUrl}pregunta_${num}.jpg`;
+        });
+
+        // Función para barajar (copiada de cuestionario.js)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        const shuffledImageList = shuffleArray(imageList);
+        state.imageList = shuffledImageList.slice(0, examData.config.numQuestions); // Seleccionar solo numQuestions
 
         // FIX: Format subject name for display
         if (examData.config && examData.config.subject) {
