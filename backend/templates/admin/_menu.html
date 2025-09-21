@@ -1,32 +1,26 @@
-<aside class="sidebar">
-    {% block head_css %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_custom.css') }}">
-    {% endblock %}
-    <div class="logo-container">
-        <div class="logo">Panel Admin</div>
-    </div>
-    <nav>
-        <ul class="nav-menu">
-            {# El objeto `admin_view.admin` nos da acceso al menú principal #}
-            {% for item in admin_view.admin.menu() %}
-              {# Solo mostramos elementos que no sean categorías vacías #}
-              {% if item.is_visible() and item.is_accessible() %}
-                <li class="nav-item">
-                    <a href="{{ item.get_url() }}" class="nav-link {{ 'active' if item.is_active(admin_view) else '' }}">
-                        {# Intentamos obtener un ícono si está definido, si no, un emoji por defecto #}
-                        {{ item.name }}
-                    </a>
-                </li>
-              {% endif %}
-            {% endfor %}
-        </ul>
-        <ul class="nav-menu">
+<div class="logo-container">
+    <div class="logo">Panel Admin</div>
+</div>
+<nav>
+    <ul class="nav-menu">
+        {# El objeto `admin_view.admin` nos da acceso al menú principal #}
+        {% for item in admin_view.admin.menu() %}
+          {# Solo mostramos elementos que no sean categorías vacías #}
+          {% if item.is_visible() and item.is_accessible() %}
             <li class="nav-item">
-                <a href="{{ url_for('admin.logout_view') }}" class="nav-link">
-                    Cerrar Sesión
+                <a href="{{ item.get_url() }}" class="nav-link {{ 'active' if item.is_active(admin_view) else '' }}">
+                    {# Intentamos obtener un ícono si está definido, si no, un emoji por defecto #}
+                    {{ item.name }}
                 </a>
             </li>
-        </ul>
-    </nav>
-</aside>
+          {% endif %}
+        {% endfor %}
+    </ul>
+    <ul class="nav-menu logout-menu"> {# Added logout-menu class #}
+        <li class="nav-item">
+            <a href="{{ url_for('admin.logout_view') }}" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión {# Added icon #}
+            </a>
+        </li>
+    </ul>
+</nav>

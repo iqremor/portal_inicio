@@ -9,10 +9,11 @@ from flask_admin.model import typefmt # Para formatear tipos de datos en las vis
 from werkzeug.security import generate_password_hash # Para hashear contraseñas
 from wtforms import PasswordField, TextAreaField, SelectField # Para campos de formulario personalizados
 from wtforms.validators import DataRequired, Email # Para validación de formularios
-from datetime import datetime # Para manejar fechas y horas
+from datetime import datetime, timedelta # Para manejar fechas y horas
 import os # Para manejo de rutas y archivos
 import os.path as op
 from flask import redirect, url_for, request, session, flash, render_template # Added session, flash, render_template
+from sqlalchemy.exc import OperationalError # Added for database error handling
 
 from models import db, User, Peticion, Comentario, ConfiguracionSistema, Log, UserRole, PeticionEstado
 
@@ -91,6 +92,7 @@ class MyAdminIndexView(AdminIndexView):
             if user and user.check_password(password):
                 session['logged_in'] = True
                 session['admin_user_id'] = user.id # Store admin user ID in session
+                session['user_role'] = user.role.value # <-- AÑADIR ESTA LÍNEA
                 if self.admin.app.debug:
                     print(f"DEBUG: After setting session['logged_in'] in POST: {session.get('logged_in')}") # Debug print
                     print(f"DEBUG: Full session object after login: {dict(session)}") # Print full session
@@ -118,11 +120,12 @@ class UserModelView(ModelView):
     column_searchable_list = ['username']
     column_filters = ['role', 'is_active', 'created_at']
     column_editable_list = ['is_active', 'role']
+    edit_template = 'admin/user/edit.html'
     
     def is_accessible(self):
         """Verifica si el usuario tiene acceso al panel de administración"""
         from flask import session
-        return session.get('logged_in') and session.get('user_role') == 'ADMIN'
+        return session.get('logged_in') and session.get('user_role') == 'admin'
     
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
@@ -198,6 +201,23 @@ class UserModelView(ModelView):
             self.after_model_change(form, model, False)
         return True
 
+    def edit_form(self, obj=None):
+        form = super(UserModelView, self).edit_form(obj)
+        from models import Cuadernillo, UserCuadernilloActivation
+
+        # Obtener todos los cuadernillos
+        todos_los_cuadernillos = Cuadernillo.query.all()
+
+        # Obtener las activaciones para el usuario actual
+        activaciones = UserCuadernilloActivation.query.filter_by(user_id=obj.id).all()
+        activaciones_dict = {act.cuadernillo_id: act.is_active for act in activaciones}
+
+        # Añadir información al formulario para que esté disponible en la plantilla
+        form.cuadernillos = todos_los_cuadernillos
+        form.activaciones = activaciones_dict
+
+        return form
+
 # Vista personalizada para peticiones
 class PeticionModelView(ModelView):
     # Configuración de columnas
@@ -211,7 +231,7 @@ class PeticionModelView(ModelView):
     def is_accessible(self):
         """Verifica si el usuario tiene acceso al panel de administración"""
         from flask import session
-        return session.get('logged_in') and session.get('user_role') == 'ADMIN'
+        return session.get('logged_in') and session.get('user_role') == 'admin'
     
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
@@ -269,7 +289,7 @@ class ComentarioModelView(ModelView):
     def is_accessible(self):
         """Verifica si el usuario tiene acceso al panel de administración"""
         from flask import session
-        return session.get('logged_in') and session.get('user_role') == 'ADMIN'
+        return session.get('logged_in') and session.get('user_role') == 'admin'
     
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
@@ -301,26 +321,53 @@ class ConfiguracionSistemaView(ModelView):
     def is_accessible(self):
         """Verifica si el usuario tiene acceso al panel de administración"""
         from flask import session
-        return session.get('logged_in') and session.get('user_role') == 'ADMIN'
+        return session.get('logged_in') and session.get('user_role') == 'admin'
     
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
         from flask import redirect, url_for
         return redirect(url_for('web_main.login', next=request.url))
-    # form_args = {
-    #     'descripcion': {
-    #         'render_kw': {
-    #             'style': 'width: 100%'
-    #         }
-    #     }
-    # }
-    # # Hacer la clave de solo lectura en el formulario de edición
-    # form_edit_rules = ('valor', 'descripcion')
-    # form_create_rules = ('clave', 'valor', 'descripcion')
+
+# Vista para Sesiones Activas
+class ActiveSessionView(ModelView):
+    list_template = 'admin/active_session_list.html'
+    # Deshabilitar la creación y edición manual desde el panel
+    can_create = False
+    can_edit = False
+    can_delete = True # Permitir eliminar para forzar el logout
+
+    # Columnas a mostrar en la lista
+    column_list = ('user.nombre_completo', 'login_time', 'last_seen', 'ip_address', 'user_agent', 'cuadernillo.nombre') # Added cuadernillo.nombre
+    
+    # Etiquetas más amigables para las columnas
+    column_labels = {
+        'user.nombre_completo': 'Usuario',
+        'login_time': 'Hora de Inicio',
+        'last_seen': 'Última Actividad',
+        'ip_address': 'Dirección IP',
+        'user_agent': 'Navegador/Dispositivo',
+        'cuadernillo.nombre': 'Examen Actual' # Added label
+    }
+    
+    # Ordenar por defecto por la última actividad
+    column_default_sort = ('last_seen', True)
+
+    # Formateo de fechas
+    column_type_formatters = {
+        datetime: lambda view, value, name: (value - timedelta(hours=5)).strftime('%d/%m/%Y %H:%M:%S') if value else ''
+    }
+
+    def is_accessible(self):
+        """Verifica si el usuario tiene acceso."""
+        return session.get('logged_in') and session.get('user_role') == 'admin'
+    
+    def inaccessible_callback(self, name, **kwargs):
+        """Redirige a la página de login cuando no hay acceso."""
+        return redirect(url_for('web_main.login', next=request.url))
 
 def init_admin(app):
     """Inicializa Flask-Admin."""
-    from models import db, User, Peticion, Comentario, ConfiguracionSistema, Log
+    from models import db, User, Peticion, Comentario, ConfiguracionSistema, Log, ActiveSession
     
     admin = Admin(
         app, 
@@ -335,10 +382,13 @@ def init_admin(app):
     admin.add_view(ComentarioModelView(Comentario, db.session, name='Comentarios'))
     admin.add_view(ConfiguracionSistemaView(ConfiguracionSistema, db.session, name='Configuración'))
     admin.add_view(ModelView(Log, db.session, name='Logs del Sistema'))
+    admin.add_view(ActiveSessionView(ActiveSession, db.session, name='Sesiones Activas'))
+    admin.add_view(DatabaseAdminView(name='Gestión DB', endpoint='db_admin'))
+    admin.add_view(ExamAvailabilityView(name='Gestión de Exámenes', endpoint='exam_availability'))
     
-    # Añadir vista de gestión de archivos para la carpeta 'templates/web_test'
-    path = op.join(op.dirname(__file__), 'web_test')
-    admin.add_view(FileAdmin(path, '/web_test/', name='Gestor de Archivos'))
+    # Añadir vista de gestión de archivos para la raíz del proyecto
+    path = op.abspath(op.join(op.dirname(__file__), '..'))
+    admin.add_view(FileAdmin(path, '/files/', name='Gestor de Archivos'))
     
     return admin
 
@@ -353,3 +403,172 @@ class AdminDashboardView(BaseView):
 
 # La plantilla del dashboard ahora se carga desde templates/admin/index.html
 # y ya no es necesario generarla desde aquí. El código anterior ha sido eliminado.
+
+class DatabaseAdminView(BaseView):
+    @expose('/', methods=('GET', 'POST'))
+    def index(self):
+        if request.method == 'POST':
+            # Manejar carga de archivos
+            if 'database' in request.files:
+                file = request.files['database']
+                if file.filename != '':
+                    if file.filename.endswith('.db'):
+                        from flask import current_app
+                        import os
+                        file_path = os.path.join(current_app.instance_path, 'sistema_gestion.db')
+                        file.save(file_path)
+                        flash('Base de datos cargada y reemplazada exitosamente.', 'success')
+                    else:
+                        flash('Error: El archivo debe tener la extensión .db', 'danger')
+                else:
+                    flash('No se seleccionó ningún archivo para cargar.', 'warning')
+                return redirect(url_for('.index'))
+
+            action = request.form.get('action')
+            try:
+                if action == 'apply_prefix':
+                    prefix = request.form.get('path_prefix')
+                    if not prefix:
+                        flash('No se proporcionó ningún prefijo.', 'warning')
+                    else:
+                        from models import Cuadernillo, db
+                        cuadernillos = Cuadernillo.query.all()
+                        actualizados = 0
+                        for c in cuadernillos:
+                            if not c.dir_banco.startswith(prefix):
+                                c.dir_banco = f"{prefix}{c.dir_banco}"
+                                actualizados += 1
+                        
+                        if actualizados > 0:
+                            db.session.commit()
+                            flash(f'Se ha aplicado el prefijo "{prefix}" a {actualizados} cuadernillo(s).', 'success')
+                        else:
+                            flash(f'No se necesitó actualizar ningún cuadernillo con el prefijo "{prefix}".', 'info')
+                
+                elif action == 'seed_db':
+                    from models import seed_data
+                    seed_data()
+                    flash('La base de datos ha sido poblada con datos iniciales (seeding).', 'success')
+
+                elif action == 'create_tables':
+                    from models import create_tables
+                    create_tables()
+                    flash('Todas las tablas han sido creadas en la base de datos.', 'success')
+
+                elif action == 'drop_tables':
+                    from models import drop_tables
+                    drop_tables()
+                    flash('¡ADVERTENCIA! Todas las tablas han sido eliminadas de la base de datos.', 'danger')
+                
+                else:
+                    flash('Acción desconocida.', 'danger')
+
+            except Exception as e:
+                flash(f'Ocurrió un error: {str(e)}', 'danger')
+
+            return redirect(url_for('.index'))
+
+        return self.render('admin/db_admin.html')
+
+    def is_accessible(self):
+        return session.get('logged_in') and session.get('user_role') == 'admin'
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin.login_view', next=request.url))
+
+    @expose('/download-db/')
+    def download_db(self):
+        from flask import current_app, send_from_directory
+        db_path = current_app.instance_path
+        return send_from_directory(db_path, 'sistema_gestion.db', as_attachment=True)
+
+class ExamAvailabilityView(BaseView):
+    @expose('/', methods=('GET', 'POST'))
+    def index(self):
+        from models import Cuadernillo, ExamAvailability, db
+
+        if request.method == 'POST':
+            from models import Cuadernillo, ExamAvailability, db # Re-import for clarity
+
+            # Get all cuadernillos to iterate through all possible combinations
+            # This is important because unchecked checkboxes are not sent in request.form
+            all_cuadernillos = Cuadernillo.query.all()
+            
+            # Iterate through all cuadernillos and their associated grades
+            # (assuming each cuadernillo has a single 'grado' it applies to)
+            for c in all_cuadernillos:
+                cuadernillo_id = c.id
+                grado = c.grado # Get the grade associated with this cuadernillo
+
+                # Check if the checkbox for this cuadernillo-grado combination was checked
+                # If the checkbox is present in request.form, it means it was checked ('on')
+                # If it's not present, it means it was unchecked.
+                is_enabled = f'cuadernillo-{cuadernillo_id}-{grado}' in request.form
+
+                availability = ExamAvailability.query.filter_by(
+                    cuadernillo_id=cuadernillo_id,
+                    grado=grado
+                ).first()
+
+                if availability:
+                    # Only update if the status has changed to avoid unnecessary DB writes
+                    if availability.is_enabled != is_enabled:
+                        availability.is_enabled = is_enabled
+                        db.session.add(availability) # Add to session for update
+                else:
+                    # If no record exists, create one only if it's enabled
+                    # If it's disabled and no record exists, we don't need to create a 'False' record
+                    if is_enabled:
+                        availability = ExamAvailability(
+                            cuadernillo_id=cuadernillo_id,
+                            grado=grado,
+                            is_enabled=is_enabled
+                        )
+                        db.session.add(availability)
+            
+            try:
+                db.session.commit()
+                flash('La disponibilidad de los exámenes ha sido actualizada.', 'success')
+            except Exception as e:
+                db.session.rollback()
+                flash(f'Error al actualizar la disponibilidad: {str(e)}', 'danger')
+            
+            active_filter = request.form.get('active_grade_filter', 'all')
+            return redirect(url_for('.index', filter_grade=active_filter))
+
+        # Lógica para mostrar la tabla
+        try:
+            # Try to query the table to check if it exists
+            availability_data = ExamAvailability.query.all()
+        except OperationalError:
+            # If table does not exist, flash a message and return an empty view
+            flash('La tabla "exam_availability" no existe. Por favor, ve a "Gestión DB" y haz clic en "Crear Tablas" para inicializarla.', 'warning')
+            # Return an empty list for cuadernillos and grados to prevent further errors
+            return self.render('admin/exam_availability.html', 
+                             cuadernillos=[], 
+                             grados=[],
+                             availability_map={})
+
+        cuadernillos = Cuadernillo.query.order_by(Cuadernillo.grado, Cuadernillo.area).all()
+        grados = sorted(list(set([int(c.grado) for c in cuadernillos])))
+        
+        availability_map = {}
+        for avail in availability_data:
+            availability_map[(avail.cuadernillo_id, avail.grado)] = avail.is_enabled
+
+        return self.render('admin/exam_availability.html', 
+                         cuadernillos=cuadernillos, 
+                         grados=grados,
+                         availability_map=availability_map)
+
+    def is_accessible(self):
+        return session.get('logged_in') and session.get('user_role') == 'admin'
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('admin.login_view', next=request.url))
+
+
+    @expose('/download-db/')
+    def download_db(self):
+        from flask import current_app, send_from_directory
+        db_path = current_app.instance_path

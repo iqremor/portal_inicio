@@ -63,11 +63,7 @@ class Dashboard {
 
     async loadDashboardData() {
         await this.loadExamsForGrade(this.currentUser.grado);
-        const recentResults = await loadRecentResults(this.currentUser.codigo);
-        this.renderRecentResults(recentResults);
     }
-
-    
 
     showExamConfirmation(area) {
         const body = `
@@ -89,48 +85,23 @@ class Dashboard {
 
     async startExam(areaId) {
         try {
-            const examData = await startExam(areaId, this.currentUser.codigo);
+            const examData = await startExam(areaId, this.currentUser.codigo, this.currentUser.grado);
             window.location.href = `/frontend/pages/examen.html?id=${examData.sesion_id}&area=${areaId}`;
         } catch (error) {
             showNotification('Error al iniciar el examen. Intenta nuevamente.', 'error');
         }
     }
 
-    renderRecentResults(results) {
-        const resultsContainer = document.getElementById('resultsContainer');
-        if (!resultsContainer) return;
-
-        if (!results || results.length === 0) {
-            resultsContainer.innerHTML = `<div class="no-results"><i class="fas fa-chart-line"></i><p>Aún no tienes resultados.</p></div>`;
-            return;
-        }
-
-        const resultsGrid = document.createElement('div');
-        resultsGrid.className = 'results-grid';
-        results.slice(0, 3).forEach(result => {
-            const resultCard = document.createElement('div');
-            resultCard.className = 'result-card';
-            resultCard.innerHTML = `
-                <div class="result-header">
-                    <span class="result-area">${result.area}</span>
-                    <span class="result-score">${result.puntuacion}%</span>
-                </div>
-                <div class="result-date">${formatDate(result.fecha)}</div>
-            `;
-            resultsGrid.appendChild(resultCard);
-        });
-
-        resultsContainer.innerHTML = '';
-        resultsContainer.appendChild(resultsGrid);
-    }
-
     async loadExamsForGrade(grade) {
+
         try {
-            const response = await fetch(`/api/examenes/grado/${grade}`);
+            const userCodigo = this.currentUser.codigo; // Obtener el código del usuario
+            const response = await fetch(`/api/examenes/grado/${grade}?user_codigo=${userCodigo}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const exams = await response.json();
+
             this.renderExamCards(exams);
         } catch (error) {
             console.error('Error loading exams for grade:', error);
@@ -139,27 +110,40 @@ class Dashboard {
     }
 
     renderExamCards(exams) {
+
         const activitiesSection = document.querySelector('.activities-section');
         if (!activitiesSection) return;
 
-        activitiesSection.innerHTML = '';
-
-        if (exams.length === 0) {
-            activitiesSection.innerHTML = `<div class="no-exams"><i class="fas fa-book-open"></i><p>No hay exámenes disponibles para tu grado.</p></div>`;
-            return;
+        let examsContainer = activitiesSection.querySelector('.exams-container');
+        if (!examsContainer) {
+            examsContainer = document.createElement('div');
+            examsContainer.classList.add('exams-container');
+            activitiesSection.appendChild(examsContainer);
+        } else {
+            examsContainer.innerHTML = ''; // Limpiar exámenes existentes si se recargan
         }
 
-        exams.forEach(exam => {
+    const enabledExams = exams.filter(exam => exam.activo);
+
+    if (enabledExams.length === 0) {
+        examsContainer.innerHTML = '<p class="no-exams-message">No hay exámenes disponibles para tu grado en este momento.</p>';
+        return;
+    }
+
+    enabledExams.forEach(exam => {
             const card = document.createElement('div');
             card.className = 'activity-card';
             const isActive = exam.activo; // Usar el flag 'activo' que viene del backend
+
+            // FIX: Remove grade from exam name for display
+            const displayName = exam.nombre.split(' - Grado')[0];
 
             card.innerHTML = `
                 <div class="activity-icon">
                     <i class="fas fa-file-alt"></i>
                 </div>
                 <div class="activity-info">
-                    <h3>${exam.nombre}</h3>
+                    <h3>${displayName}</h3>
                     <p>${exam.descripcion}</p>
                 </div>
                 <button 
@@ -170,7 +154,7 @@ class Dashboard {
                     ${isActive ? 'Iniciar Examen' : 'No Disponible'}
                 </button>
             `;
-            activitiesSection.appendChild(card);
+            examsContainer.appendChild(card);
         });
 
         // Añadir event listeners a los botones
@@ -184,9 +168,7 @@ class Dashboard {
                 }
                 
                 const areaId = e.target.getAttribute('data-area-id');
-                // NOTA: El session ID '1' es un placeholder.
-                const sessionId = '1'; 
-                window.location.href = `/frontend/pages/examen.html?area=${areaId}&id=${sessionId}`;
+                this.startExam(areaId); // Llamar a la función startExam de la clase Dashboard
             });
         });
     }
