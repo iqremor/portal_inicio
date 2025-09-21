@@ -2,75 +2,6 @@
 
 [Este archivo contendrá un registro de todos los cambios significativos realizados en el proyecto.]
 
-## Sesión 9 - 17 de septiembre de 2025
-### Objetivos de la sesión:
-- Corregir el error `Uncaught SyntaxError: redeclaration of import state` en `ui.js`.
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
-### Acciones Realizadas:
-- Se identificó que el archivo `frontend/js/examen/ui.js` contenía código duplicado, causando el error de redeclaración de importaciones.
-- Se corrigió el archivo `frontend/js/examen/ui.js` eliminando el contenido duplicado.
-### Finalización: 17 de septiembre de 2025
-
-
-## Sesión 7 - 15 de septiembre de 2025
-### Objetivos de la sesión:
-- Reorganizar el directorio `frontend/js` para mejorar la modularidad y mantenibilidad.
-- Centralizar la funcionalidad de `logout` y la carga dinámica de `header` y `footer` en un único punto de entrada.
-- Crear un módulo `timer.js` para la funcionalidad del cronómetro del examen.
-- Crear un módulo `utils.js` para funciones de utilidad compartidas.
-- Refactorizar los scripts de las páginas para desacoplar la lógica y hacerla más reutilizable.
-
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
-
-### Acciones Realizadas:
-- Se reorganizó la estructura del directorio `frontend/js`, creando subdirectorios `api`, `components`, `pages` y `shared`.
-- Se movieron los archivos JavaScript existentes a sus directorios correspondientes dentro de la nueva estructura.
-- Se centralizó la lógica de carga del `header` y `footer`, y la funcionalidad de `logout` en el archivo `frontend/js/main.js` para evitar duplicación de código.
-- Se eliminó la carga individual de `header` y `footer` de los archivos `dashboard.js` y `login.js`.
-- Se creó el módulo `frontend/js/shared/timer.js` para encapsular toda la lógica del cronómetro del examen.
-- Se creó el módulo `frontend/js/shared/utils.js` para funciones de utilidad (actualmente vacío, preparado para futuro uso).
-- Se refactorizó `frontend/js/pages/exam.js` para importar y utilizar el nuevo módulo `timer.js`.
-- Se actualizaron las rutas de los scripts en los archivos HTML (`login.html`, `dashboard.html`, `examen.html`, `resultados.html`) para reflejar la nueva estructura de directorios.
-- Se eliminaron las funciones `loadHTML` y `logout` de `auth.js` ya que su funcionalidad fue centralizada en `main.js`.
-
-### Finalización: 15 de septiembre de 2025
-
-## Sesión 6 - 15 de septiembre de 2025
-### Objetivos de la sesión:
-- Solucionar el problema de organización de los datos JSON para la inicialización de la base de datos.
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
-### Acciones Realizadas:
-- Refactorización de la estructura de datos de los archivos JSON de semilla (`usuarios.json`, `cuadernillos.json`, `examenes.json`).
-- Creación del modelo `Cuadernillo` en `models.py` para los exámenes estáticos.
-- Actualización del script `seed_db.py` para poblar la base de datos con la nueva estructura de datos.
-- Creación del script `init_db.py` para la inicialización de la base de datos.
-- Corrección de la lógica de relación entre `examenes.json` y `cuadernillos.json`.
-### Finalización: 15 de septiembre de 2025
-
 ## Sesión 1 - 13 de septiembre de 2025
 ### Objetivos de la sesión:
 - Iniciar el análisis del repositorio y configurar el proyecto según la plantilla `GEMINI.md`.
@@ -81,7 +12,6 @@
 - Creación del directorio `prototype/`.
 - Reestructuración de las ramas de Git a `main`, `develop`, `debug`.
 - Identificación de áreas críticas y recomendaciones prioritarias para el proyecto.
-
 ### Estado del Proyecto al Final de la Sesión:
 - **Backend:** Python Flask.
 - **Ramas Git:** `main`, `develop`, `debug` configuradas.
@@ -180,7 +110,7 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 
 ### Finalización: 14 de septiembre de 2025
 
-## Sesión 5 - 14 de septiembre de 2025 
+## Sesión 5 - 14 de septiembre de 2025
 ### Objetivos de la sesión:
 - 
 ### Estado inicial:
@@ -201,6 +131,57 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Aplicación de un color de fondo específico al header, footer y tarjetas.
 - Modificación del estilo de `activities-section` para que se vea como un contenedor transparente con borde blanco.
 - Revisión de rutas y etiquetas en `frontend//**` para asegurar la compatibilidad con la nueva estructura CSS.
+
+## Sesión 6 - 15 de septiembre de 2025
+### Objetivos de la sesión:
+- Solucionar el problema de organización de los datos JSON para la inicialización de la base de datos.
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+### Acciones Realizadas:
+- Refactorización de la estructura de datos de los archivos JSON de semilla (`usuarios.json`, `cuadernillos.json`, `examenes.json`).
+- Creación del modelo `Cuadernillo` en `models.py` para los exámenes estáticos.
+- Actualización del script `seed_db.py` para poblar la base de datos con la nueva estructura de datos.
+- Creación del script `init_db.py` para la inicialización de la base de datos.
+- Corrección de la lógica de relación entre `examenes.json` y `cuadernillos.json`.
+### Finalización: 15 de septiembre de 2025
+
+## Sesión 7 - 15 de septiembre de 2025
+### Objetivos de la sesión:
+- Reorganizar el directorio `frontend/js` para mejorar la modularidad y mantenibilidad.
+- Centralizar la funcionalidad de `logout` y la carga dinámica de `header` y `footer` en un único punto de entrada.
+- Crear un módulo `timer.js` para la funcionalidad del cronómetro del examen.
+- Crear un módulo `utils.js` para funciones de utilidad compartidas.
+- Refactorizar los scripts de las páginas para desacoplar la lógica y hacerla más reutilizable.
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+
+### Acciones Realizadas:
+- Se reorganizó la estructura del directorio `frontend/js`, creando subdirectorios `api`, `components`, `pages` y `shared`.
+- Se movieron los archivos JavaScript existentes a sus directorios correspondientes dentro de la nueva estructura.
+- Se centralizó la lógica de carga del `header` y `footer`, y la funcionalidad de `logout` en el archivo `frontend/js/main.js` para evitar duplicación de código.
+- Se eliminó la carga individual de `header` y `footer` de los archivos `dashboard.js` y `login.js`.
+- Se creó el módulo `frontend/js/shared/timer.js` para encapsular toda la lógica del cronómetro del examen.
+- Se creó el módulo `frontend/js/shared/utils.js` para funciones de utilidad (actualmente vacío, preparado para futuro uso).
+- Se refactorizó `frontend/js/pages/exam.js` para importar y utilizar el nuevo módulo `timer.js`.
+- Se actualizaron las rutas de los scripts en los archivos HTML (`login.html`, `dashboard.html`, `examen.html`, `resultados.html`) para reflejar la nueva estructura de directorios.
+- Se eliminaron las funciones `loadHTML` y `logout` de `auth.js` ya que su funcionalidad fue centralizada en `main.js`.
+
+### Finalización: 15 de septiembre de 2025
 
 ## Sesión 8 - 16 de septiembre de 2025
 ### Objetivos de la sesión:
@@ -233,3 +214,54 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Todas estas funcionalidades serán gestionadas a través del panel de administración de Flask-Admin.
 
 ### Finalización: 16 de septiembre de 2025
+
+## Sesión 9 - 17 de septiembre de 2025
+### Objetivos de la sesión:
+- Corregir el error `Uncaught SyntaxError: redeclaration of import state` en `ui.js`.
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+### Acciones Realizadas:
+- Se identificó que el archivo `frontend/js/examen/ui.js` contenía código duplicado, causando el error de redeclaración de importaciones.
+- Se corrigió el archivo `frontend/js/examen/ui.js` eliminando el contenido duplicado.
+### Finalización: 17 de septiembre de 2025
+- mejoras y tareas para el futuro, basadas en la deuda técnica actual y
+  el trabajo que hemos realizado:
+
+   1. Implementar Herramientas de Calidad de Código y Testing:
+   2. Resolver Deuda Técnica Pendiente de Sesiones Anteriores:
+   3. Mejorar el Monitoreo de Tráfico de Usuarios en el Admin Panel:
+   4. Refinar la Gestión de Sesiones (Seguridad):
+   5. Habilitar Gestión de Exámenes desde el Panel Admin:
+   6. Mejorar Gestión de Sesiones desde el Panel Admin:
+
+## Sesión 10 - 20 de septiembre de 2025
+### Objetivos de la sesión:
+- Solucionado bug de visibilidad de exámenes en el dashboard.
+- Implementado flujo de inicio de examen con `session_id` real.
+- Nuevo bug introducido al iniciar el examen (falta de persistencia de preguntas).
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+### Acciones Realizadas:
+- Ajuste de la lógica en `backend/routes/web_main.py` (`get_examenes_por_grado`) para considerar `UserCuadernilloActivation` y `ExamAvailability`.
+- Modificación de `frontend/js/pages/dashboard.js` para eliminar la lógica de carga y renderización de resultados recientes.
+- Eliminación de `console.log`s de depuración en `frontend/js/pages/dashboard.js`.
+- `backend/routes/web_main.py` (`validar_usuario`) ahora devuelve un `session_id` real al iniciar sesión.
+- `backend/routes/api.py` (`/examenes/<area_id>/iniciar`) ahora asocia el `cuadernillo_id` a la `ActiveSession` y devuelve el `session_id`.
+- `backend/routes/api.py` (`/api/examen/<session_id>`) se añadió para obtener las preguntas de un examen activo usando el `session_id`.
+- `frontend/js/pages/dashboard.js` ahora llama a la API `startExam` para obtener un `session_id` real.
+- `frontend/js/pages/exam.js` ahora obtiene el `userCodigo` del `localStorage` para finalizar el examen.
+### Finalización: 20 de septiembre de 2025

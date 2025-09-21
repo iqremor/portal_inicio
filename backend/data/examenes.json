@@ -4,7 +4,7 @@
     "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
     "grado": "6",
-    "area": "matematicas",
+    "area": "matemáticas",
     "cuadernillo_id": "mat_6_cuad_01"
   },
   "matematicas_grado_7": {

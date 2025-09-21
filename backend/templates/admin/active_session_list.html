@@ -1,0 +1,56 @@
+{% extends 'admin/model/list.html' %}
+
+{# Sobrescribimos el bloque 'body' para añadir nuestros controles de refresco #}
+{% block body %}
+  <div id="auto-refresh-controls" style="padding: 10px; text-align: right; background-color: #f4f4f4; border-bottom: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;">
+      <span style="margin-right: 10px;">Actualización automática: <strong id="refresh-status">Activada</strong></span>
+      <button id="toggle-refresh-btn" class="btn btn-sm btn-primary">Pausar</button>
+  </div>
+  {# Renderizamos el contenido original de la lista #}
+  {{ super() }}
+{% endblock %}
+
+{# Sobrescribimos el bloque 'tail' para añadir nuestro script sin afectar otros scripts #}
+{% block tail %}
+  {{ super() }}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const refreshInterval = 10000; // 10 segundos
+      let autoRefreshTimer;
+      let isPaused = false;
+
+      const statusEl = document.getElementById('refresh-status');
+      const toggleBtn = document.getElementById('toggle-refresh-btn');
+
+      function startRefresh() {
+        autoRefreshTimer = setInterval(function() {
+          console.log('Recargando página...');
+          location.reload();
+        }, refreshInterval);
+      }
+
+      function stopRefresh() {
+        clearInterval(autoRefreshTimer);
+      }
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          isPaused = !isPaused;
+          if (isPaused) {
+            stopRefresh();
+            statusEl.textContent = 'Pausada';
+            toggleBtn.textContent = 'Reanudar';
+            toggleBtn.classList.remove('btn-primary');
+            toggleBtn.classList.add('btn-success');
+          } else {
+            // Recargar inmediatamente al reanudar para tener datos frescos
+            location.reload();
+          }
+        });
+      }
+
+      // Iniciar el refresco al cargar la página
+      startRefresh();
+    });
+  </script>
+{% endblock %}

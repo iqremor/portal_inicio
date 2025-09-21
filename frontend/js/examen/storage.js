@@ -1,23 +1,14 @@
+import { submitExam } from '../api/index.js';
+
 /**
  * Guarda un intento de quiz en el backend.
  * @param {string} sessionId - El ID de la sesión del examen.
  * @param {Array} answers - Las respuestas del usuario.
+ * @param {string} userCodigo - El código del usuario.
  * @returns {Promise<object>} Una promesa que se resuelve con los resultados del examen.
  */
-export async function guardarIntento(sessionId, answers) {
-    // NOTA: La ruta de la API es un ejemplo y la crearemos en el backend más adelante.
-    const response = await fetch('/api/examenes/submit', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // En el futuro, aquí se incluirá el token de autenticación JWT
-            // 'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-            sessionId: sessionId,
-            answers: answers,
-        }),
-    });
+export async function guardarIntento(sessionId, answers, userCodigo) {
+    const response = await submitExam(sessionId, answers, userCodigo);
 
     if (!response.ok) {
         const errorData = await response.json();

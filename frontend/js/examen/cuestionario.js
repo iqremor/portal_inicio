@@ -139,7 +139,7 @@ export async function siguienteImagen() {
         cleanup();
         // Guardar el intento antes de mostrar la página final.
         // Por ahora, no tenemos un sistema de puntuación, así que guardamos una nota de 0.
-        await guardarIntento({ nota: 0, fecha: new Date() });
+        await guardarIntento({ nota: 0, fecha: new Date() }, state.currentUser.codigo); // Pass userCodigo
         state.attemptCount++; // Incrementamos el contador en el estado local
         showEndPage();
     }

@@ -61,7 +61,7 @@ async function main() {
         state.attemptCount = await obtenerNumeroDeIntentos(sessionId, areaId);
         
         // --- MODIFICADO: Mover la llamada a la API aquí para obtener examData antes de mostrarPaginaInicio ---
-        const apiUrl = `/api/examenes/start?sessionId=${sessionId}&areaId=${areaId}&grade=${state.currentUser.grado}`;
+        const apiUrl = `/api/examenes/start?sessionId=${sessionId}&areaId=${areaId}&grade=${state.currentUser.grado}&userCodigo=${userCode}`;
 
         const response = await fetch(apiUrl);
         
@@ -71,6 +71,16 @@ async function main() {
         }
         const examData = await response.json();
         state.examData = examData; // Guardar examData en el estado para usarlo en handleStartQuiz
+
+        // FIX: Format subject name for display
+        if (examData.config && examData.config.subject) {
+            let subject = examData.config.subject;
+            // Capitalize first letter
+            subject = subject.charAt(0).toUpperCase() + subject.slice(1);
+            // Replace underscores with spaces
+            subject = subject.replace(/_/g, ' ');
+            examData.config.subject = subject;
+        }
 
         mostrarPaginaInicio(examData.config); // <--- MODIFICADO: Pasar examData.config a mostrarPaginaInicio
 
