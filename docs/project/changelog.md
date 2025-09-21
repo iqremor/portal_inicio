@@ -265,3 +265,21 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - `frontend/js/pages/dashboard.js` ahora llama a la API `startExam` para obtener un `session_id` real.
 - `frontend/js/pages/exam.js` ahora obtiene el `userCodigo` del `localStorage` para finalizar el examen.
 ### Finalización: 20 de septiembre de 2025
+
+## Sesión 11 - 20 de septiembre de 2025
+### Objetivos de la sesión:
+- Implementar listado de cuadernillos.
+- Refactorizar la lógica de inicio y finalización de exámenes.
+- Mejorar el manejo de rutas de banco de preguntas.
+- Ajustar la configuración del examen en el frontend.
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+### Finalización: [PENDIENTE]
