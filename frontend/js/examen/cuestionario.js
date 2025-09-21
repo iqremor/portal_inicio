@@ -54,7 +54,6 @@ function handleGlobalKeys(event) {
     handleZoomKeys(event);
 }
 
-// La función de barajar se mantiene por si se necesita en el futuro, pero el backend ya debería enviar las preguntas barajadas.
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -65,11 +64,38 @@ function shuffleArray(array) {
 
 export function iniciarQuiz(examData) {
     state.paginaActual = 'quiz';
-    // state.imageList = examData.questions; // Usa las preguntas del backend
-    // state.config = examData.config;       // <--- ELIMINADO: Ya no se usa state.config directamente para timer/warning
     state.indicePreguntaActual = 0;
     state.intentoAnulado = false;
+
+    // --- Lógica para construir imageList dinámicamente ---
+    let cleanedDirBanco = examData.dir_banco;
+    // Remove leading 'data/' or '/data/' repeatedly until no more prefixes are found
+    while (cleanedDirBanco.startsWith('data/') || cleanedDirBanco.startsWith('/data/')) {
+        if (cleanedDirBanco.startsWith('/data/')) {
+            cleanedDirBanco = cleanedDirBanco.substring('/data/'.length);
+        } else if (cleanedDirBanco.startsWith('data/')) {
+            cleanedDirBanco = cleanedDirBanco.substring('data/'.length);
+        }
+    }
+    const imageBaseUrl = `/data_files/${cleanedDirBanco}`; // Always use /data_files/
     
+    const totalImages = examData.total_preguntas_banco;
+    const imageList = Array.from({ length: totalImages }, (_, i) => {
+        const num = (i + 1).toString().padStart(2, '0');
+        return `${imageBaseUrl}pregunta_${num}.jpg`;
+    });
+
+    const shuffledImageList = shuffleArray(imageList); // Use the shuffleArray from this file
+    state.imageList = shuffledImageList.slice(0, examData.config.numQuestions); // Seleccionar solo numQuestions
+
+    // Format subject name for display (moved from examen-main.js)
+    if (examData.config && examData.config.subject) {
+        let subject = examData.config.subject;
+        subject = subject.charAt(0).toUpperCase() + subject.slice(1);
+        subject = subject.replace(/_/g, ' ');
+        examData.config.subject = subject;
+    }
+
     entrarEnModoInmersivo();
     document.addEventListener('visibilitychange', handleVisibilityChange);
     document.addEventListener('fullscreenchange', handleFullscreenChange);

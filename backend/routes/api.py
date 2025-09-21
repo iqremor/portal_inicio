@@ -68,10 +68,10 @@ def get_exam_questions_by_session(session_id):
     if not active_session:
         return jsonify({"error": "Sesión de examen no encontrada o inactiva."}), 404
 
-    print(f"DEBUG: Sesión activa encontrada. cuadernillo_id: {active_session.cuadernillo_id}")
+
     cuadernillo = Cuadernillo.query.get(active_session.cuadernillo_id)
     if not cuadernillo:
-        print(f"DEBUG: Cuadernillo no encontrado para cuadernillo_id: {active_session.cuadernillo_id}")
+
         return jsonify({"error": "Cuadernillo asociado a la sesión no encontrado."}), 404
 
     # Aquí deberíamos recuperar las preguntas que se seleccionaron al iniciar la sesión.
@@ -82,7 +82,7 @@ def get_exam_questions_by_session(session_id):
     
     # Ensure dir_banco starts with the correct relative path for /data_files/
     # It should remove any leading 'data/' or '/data/'
-    print(f"DEBUG: Raw cuadernillo.dir_banco: {cuadernillo.dir_banco}")
+
     cleaned_dir_banco = cuadernillo.dir_banco
 
     # Remove leading 'data/' or '/data/' repeatedly until no more prefixes are found
@@ -91,7 +91,7 @@ def get_exam_questions_by_session(session_id):
             cleaned_dir_banco = cleaned_dir_banco[len('/data/'):]
         elif cleaned_dir_banco.startswith('data/'):
             cleaned_dir_banco = cleaned_dir_banco[len('data/'):]
-    print(f"DEBUG: Cleaned dir_banco: {cleaned_dir_banco}")
+
     base_path = f"/data_files/{cleaned_dir_banco}"
     
     image_filenames = [f"pregunta_{i:02d}.jpg" for i in range(1, total_preguntas + 1)]

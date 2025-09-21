@@ -69,44 +69,7 @@ async function main() {
         const examData = await getExamQuestions(sessionId);
         state.examData = examData; // Guardar examData en el estado para usarlo en handleStartQuiz
 
-        // --- Lógica para construir imageList dinámicamente ---
-        let cleanedDirBanco = examData.dir_banco;
-        // Remove leading 'data/' or '/data/' repeatedly until no more prefixes are found
-        while (cleanedDirBanco.startsWith('data/') || cleanedDirBanco.startsWith('/data/')) {
-            if (cleanedDirBanco.startsWith('/data/')) {
-                cleanedDirBanco = cleanedDirBanco.substring('/data/'.length);
-            } else if (cleanedDirBanco.startsWith('data/')) {
-                cleanedDirBanco = cleanedDirBanco.substring('data/'.length);
-            }
-        }
-        const imageBaseUrl = `/data_files/${cleanedDirBanco}`; // Always use /data_files/
-        
-        const totalImages = examData.total_preguntas_banco;
-        const imageList = Array.from({ length: totalImages }, (_, i) => {
-            const num = (i + 1).toString().padStart(2, '0');
-            return `${imageBaseUrl}pregunta_${num}.jpg`;
-        });
 
-        // Función para barajar (copiada de cuestionario.js)
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-        const shuffledImageList = shuffleArray(imageList);
-        state.imageList = shuffledImageList.slice(0, examData.config.numQuestions); // Seleccionar solo numQuestions
-
-        // FIX: Format subject name for display
-        if (examData.config && examData.config.subject) {
-            let subject = examData.config.subject;
-            // Capitalize first letter
-            subject = subject.charAt(0).toUpperCase() + subject.slice(1);
-            // Replace underscores with spaces
-            subject = subject.replace(/_/g, ' ');
-            examData.config.subject = subject;
-        }
 
         mostrarPaginaInicio(examData.config); // <--- MODIFICADO: Pasar examData.config a mostrarPaginaInicio
 
