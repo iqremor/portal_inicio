@@ -1,5 +1,5 @@
 import { state } from './state.js';
-// Se elimina la importación de datos fijos de constants.js
+import { quizConfig, Data } from './constants.js'; // <--- MODIFICADO: Importar quizConfig y Data
 import { handleZoomKeys } from './zoom.js';
 import { entrarEnModoInmersivo, mostrarAlertaPersonalizada, mostrarPaginaFinal, mostrarConfirmacion, mostrarAlertaPersonalizadaConBoton } from './ui.js';
 import { guardarIntento } from './storage.js';
@@ -65,8 +65,8 @@ function shuffleArray(array) {
 
 export function iniciarQuiz(examData) {
     state.paginaActual = 'quiz';
-    state.imageList = examData.questions; // Usa las preguntas del backend
-    state.config = examData.config;       // Usa la configuración del backend
+    // state.imageList = examData.questions; // Usa las preguntas del backend
+    // state.config = examData.config;       // <--- ELIMINADO: Ya no se usa state.config directamente para timer/warning
     state.indicePreguntaActual = 0;
     state.intentoAnulado = false;
     
@@ -85,7 +85,7 @@ export function iniciarTemporizador() {
     }
 
     // Usa la configuración de tiempo del estado, recibida del backend
-    state.tiempoRestante = state.config.timerDuration;
+    state.tiempoRestante = quizConfig.timerDuration; // <--- MODIFICADO: Usar quizConfig.timerDuration
 
     function actualizarTemporizador() {
         const temporizadorElemento = document.getElementById('temporizador-display');
@@ -114,11 +114,11 @@ export function iniciarTemporizador() {
         }
 
         // Usa el warningTime de la configuración del estado
-        if (state.tiempoRestante === state.config.warningTime) {
-            mostrarAlertaPersonalizada("¡Atención!", `¡Apúrate! Quedan solo ${state.config.warningTime} segundos.`, 3000);
+        if (state.tiempoRestante === quizConfig.warningTime) {
+            mostrarAlertaPersonalizada("¡Atención!", `¡Apúrate! Quedan solo ${quizConfig.warningTime} segundos.`, 3000);
         }
 
-        if (state.tiempoRestante <= state.config.warningTime && state.tiempoRestante > 0) {
+        if (state.tiempoRestante <= quizConfig.warningTime && state.tiempoRestante > 0) {
             const timerContainer = temporizadorElemento.closest('.timer-container-quiz');
             if (timerContainer) {
                 timerContainer.classList.add('timer-warning-quiz');
@@ -139,7 +139,7 @@ export async function siguienteImagen() {
         cleanup();
         // Guardar el intento antes de mostrar la página final.
         // Por ahora, no tenemos un sistema de puntuación, así que guardamos una nota de 0.
-        await guardarIntento({ nota: 0, fecha: new Date() }, state.currentUser.codigo); // Pass userCodigo
+        await guardarIntento({ nota: 0, fecha: new Date() });
         state.attemptCount++; // Incrementamos el contador en el estado local
         showEndPage();
     }

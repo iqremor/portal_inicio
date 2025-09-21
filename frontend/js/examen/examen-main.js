@@ -34,7 +34,12 @@ async function handleStartQuiz() {
 
 // Función principal que se ejecuta al cargar la página
 async function main() {
-    setupUI(handleStartQuiz, siguienteImagen, iniciarTemporizador);
+    const appElement = document.getElementById('app'); // Get the element here
+    if (!appElement) {
+        mostrarErrorCarga("Error: No se encontró el elemento principal de la aplicación ('app').");
+        return;
+    }
+    setupUI(handleStartQuiz, siguienteImagen, iniciarTemporizador, appElement); // Pass it
     setupQuiz(renderizarImagen, mostrarPaginaFinal);
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -65,9 +70,17 @@ async function main() {
         state.examData = examData; // Guardar examData en el estado para usarlo en handleStartQuiz
 
         // --- Lógica para construir imageList dinámicamente ---
-        const imageBaseUrl = examData.dir_banco.startsWith('data/') ? 
-                             `/data_files/${examData.dir_banco.replace('data/', '', 1)}` : 
-                             `/static/${examData.dir_banco}`;
+        let cleanedDirBanco = examData.dir_banco;
+        // Remove leading 'data/' or '/data/' repeatedly until no more prefixes are found
+        while (cleanedDirBanco.startsWith('data/') || cleanedDirBanco.startsWith('/data/')) {
+            if (cleanedDirBanco.startsWith('/data/')) {
+                cleanedDirBanco = cleanedDirBanco.substring('/data/'.length);
+            } else if (cleanedDirBanco.startsWith('data/')) {
+                cleanedDirBanco = cleanedDirBanco.substring('data/'.length);
+            }
+        }
+        const imageBaseUrl = `/data_files/${cleanedDirBanco}`; // Always use /data_files/
+        
         const totalImages = examData.total_preguntas_banco;
         const imageList = Array.from({ length: totalImages }, (_, i) => {
             const num = (i + 1).toString().padStart(2, '0');

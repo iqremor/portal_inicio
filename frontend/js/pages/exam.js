@@ -180,7 +180,8 @@ class Exam {
                 return;
             }
 
-            const result = await submitExam(this.sessionId, this.answers, userCodigo);
+            const attemptsCount = this.answers.filter(answer => answer !== null).length;
+            const result = await submitExam(this.sessionId, attemptsCount, userCodigo);
             localStorage.setItem('ultimoResultado', JSON.stringify(result));
             window.location.href = `/frontend/pages/resultados.html`;
         } catch (error) {

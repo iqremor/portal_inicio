@@ -50,15 +50,15 @@ export async function getExamQuestions(sessionId) {
     return response.json();
 }
 
-export async function submitExam(sessionId, answers, userCodigo) {
+export async function submitExam(sessionId, attemptsCount, userCodigo) {
     const response = await fetch(`${API_BASE}/api/examen/${sessionId}/finalizar`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            respuestas: answers,
-            codigo: userCodigo // Add userCodigo to the body
+            intentos: attemptsCount,
+            codigo: userCodigo
         })
     });
     if (!response.ok) {

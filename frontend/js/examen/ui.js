@@ -1,5 +1,5 @@
 import { state } from './state.js';
-import { quizConfig} from './constants.js';
+import { quizConfig, Data } from './constants.js'; // <--- MODIFICADO: Importar Data
 import { initZoom } from './zoom.js';
 
 let doIniciarQuiz;
@@ -7,11 +7,6 @@ let doSiguienteImagen;
 let doIniciarTemporizador;
 
 
-export function setup(iniciarQuiz, siguienteImagen, iniciarTemporizador) {
-    doIniciarQuiz = iniciarQuiz;
-    doSiguienteImagen = siguienteImagen;
-    doIniciarTemporizador = iniciarTemporizador;
-}
 
 export async function entrarEnModoInmersivo() {
     const elem = document.documentElement;
@@ -74,20 +69,27 @@ export function mostrarAlertaPersonalizada(titulo, mensaje, duracion = 4000) {
     });
 }
 
-const contenedorApp = document.getElementById('app');
+let contenedorApp; // Declare it here, but initialize in setup
+
+export function setup(iniciarQuiz, siguienteImagen, iniciarTemporizador, appElement) { // Add appElement argument
+    doIniciarQuiz = iniciarQuiz;
+    doSiguienteImagen = siguienteImagen;
+    doIniciarTemporizador = iniciarTemporizador;
+    contenedorApp = appElement; // Initialize it here
+}
 
 export function mostrarPaginaInicio(examDetails) {
     salirDeModoInmersivo();
     state.paginaActual = 'inicio';
 
     // Comprobar si el usuario ha superado el número de intentos
-    if (state.attemptCount >= examDetails.numIntentos) {
+    if (state.attemptCount >= Data.numIntentos) { // <--- MODIFICADO: Usar Data.numIntentos
         contenedorApp.innerHTML = `
             <div style="text-align: center; animation: fadeIn 0.5s ease-out;">
                 <h1>Prueba Saber</h1>
                 <h2 style="font-size: 1.5rem; color: #d9534f;">Has alcanzado el límite de intentos</h2>
                 <p style="font-size: 1.1em; line-height: 1.6; color: #0a0a0aff; max-width: 600px; margin: 1rem auto 2rem;">
-                    Has completado los ${examDetails.numIntentos} intentos permitidos para esta prueba.
+                    Has completado los ${Data.numIntentos} intentos permitidos para esta prueba.
                 </p>
             </div>
         `;
@@ -95,7 +97,7 @@ export function mostrarPaginaInicio(examDetails) {
     }
 
     // Si tiene intentos, mostrar la página de inicio normal
-    const intentosRestantes = examDetails.numIntentos - state.attemptCount;
+    const intentosRestantes = Data.numIntentos - state.attemptCount; // <--- MODIFICADO: Usar Data.numIntentos
     contenedorApp.innerHTML = `
         <div style="text-align: center; animation: fadeIn 0.5s ease-out;">
             <h1>Prueba Saber</h1>
@@ -108,7 +110,7 @@ export function mostrarPaginaInicio(examDetails) {
             <button id="btnIniciarQuiz" class="btn btn-primary">Iniciar</button>
         </div>
     `;
-
+    // ...
     const btnIniciar = document.getElementById('btnIniciarQuiz');
     if (btnIniciar) {
         btnIniciar.addEventListener('click', doIniciarQuiz);

@@ -40,7 +40,25 @@ def start_examen(area_id):
 
     return jsonify({"sesion_id": active_session.session_id})
 
-@api_bp.route('/api/examen/<string:session_id>', methods=['GET'])
+@api_bp.route('/examenes', methods=['GET'])
+def get_examenes():
+    """
+    Retorna una lista de todos los cuadernillos disponibles.
+    """
+    cuadernillos = Cuadernillo.query.all()
+    cuadernillos_data = []
+    for cuadernillo in cuadernillos:
+        cuadernillos_data.append({
+            'id': cuadernillo.id,
+            'nombre': cuadernillo.nombre,
+            'area': cuadernillo.area,
+            'grado': cuadernillo.grado,
+            'tiempo_limite_minutos': cuadernillo.tiempo_limite_minutos,
+            'dir_banco': cuadernillo.dir_banco
+        })
+    return jsonify(cuadernillos_data)
+
+@api_bp.route('/examen/<string:session_id>', methods=['GET'])
 def get_exam_questions_by_session(session_id):
     """
     Obtiene las preguntas y la configuración de un examen para una sesión activa específica.
@@ -50,8 +68,10 @@ def get_exam_questions_by_session(session_id):
     if not active_session:
         return jsonify({"error": "Sesión de examen no encontrada o inactiva."}), 404
 
+    print(f"DEBUG: Sesión activa encontrada. cuadernillo_id: {active_session.cuadernillo_id}")
     cuadernillo = Cuadernillo.query.get(active_session.cuadernillo_id)
     if not cuadernillo:
+        print(f"DEBUG: Cuadernillo no encontrado para cuadernillo_id: {active_session.cuadernillo_id}")
         return jsonify({"error": "Cuadernillo asociado a la sesión no encontrado."}), 404
 
     # Aquí deberíamos recuperar las preguntas que se seleccionaron al iniciar la sesión.
@@ -60,11 +80,19 @@ def get_exam_questions_by_session(session_id):
     # o en una tabla intermedia al iniciar el examen.
     total_preguntas = cuadernillo.total_preguntas_banco
     
-    if cuadernillo.dir_banco.startswith('data/'):
-        path_sin_prefijo = cuadernillo.dir_banco.replace('data/', '', 1)
-        base_path = f"/data_files/{path_sin_prefijo}"
-    else:
-        base_path = f"/static/{cuadernillo.dir_banco}"
+    # Ensure dir_banco starts with the correct relative path for /data_files/
+    # It should remove any leading 'data/' or '/data/'
+    print(f"DEBUG: Raw cuadernillo.dir_banco: {cuadernillo.dir_banco}")
+    cleaned_dir_banco = cuadernillo.dir_banco
+
+    # Remove leading 'data/' or '/data/' repeatedly until no more prefixes are found
+    while cleaned_dir_banco.startswith('data/') or cleaned_dir_banco.startswith('/data/'):
+        if cleaned_dir_banco.startswith('/data/'):
+            cleaned_dir_banco = cleaned_dir_banco[len('/data/'):]
+        elif cleaned_dir_banco.startswith('data/'):
+            cleaned_dir_banco = cleaned_dir_banco[len('data/'):]
+    print(f"DEBUG: Cleaned dir_banco: {cleaned_dir_banco}")
+    base_path = f"/data_files/{cleaned_dir_banco}"
     
     image_filenames = [f"pregunta_{i:02d}.jpg" for i in range(1, total_preguntas + 1)]
     
@@ -78,12 +106,8 @@ def get_exam_questions_by_session(session_id):
         "titulo": cuadernillo.nombre, # Usar el nombre del cuadernillo como título del examen
         "dir_banco": cuadernillo.dir_banco, # Añadir dir_banco
         "total_preguntas_banco": cuadernillo.total_preguntas_banco, # Añadir total_preguntas_banco
-        "tiempo_limite": cuadernillo.tiempo_limite_minutos, # Asumiendo que el cuadernillo tiene este campo
         "config": { # Añadir la configuración esperada por el frontend
-            "timerDuration": cuadernillo.tiempo_limite_minutos,
-            "warningTime": 30, # Valor fijo o configurable
             "nextButtonDelay": 1000, # Valor fijo o configurable
-            "numIntentos": cuadernillo.total_preguntas_banco, # Usar total_preguntas_banco
             "subject": cuadernillo.area,
             "Grado": cuadernillo.grado,
             "numQuestions": 10 # Asumir 10 preguntas seleccionadas para el examen
@@ -98,25 +122,26 @@ def get_attempts():
     # Por ahora, devolvemos un valor fijo para que el frontend pueda avanzar
     return jsonify({"attemptCount": 0})
 
-@api_bp.route('/examenes/submit', methods=['POST'])
-def submit_exam():
+@api_bp.route('/examen/<string:session_id>/finalizar', methods=['POST'])
+def submit_exam(session_id):
     # Lógica para recibir respuestas, calcular nota y guardar en BD irá aquí
     # Por ahora, devolvemos un resultado de ejemplo
     data = request.get_json()
-    # Assuming 'codigo' is sent in the JSON body for identification
-    user_codigo = data.get('codigo') 
+    user_codigo = data.get('codigo')
+    attempts_count = data.get('intentos')
 
     if not user_codigo:
-        return jsonify({"message": "Código de usuario no proporcionado para submit"}), 400
+        return jsonify({"message": "Código de usuario no proporcionado para finalizar el examen"}), 400
+
+    print(f"Sesión ID: {session_id}, Código de Usuario: {user_codigo}, Intentos: {attempts_count}")
 
     user = User.query.filter_by(codigo=user_codigo).first()
     if user:
-        active_session = ActiveSession.query.filter_by(user_id=user.id).first()
+        active_session = ActiveSession.query.filter_by(user_id=user.id, session_id=session_id).first()
         if active_session:
             active_session.cuadernillo_id = None # Clear the exam ID
             db.session.commit()
     
-    print(f"Recibido para guardar: {data}")
     return jsonify({"message": "Examen recibido", "score": 0})
 
 from functools import wraps
