@@ -132,3 +132,79 @@
     background: var(--bg-secondary);
     color: var(--text-primary);
 }
+
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 1rem;
+        width: auto;
+    }
+
+    .modal-header {
+        padding: 1rem 1rem 0;
+    }
+
+    .modal-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .modal-body {
+        padding: 0 1rem 1rem;
+    }
+
+    .exam-info {
+        gap: 0.5rem;
+    }
+
+    .info-item {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .exam-description {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .exam-warning {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+        gap: 0.8rem;
+        padding: 1rem;
+    }
+
+    .btn-secondary {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        margin: 0.5rem;
+    }
+
+    .modal-header h3 {
+        font-size: 1rem;
+    }
+
+    .info-item {
+        font-size: 0.8rem;
+    }
+
+    .exam-description {
+        font-size: 0.8rem;
+    }
+
+    .exam-warning {
+        font-size: 0.8rem;
+    }
+
+    .btn-secondary {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.8rem;
+    }
+}

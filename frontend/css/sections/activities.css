@@ -101,3 +101,64 @@
     background: rgba(22, 71, 2, 0.575);
     transform: translateY(-1px);
 }
+
+@media (max-width: 768px) {
+    .activities-section {
+        padding: 1.5rem;
+    }
+
+    .activities-title {
+        font-size: 2.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .exams-container {
+        gap: 1.5rem;
+    }
+
+    .activity-card {
+        width: 100%;
+        max-width: 350px; /* Limit width on smaller screens */
+        padding: 1.5rem;
+    }
+
+    .activity-card h3 {
+        font-size: 1.25rem;
+    }
+
+    .activity-card p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .activities-section {
+        padding: 1rem;
+    }
+
+    .activities-title {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .exams-container {
+        gap: 1rem;
+    }
+
+    .activity-card {
+        padding: 1rem;
+    }
+
+    .activity-card h3 {
+        font-size: 1rem;
+    }
+
+    .activity-card p {
+        font-size: 0.8rem;
+    }
+
+    .start-exam-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}

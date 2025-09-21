@@ -147,3 +147,36 @@
         font-size: 1.4rem;
     }
 }
+
+@media (max-width: 480px) {
+    .main-header__logo-icon {
+        width: 80px; /* Smaller logo */
+    }
+
+    .main-header__title {
+        font-size: 1.2rem; /* Smaller title */
+    }
+
+    .main-header__slogan {
+        font-size: 0.8rem; /* Smaller slogan */
+    }
+
+    .main-header__user-avatar {
+        width: 50px; /* Smaller avatar */
+        height: 50px;
+        font-size: 1rem;
+    }
+
+    .main-header__user-name {
+        font-size: 0.8rem;
+    }
+
+    .main-header__user-grade {
+        font-size: 0.7rem;
+    }
+
+    .main-header__logout-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}

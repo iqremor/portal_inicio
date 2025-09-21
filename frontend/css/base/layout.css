@@ -54,3 +54,20 @@
     align-items: center;
     gap: 0.5rem;
 }
+
+@media (max-width: 768px) {
+    .dashboard-main {
+        padding: 1.5rem 1rem; /* Adjust padding for smaller screens */
+    }
+
+    .dashboard-footer .footer-content {
+        flex-direction: column; /* Stack items vertically */
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .dashboard-footer .footer-links {
+        flex-direction: column; /* Stack links vertically */
+        gap: 0.25rem;
+    }
+}
