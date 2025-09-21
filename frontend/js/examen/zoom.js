@@ -189,7 +189,14 @@ export function initZoom(imageElement) {
         <div class="zoom-indicator">100%</div>
     `;
     
-    imageContainer.parentNode.insertBefore(controlsDiv, imageContainer.nextSibling);
+    // Get the placeholder and append controls to it
+    const zoomControlsPlaceholder = document.getElementById('zoom-controls-placeholder');
+    if (zoomControlsPlaceholder) {
+        zoomControlsPlaceholder.appendChild(controlsDiv);
+    } else {
+        // Fallback if placeholder is not found (e.g., for testing or unexpected HTML)
+        imageContainer.parentNode.insertBefore(controlsDiv, imageContainer.nextSibling);
+    }
 
     // Añadir listeners a los nuevos botones
     document.getElementById("zoom-in-btn").addEventListener("click", () => adjustZoom(0.2));

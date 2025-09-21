@@ -79,3 +79,30 @@
     font-size: 1.1rem;
     line-height: 1.6;
 }
+
+@media (max-width: 768px) {
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+
+    .custom-alert-box {
+        padding: 1.5rem 1.5rem;
+        width: 95%;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn {
+        padding: 8px 15px;
+        font-size: 0.8em;
+    }
+
+    .custom-alert-box h3 {
+        font-size: 1.3rem;
+    }
+
+    .custom-alert-box p {
+        font-size: 1em;
+    }
+}

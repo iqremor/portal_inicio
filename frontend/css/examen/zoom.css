@@ -120,3 +120,21 @@
 .image-zoom-container img:hover {
     transition: transform 0.2s ease;
 }
+
+@media (max-width: 768px) {
+    .zoom-controls {
+        position: static; /* Remove fixed positioning */
+        transform: none; /* Remove translateX */
+        width: 100%; /* Take full width */
+        margin-top: 10px; /* Add some space from above */
+        flex-wrap: wrap; /* Allow items to wrap */
+        justify-content: center; /* Center items */
+        background: rgba(255, 255, 255, 0.8); /* Slightly more opaque background */
+        border-radius: 8px; /* Consistent border-radius */
+    }
+
+    .zoom-controls button, .zoom-indicator {
+        flex-grow: 1; /* Allow items to grow */
+        min-width: unset; /* Remove min-width constraint */
+    }
+}

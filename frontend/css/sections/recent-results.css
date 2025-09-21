@@ -87,3 +87,53 @@
     display: block;
     opacity: 0.5;
 }
+
+@media (max-width: 768px) {
+    .recent-results-section {
+        margin-top: 1.5rem;
+    }
+
+    .recent-results-section .section-title {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .results-container {
+        padding: 1rem;
+    }
+
+    .results-grid {
+        grid-template-columns: 1fr; /* Stack cards vertically */
+        gap: 0.8rem;
+    }
+
+    .result-card {
+        padding: 0.8rem;
+    }
+
+    .result-area {
+        font-size: 0.9rem;
+    }
+
+    .result-score {
+        font-size: 0.9rem;
+    }
+
+    .result-date {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .recent-results-section .section-title {
+        font-size: 1.1rem;
+    }
+
+    .results-container {
+        padding: 0.8rem;
+    }
+
+    .result-card {
+        padding: 0.6rem;
+    }
+}
