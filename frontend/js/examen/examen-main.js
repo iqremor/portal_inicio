@@ -2,7 +2,7 @@ import { setup as setupUI, mostrarPaginaInicio, renderizarImagen, mostrarPaginaF
 import { setupQuiz, iniciarQuiz, siguienteImagen, iniciarTemporizador } from './cuestionario.js';
 import { obtenerNumeroDeIntentos } from './storage.js';
 import { state } from './state.js';
-import { fetchUserData } from '../api/index.js';
+import { fetchUserData, getExamQuestions } from '../api/index.js';
 import { checkSession } from '../shared/auth.js'; // <--- NUEVO: Importar checkSession
 
 // Función para mostrar un error de carga y detener la ejecución
@@ -34,7 +34,12 @@ async function handleStartQuiz() {
 
 // Función principal que se ejecuta al cargar la página
 async function main() {
-    setupUI(handleStartQuiz, siguienteImagen, iniciarTemporizador);
+    const appElement = document.getElementById('app'); // Get the element here
+    if (!appElement) {
+        mostrarErrorCarga("Error: No se encontró el elemento principal de la aplicación ('app').");
+        return;
+    }
+    setupUI(handleStartQuiz, siguienteImagen, iniciarTemporizador, appElement); // Pass it
     setupQuiz(renderizarImagen, mostrarPaginaFinal);
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -60,17 +65,11 @@ async function main() {
 
         state.attemptCount = await obtenerNumeroDeIntentos(sessionId, areaId);
         
-        // --- MODIFICADO: Mover la llamada a la API aquí para obtener examData antes de mostrarPaginaInicio ---
-        const apiUrl = `/api/examenes/start?sessionId=${sessionId}&areaId=${areaId}&grade=${state.currentUser.grado}`;
-
-        const response = await fetch(apiUrl);
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `Error del servidor: ${response.status}`);
-        }
-        const examData = await response.json();
+        // --- MODIFICADO: Usar la nueva API GET para obtener examData ---
+        const examData = await getExamQuestions(sessionId);
         state.examData = examData; // Guardar examData en el estado para usarlo en handleStartQuiz
+
+
 
         mostrarPaginaInicio(examData.config); // <--- MODIFICADO: Pasar examData.config a mostrarPaginaInicio
 

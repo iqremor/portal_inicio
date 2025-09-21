@@ -27,13 +27,13 @@ export async function loadExamAreas() {
     return response.json();
 }
 
-export async function startExam(areaId, codigo) {
+export async function startExam(areaId, codigo, grado) {
     const response = await fetch(`${API_BASE}/api/examenes/${areaId}/iniciar`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ codigo: codigo })
+        body: JSON.stringify({ codigo: codigo, grado: grado })
     });
     if (!response.ok) {
         const errorData = await response.json();
@@ -50,13 +50,16 @@ export async function getExamQuestions(sessionId) {
     return response.json();
 }
 
-export async function submitExam(sessionId, answers) {
+export async function submitExam(sessionId, attemptsCount, userCodigo) {
     const response = await fetch(`${API_BASE}/api/examen/${sessionId}/finalizar`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ respuestas: answers })
+        body: JSON.stringify({
+            intentos: attemptsCount,
+            codigo: userCodigo
+        })
     });
     if (!response.ok) {
         const errorData = await response.json();

@@ -172,7 +172,16 @@ class Exam {
             this.timer = null;
         }
         try {
-            const result = await submitExam(this.sessionId, this.answers);
+            const userSession = JSON.parse(localStorage.getItem('userSession'));
+            const userCodigo = userSession ? userSession.codigo : null;
+
+            if (!userCodigo) {
+                showNotification('Error: Código de usuario no encontrado para finalizar el examen.', 'error');
+                return;
+            }
+
+            const attemptsCount = this.answers.filter(answer => answer !== null).length;
+            const result = await submitExam(this.sessionId, attemptsCount, userCodigo);
             localStorage.setItem('ultimoResultado', JSON.stringify(result));
             window.location.href = `/frontend/pages/resultados.html`;
         } catch (error) {

@@ -98,6 +98,15 @@ class Cuadernillo(db.Model):
             'total_preguntas_banco': self.total_preguntas_banco
         }
 
+class UserCuadernilloActivation(db.Model):
+    __tablename__ = 'user_cuadernillo_activation'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey('cuadernillos.id'), primary_key=True)
+    is_active = db.Column(db.Boolean, default=False, nullable=False)
+
+    user = db.relationship('User', backref=db.backref('cuadernillo_activations', cascade="all, delete-orphan"))
+    cuadernillo = db.relationship('Cuadernillo', backref=db.backref('user_activations', cascade="all, delete-orphan"))
+
 class Peticion(db.Model):
     __tablename__ = 'peticiones'
     
@@ -209,6 +218,37 @@ class Log(db.Model):
             'usuario': self.usuario.username if self.usuario else None,
             'created_at': self.created_at.isoformat()
         }
+
+class ActiveSession(db.Model):
+    __tablename__ = 'active_sessions'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    session_id = db.Column(db.String(256), unique=True, nullable=False)
+    login_time = db.Column(db.DateTime, default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    ip_address = db.Column(db.String(45))
+    user_agent = db.Column(db.String(256))
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey('cuadernillos.id'), nullable=True)
+
+    # Relaciones
+    user = db.relationship('User', backref=db.backref('active_sessions', lazy=True))
+    cuadernillo = db.relationship('Cuadernillo')
+
+    def __repr__(self):
+        return f'<ActiveSession para {self.user.username}>'
+
+class ExamAvailability(db.Model):
+    __tablename__ = 'exam_availability'
+    id = db.Column(db.Integer, primary_key=True)
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey('cuadernillos.id'), nullable=False)
+    grado = db.Column(db.String(50), nullable=False)
+    is_enabled = db.Column(db.Boolean, default=True, nullable=False)
+
+    # Unique constraint to avoid duplicate entries
+    __table_args__ = (db.UniqueConstraint('cuadernillo_id', 'grado', name='_cuadernillo_grado_uc'),)
+
+    cuadernillo = db.relationship('Cuadernillo')
+
 
 # Función para inicializar la base de datos
 def init_db(app):

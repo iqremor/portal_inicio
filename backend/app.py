@@ -42,6 +42,7 @@ def create_app():
     from routes.server_admin import server_admin_bp
     from routes.frontend import frontend_bp
     from routes.api import api_bp
+    from routes.data_routes import data_files_bp
 
     # REORDENADO: Registrando frontend_bp primero para descartar conflictos
     app.register_blueprint(frontend_bp)
@@ -49,5 +50,6 @@ def create_app():
     app.register_blueprint(web_test_bp, url_prefix='/test')
     app.register_blueprint(server_admin_bp)
     app.register_blueprint(api_bp, url_prefix='/api')
+    app.register_blueprint(data_files_bp, url_prefix='/data_files')
 
     return app

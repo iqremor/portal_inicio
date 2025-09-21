@@ -2,57 +2,6 @@
 
 [Este archivo contendrá un registro de todos los cambios significativos realizados en el proyecto.]
 
-## Sesión 7 - 15 de septiembre de 2025
-### Objetivos de la sesión:
-- Reorganizar el directorio `frontend/js` para mejorar la modularidad y mantenibilidad.
-- Centralizar la funcionalidad de `logout` y la carga dinámica de `header` y `footer` en un único punto de entrada.
-- Crear un módulo `timer.js` para la funcionalidad del cronómetro del examen.
-- Crear un módulo `utils.js` para funciones de utilidad compartidas.
-- Refactorizar los scripts de las páginas para desacoplar la lógica y hacerla más reutilizable.
-
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
-
-### Acciones Realizadas:
-- Se reorganizó la estructura del directorio `frontend/js`, creando subdirectorios `api`, `components`, `pages` y `shared`.
-- Se movieron los archivos JavaScript existentes a sus directorios correspondientes dentro de la nueva estructura.
-- Se centralizó la lógica de carga del `header` y `footer`, y la funcionalidad de `logout` en el archivo `frontend/js/main.js` para evitar duplicación de código.
-- Se eliminó la carga individual de `header` y `footer` de los archivos `dashboard.js` y `login.js`.
-- Se creó el módulo `frontend/js/shared/timer.js` para encapsular toda la lógica del cronómetro del examen.
-- Se creó el módulo `frontend/js/shared/utils.js` para funciones de utilidad (actualmente vacío, preparado para futuro uso).
-- Se refactorizó `frontend/js/pages/exam.js` para importar y utilizar el nuevo módulo `timer.js`.
-- Se actualizaron las rutas de los scripts en los archivos HTML (`login.html`, `dashboard.html`, `examen.html`, `resultados.html`) para reflejar la nueva estructura de directorios.
-- Se eliminaron las funciones `loadHTML` y `logout` de `auth.js` ya que su funcionalidad fue centralizada en `main.js`.
-
-### Finalización: 15 de septiembre de 2025
-
-## Sesión 6 - 15 de septiembre de 2025
-### Objetivos de la sesión:
-- Solucionar el problema de organización de los datos JSON para la inicialización de la base de datos.
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
-### Acciones Realizadas:
-- Refactorización de la estructura de datos de los archivos JSON de semilla (`usuarios.json`, `cuadernillos.json`, `examenes.json`).
-- Creación del modelo `Cuadernillo` en `models.py` para los exámenes estáticos.
-- Actualización del script `seed_db.py` para poblar la base de datos con la nueva estructura de datos.
-- Creación del script `init_db.py` para la inicialización de la base de datos.
-- Corrección de la lógica de relación entre `examenes.json` y `cuadernillos.json`.
-### Finalización: 15 de septiembre de 2025
-
 ## Sesión 1 - 13 de septiembre de 2025
 ### Objetivos de la sesión:
 - Iniciar el análisis del repositorio y configurar el proyecto según la plantilla `GEMINI.md`.
@@ -63,7 +12,6 @@
 - Creación del directorio `prototype/`.
 - Reestructuración de las ramas de Git a `main`, `develop`, `debug`.
 - Identificación de áreas críticas y recomendaciones prioritarias para el proyecto.
-
 ### Estado del Proyecto al Final de la Sesión:
 - **Backend:** Python Flask.
 - **Ramas Git:** `main`, `develop`, `debug` configuradas.
@@ -162,7 +110,7 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 
 ### Finalización: 14 de septiembre de 2025
 
-## Sesión 5 - 14 de septiembre de 2025 
+## Sesión 5 - 14 de septiembre de 2025
 ### Objetivos de la sesión:
 - 
 ### Estado inicial:
@@ -183,3 +131,86 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Aplicación de un color de fondo específico al header, footer y tarjetas.
 - Modificación del estilo de `activities-section` para que se vea como un contenedor transparente con borde blanco.
 - Revisión de rutas y etiquetas en `frontend//**` para asegurar la compatibilidad con la nueva estructura CSS.
+
+## Sesión 6 - 15 de septiembre de 2025
+### Objetivos de la sesión:
+- Solucionar el problema de organización de los datos JSON para la inicialización de la base de datos.
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+### Acciones Realizadas:
+- Refactorización de la estructura de datos de los archivos JSON de semilla (`usuarios.json`, `cuadernillos.json`, `examenes.json`).
+- Creación del modelo `Cuadernillo` en `models.py` para los exámenes estáticos.
+- Actualización del script `seed_db.py` para poblar la base de datos con la nueva estructura de datos.
+- Creación del script `init_db.py` para la inicialización de la base de datos.
+- Corrección de la lógica de relación entre `examenes.json` y `cuadernillos.json`.
+### Finalización: 15 de septiembre de 2025
+
+## Sesión 7 - 15 de septiembre de 2025
+### Objetivos de la sesión:
+- Reorganizar el directorio `frontend/js` para mejorar la modularidad y mantenibilidad.
+- Centralizar la funcionalidad de `logout` y la carga dinámica de `header` y `footer` en un único punto de entrada.
+- Crear un módulo `timer.js` para la funcionalidad del cronómetro del examen.
+- Crear un módulo `utils.js` para funciones de utilidad compartidas.
+- Refactorizar los scripts de las páginas para desacoplar la lógica y hacerla más reutilizable.
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+
+### Acciones Realizadas:
+- Se reorganizó la estructura del directorio `frontend/js`, creando subdirectorios `api`, `components`, `pages` y `shared`.
+- Se movieron los archivos JavaScript existentes a sus directorios correspondientes dentro de la nueva estructura.
+- Se centralizó la lógica de carga del `header` y `footer`, y la funcionalidad de `logout` en el archivo `frontend/js/main.js` para evitar duplicación de código.
+- Se eliminó la carga individual de `header` y `footer` de los archivos `dashboard.js` y `login.js`.
+- Se creó el módulo `frontend/js/shared/timer.js` para encapsular toda la lógica del cronómetro del examen.
+- Se creó el módulo `frontend/js/shared/utils.js` para funciones de utilidad (actualmente vacío, preparado para futuro uso).
+- Se refactorizó `frontend/js/pages/exam.js` para importar y utilizar el nuevo módulo `timer.js`.
+- Se actualizaron las rutas de los scripts en los archivos HTML (`login.html`, `dashboard.html`, `examen.html`, `resultados.html`) para reflejar la nueva estructura de directorios.
+- Se eliminaron las funciones `loadHTML` y `logout` de `auth.js` ya que su funcionalidad fue centralizada en `main.js`.
+
+### Finalización: 15 de septiembre de 2025
+
+## Sesión 8 - 16 de septiembre de 2025
+### Objetivos de la sesión:
+- Ajustar el modelo `User` para eliminar el campo `email`.
+- Corregir la lógica de creación de usuarios administradores en la CLI para solicitar el `codigo` y no el `email`.
+- Actualizar la visualización de usuarios administradores en la CLI para no mostrar el `email`.
+- Actualizar las dependencias del proyecto (`requirements.txt`).
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta.
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada.
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
+- Tests: No hay testing framework configurado.
+
+### Acciones Realizadas:
+- Se eliminó el campo `email` del modelo `User` en `backend/models.py` para que no sea un campo requerido.
+- Se modificó el comando `admin add` en `backend/server.py` para solicitar el `codigo` del nuevo administrador en lugar del `email`.
+- Se actualizó la creación de usuarios administradores en `backend/server.py` para pasar el `codigo` al constructor del modelo `User`.
+- Se eliminó la visualización del campo `email` al listar usuarios administradores en el comando `admin show` de `backend/server.py`.
+- Se actualizaron las dependencias en `requirements.txt`.
+
+### Próximo a implementar:
+- Revisión de usuarios conectados.
+- Monitoreo del tráfico de usuarios.
+- Desconexión de usuarios duplicados.
+- Todas estas funcionalidades serán gestionadas a través del panel de administración de Flask-Admin.
+
+### Finalización: 16 de septiembre de 2025

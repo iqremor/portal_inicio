@@ -195,6 +195,9 @@ portal_inicio/
 3. **Generación de propuestas:** Crear 3 mensajes de commit descriptivos
 4. **Autorización:** Presentar opciones al usuario para selección
 5. **Ejecución:** Realizar commit con mensaje seleccionado
+    - **Crear archivo temporal:** Crear un archivo `.txt` con el mensaje de commit.
+    - **Realizar commit:** Ejecutar `git commit -F <nombre_del_archivo_temporal.txt>`.
+    - **Eliminar archivo temporal:** Borrar el archivo `.txt` creado.
 6. **Post-commit:** Actualizar métricas de calidad en `docs/project/changelog.md` .
 
 **Checks automáticos antes de commit:**

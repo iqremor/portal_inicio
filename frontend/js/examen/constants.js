@@ -25,5 +25,5 @@ export const imagePaths = Array.from({ length: TOTAL_IMAGES }, (_, i) => {
      Grado: 7, // Grado de la prueba
      subject: 'Ciencias naturales', // Asignatura
      numQuestions: 10, // Número de preguntas
-     numIntentos: 3, // Número de intentos permitidos
+     numIntentos: 10, // Número de intentos permitidos
 };

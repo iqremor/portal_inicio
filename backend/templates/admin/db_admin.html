@@ -1,0 +1,116 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <h1>Gestión de la Base de Datos</h1>
+  <p class="lead">Ejecuta tareas de mantenimiento y administración sobre la base de datos.</p>
+
+  <div class="row">
+    <!-- Columna de Acciones Comunes -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h4>Cargar y Descargar DB</h4>
+        </div>
+        <div class="card-body">
+          <!-- Cargar DB -->
+          <div class="action-item">
+            <h5>Cargar Nueva Base de Datos</h5>
+            <p class="text-danger"><strong>¡Advertencia!</strong> Esto reemplazará la base de datos actual con el archivo que subas. Se perderán todos los datos existentes.</p>
+            <form method="POST" enctype="multipart/form-data" onsubmit="return confirm('¿Estás seguro de que quieres reemplazar la base de datos actual? Esta acción no se puede deshacer.');">
+              <div class="form-group">
+                <input type="file" name="database" class="form-control-file" accept=".db">
+              </div>
+              <button type="submit" class="btn btn-warning">Cargar y Reemplazar</button>
+            </form>
+          </div>
+          <hr>
+          <!-- Descargar DB -->
+          <div class="action-item">
+            <h5>Descargar Copia de Seguridad</h5>
+            <p>Descarga una copia del archivo de la base de datos actual (<code>sistema_gestion.db</code>).</p>
+            <a href="{{ url_for('db_admin.download_db') }}" class="btn btn-success">Descargar Base de Datos</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h4>Acciones Comunes</h4>
+        </div>
+        <div class="card-body">
+          
+          <!-- Acción: Corregir Rutas con Prefijo -->
+          <div class="action-item">
+            <h5>Añadir Prefijo a Rutas de Cuadernillos</h5>
+            <p>Escribe un prefijo (ej: <code>data/</code>) para añadirlo a todas las rutas de cuadernillos que no lo tengan. Útil para correcciones masivas.</p>
+            <form method="POST" action="{{ url_for('.index') }}" onsubmit="return confirm('¿Estás seguro de que quieres aplicar este prefijo a las rutas de la base de datos?');">
+              <input type="hidden" name="action" value="apply_prefix">
+              <div class="form-group">
+                <label for="path_prefix">Prefijo a aplicar:</label>
+                <input type="text" name="path_prefix" id="path_prefix" class="form-control" placeholder="ej: data/">
+              </div>
+              <button type="submit" class="btn btn-primary">Aplicar Prefijo</button>
+            </form>
+          </div>
+
+          <hr>
+
+          <!-- Acción: Poblar DB -->
+          <div class="action-item">
+            <h5>Poblar Base de Datos (Seed)</h5>
+            <p>Ejecuta el script <code>seed_data()</code> para añadir los datos iniciales al sistema (usuarios, configuraciones, etc.). Es seguro ejecutarlo varias veces.</p>
+            <form method="POST" action="{{ url_for('.index') }}" onsubmit="return confirm('¿Estás seguro de que quieres poblar la base de datos con datos iniciales?');">
+              <input type="hidden" name="action" value="seed_db">
+              <button type="submit" class="btn btn-info">Poblar Base de Datos</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna de Acciones Peligrosas -->
+    <div class="col-md-6">
+      <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+          <h4>Acciones Peligrosas</h4>
+        </div>
+        <div class="card-body">
+
+          <!-- Acción: Crear Tablas -->
+          <div class="action-item">
+            <h5>Crear Todas las Tablas</h5>
+            <p>Ejecuta <code>create_all()</code> para crear las tablas definidas en los modelos. No afectará las tablas existentes.</p>
+            <form method="POST" action="{{ url_for('.index') }}" onsubmit="return confirm('¿Estás seguro de que quieres intentar crear las tablas?');">
+              <input type="hidden" name="action" value="create_tables">
+              <button type="submit" class="btn btn-warning">Crear Tablas</button>
+            </form>
+          </div>
+
+          <hr>
+
+          <!-- Acción: Eliminar Tablas -->
+          <div class="action-item">
+            <h5 class="text-danger">Eliminar Todas las Tablas</h5>
+            <p><strong>¡CUIDADO!</strong> Ejecuta <code>drop_all()</code>. Esto eliminará permanentemente todas las tablas y sus datos de la base de datos.</p>
+            <form method="POST" action="{{ url_for('.index') }}" onsubmit="return confirm('¡ADVERTENCIA! Estás a punto de eliminar TODAS las tablas y datos. Esta acción no se puede deshacer. ¿Estás completamente seguro?');">
+              <input type="hidden" name="action" value="drop_tables">
+              <button type="submit" class="btn btn-danger">Eliminar Todas las Tablas</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .action-item {
+      margin-bottom: 1.5rem;
+    }
+    .card {
+      margin-bottom: 1.5rem;
+    }
+  </style>
+
+{% endblock %}

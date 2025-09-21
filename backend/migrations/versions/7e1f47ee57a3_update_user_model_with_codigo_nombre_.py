@@ -23,7 +23,7 @@ def upgrade():
         batch_op.add_column(sa.Column('nombre_completo', sa.String(length=150), nullable=True))
         batch_op.add_column(sa.Column('grado', sa.String(length=50), nullable=True))
         batch_op.create_unique_constraint('uq_users_codigo', ['codigo'])
-        batch_op.drop_column('email')
+        # batch_op.drop_column('email')
 
     # ### end Alembic commands ###
 

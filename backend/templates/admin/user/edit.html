@@ -1,0 +1,97 @@
+{% extends 'admin/model/edit.html' %}
+
+{% block body %}
+  {{ super() }}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Activación de Cuadernillos</h2>
+        <p>Gestiona los cuadernillos de examen que este usuario puede realizar.</p>
+        
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Cuadernillo</th>
+              <th>Área</th>
+              <th>Grado</th>
+              <th class="text-center">Estado</th>
+              <th class="text-right">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cuadernillo in form.cuadernillos %}
+              <tr>
+                <td>{{ cuadernillo.nombre }}</td>
+                <td>{{ cuadernillo.area }}</td>
+                <td>{{ cuadernillo.grado }}</td>
+                <td class="text-center">
+                  {% set is_active = form.activaciones.get(cuadernillo.id, False) %}
+                  <span id="status-{{ cuadernillo.id }}" 
+                        class="badge badge-{{ 'success' if is_active else 'secondary' }}">
+                    {{ 'Activo' if is_active else 'Inactivo' }}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <button class="btn btn-sm btn-{{ 'danger' if is_active else 'primary' }} toggle-activation-btn"
+                          data-user-id="{{ request.args.get('id') }}"
+                          data-cuadernillo-id="{{ cuadernillo.id }}">
+                    {{ 'Desactivar' if is_active else 'Activar' }}
+                  </button>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block tail %}
+  {{ super() }}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const buttons = document.querySelectorAll('.toggle-activation-btn');
+      
+      buttons.forEach(button => {
+        button.addEventListener('click', function() {
+          const userId = this.dataset.userId;
+          const cuadernilloId = this.dataset.cuadernilloId;
+          const url = `/api/users/${userId}/cuadernillos/${cuadernilloId}/toggle-activation`;
+
+          fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              // Si tienes CSRF, necesitarás añadir el token aquí
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // Actualizar el estado y el botón
+              const statusBadge = document.getElementById(`status-${cuadernilloId}`);
+              const isActive = data.is_active;
+
+              statusBadge.textContent = isActive ? 'Activo' : 'Inactivo';
+              statusBadge.className = `badge badge-${isActive ? 'success' : 'secondary'}`;
+              
+              this.textContent = isActive ? 'Desactivar' : 'Activar';
+              this.className = `btn btn-sm btn-${isActive ? 'danger' : 'primary'} toggle-activation-btn`;
+
+              // Mostrar una notificación flash (esto es más complejo, por ahora un alert)
+              alert(data.message);
+            } else {
+              alert('Error: ' + data.message);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error de red.');
+          });
+        });
+      });
+    });
+  </script>
+{% endblock %}

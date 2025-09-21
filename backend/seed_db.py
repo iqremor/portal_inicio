@@ -79,13 +79,21 @@ def seed_cuadernillos():
     try:
         with open(examenes_path, 'r', encoding='utf-8') as f:
             examenes_data = json.load(f)
-        with open(cuadernillos_path, 'r', encoding='utf-8') as f:
-            cuadernillos_data = json.load(f)
-    except FileNotFoundError as e:
-        print(f"Error: Archivo no encontrado: {e.filename}")
+    except FileNotFoundError:
+        print(f"Error: Archivo no encontrado: {examenes_path}")
         return
     except json.JSONDecodeError as e:
-        print(f"Error: Error al decodificar JSON en: {e.doc.name}")
+        print(f"Error: Error al decodificar JSON en {examenes_path}: {e}")
+        return
+
+    try:
+        with open(cuadernillos_path, 'r', encoding='utf-8') as f:
+            cuadernillos_data = json.load(f)
+    except FileNotFoundError:
+        print(f"Error: Archivo no encontrado: {cuadernillos_path}")
+        return
+    except json.JSONDecodeError as e:
+        print(f"Error: Error al decodificar JSON en {cuadernillos_path}: {e}")
         return
 
     print("Iniciando seeding de cuadernillos...")
