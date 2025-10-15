@@ -288,7 +288,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM901",
+    "codigo": "IEM0901",
     "nombre_completo": "ADRADA CORREA BAYRON ESTIVEN",
     "grado": "9",
     "activo": true,
@@ -296,7 +296,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM903",
+    "codigo": "IEM0903",
     "nombre_completo": "ANGULO RODRIGUEZ ANGELICA ",
     "grado": "9",
     "activo": true,
@@ -304,7 +304,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM904",
+    "codigo": "IEM0904",
     "nombre_completo": "ARTURO RODRIGUEZ YEIMI ALEXANDRA",
     "grado": "9",
     "activo": true,
@@ -312,7 +312,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM905",
+    "codigo": "IEM0905",
     "nombre_completo": "BALANTA GONZALEZ JUAN DIEGO",
     "grado": "9",
     "activo": true,
@@ -320,7 +320,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM906",
+    "codigo": "IEM0906",
     "nombre_completo": "CALDERON MARTINEZ ALEXANDRA VANESA",
     "grado": "9",
     "activo": true,
@@ -328,7 +328,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM909",
+    "codigo": "IEM0909",
     "nombre_completo": "HERRAN JIMENEZ YEIBER JADNIEL",
     "grado": "9",
     "activo": true,
@@ -336,7 +336,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM910",
+    "codigo": "IEM0910",
     "nombre_completo": "MARMOLEJO ANGULO LUIS ALEJANDRO",
     "grado": "9",
     "activo": true,
@@ -344,7 +344,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM911",
+    "codigo": "IEM0911",
     "nombre_completo": "MARTINEZ DELGADO VALERYN NICOL",
     "grado": "9",
     "activo": true,
@@ -352,7 +352,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM912",
+    "codigo": "IEM0912",
     "nombre_completo": "MORENO HURTADO JHON ANDERSON",
     "grado": "9",
     "activo": true,
@@ -360,7 +360,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM913",
+    "codigo": "IEM0913",
     "nombre_completo": "MOSQUERA MOSQUERA JOSE MANUEL",
     "grado": "9",
     "activo": true,
@@ -368,7 +368,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM914",
+    "codigo": "IEM0914",
     "nombre_completo": "ORDOÑEZ ARAUJO INGRID VANESSA",
     "grado": "9",
     "activo": true,
@@ -376,7 +376,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM916",
+    "codigo": "IEM0916",
     "nombre_completo": "RENGIFO GONZALEZ ASLY JANETH",
     "grado": "9",
     "activo": true,
@@ -384,7 +384,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM917",
+    "codigo": "IEM0917",
     "nombre_completo": "TREJOS ADRADA LAURA ESTEFANIA",
     "grado": "9",
     "activo": true,
@@ -392,7 +392,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM918",
+    "codigo": "IEM0918",
     "nombre_completo": "VARGAS CORDOBA NORY GINETH",
     "grado": "9",
     "activo": true,
@@ -400,7 +400,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM919",
+    "codigo": "IEM0919",
     "nombre_completo": "GOMEZ MUÑOZ WILDER YADID",
     "grado": "9",
     "activo": true,
@@ -408,7 +408,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM802",
+    "codigo": "IEM0802",
     "nombre_completo": "BALDASSARRY GARCES LUIS DAVID",
     "grado": "8",
     "activo": true,
@@ -416,7 +416,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM803",
+    "codigo": "IEM0803",
     "nombre_completo": "DAZA FERNANDEZ MANUEL SANTIAGO",
     "grado": "8",
     "activo": true,
@@ -424,7 +424,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM804",
+    "codigo": "IEM0804",
     "nombre_completo": "GARCIA MADRIÑAN ANI SIOMARA",
     "grado": "8",
     "activo": true,
@@ -432,7 +432,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM805",
+    "codigo": "IEM0805",
     "nombre_completo": "GOMEZ CAICEDO NEIDI DALIANA",
     "grado": "8",
     "activo": true,
@@ -440,7 +440,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM806",
+    "codigo": "IEM0806",
     "nombre_completo": "GOMEZ GONZALEZ JEIMAR SARETH",
     "grado": "8",
     "activo": true,
@@ -448,7 +448,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM807",
+    "codigo": "IEM0807",
     "nombre_completo": "GOMEZ QUINTERO KAREN SOFIA",
     "grado": "8",
     "activo": true,
@@ -456,7 +456,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM808",
+    "codigo": "IEM0808",
     "nombre_completo": "LOPEZ VALENCIA LOREN SOFIA",
     "grado": "8",
     "activo": true,
@@ -464,7 +464,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM809",
+    "codigo": "IEM0809",
     "nombre_completo": "MORAN FAJARDO CAMILA ALEXANDRA",
     "grado": "8",
     "activo": true,
@@ -472,7 +472,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM810",
+    "codigo": "IEM0810",
     "nombre_completo": "ROSERO CORDOBA DANNA ELIZABETH",
     "grado": "8",
     "activo": true,
@@ -480,7 +480,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM811",
+    "codigo": "IEM0811",
     "nombre_completo": "SOLARTE DELGADO JHONIER JEFFREY",
     "grado": "8",
     "activo": true,
@@ -488,7 +488,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM812",
+    "codigo": "IEM0812",
     "nombre_completo": "TEJADA FERNANDEZ SANTIAGO ",
     "grado": "8",
     "activo": true,
@@ -496,7 +496,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM813",
+    "codigo": "IEM0813",
     "nombre_completo": "ADRADA MESA LUIYI",
     "grado": "8",
     "activo": true,
@@ -504,7 +504,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM814",
+    "codigo": "IEM0814",
     "nombre_completo": "RIVERA GOMEZ ELKIN ELIECER",
     "grado": "8",
     "activo": true,
@@ -512,7 +512,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM815",
+    "codigo": "IEM0815",
     "nombre_completo": "RIVERA GOMEZ CRISTIAN SAMUEL",
     "grado": "8",
     "activo": true,
@@ -520,7 +520,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM701",
+    "codigo": "IEM0701",
     "nombre_completo": "ADRADA CORREA DARLINSON JOHAN",
     "grado": "7",
     "activo": true,
@@ -528,7 +528,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM703",
+    "codigo": "IEM0703",
     "nombre_completo": "CAICEDO PALACIOS SAMUEL ",
     "grado": "7",
     "activo": true,
@@ -536,7 +536,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM704",
+    "codigo": "IEM0704",
     "nombre_completo": "CAICEDO VELASCO DIDIER MANUEL",
     "grado": "7",
     "activo": true,
@@ -544,7 +544,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM705",
+    "codigo": "IEM0705",
     "nombre_completo": "DAZA SALINAS JOHAN JOSE",
     "grado": "7",
     "activo": true,
@@ -552,7 +552,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM706",
+    "codigo": "IEM0706",
     "nombre_completo": "DIAZ GOMEZ ANI GABRIELA",
     "grado": "7",
     "activo": true,
@@ -560,7 +560,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM707",
+    "codigo": "IEM0707",
     "nombre_completo": "GARCIA RUIZ DYLAN ",
     "grado": "7",
     "activo": true,
@@ -568,7 +568,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM708",
+    "codigo": "IEM0708",
     "nombre_completo": "GONZALEZ CABEZAS KAREN LILIANA",
     "grado": "7",
     "activo": true,
@@ -576,7 +576,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM709",
+    "codigo": "IEM0709",
     "nombre_completo": "HENAO ORDOÑEZ YERI MICHEL",
     "grado": "7",
     "activo": true,
@@ -584,7 +584,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM710",
+    "codigo": "IEM0710",
     "nombre_completo": "MOSQUERA ARGOTE HAZLI YARELI",
     "grado": "7",
     "activo": true,
@@ -592,7 +592,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM711",
+    "codigo": "IEM0711",
     "nombre_completo": "SANCHEZ RUIZ YONIER ALEXIS",
     "grado": "7",
     "activo": true,
@@ -600,7 +600,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM712",
+    "codigo": "IEM0712",
     "nombre_completo": "TORRES ÑAÑEZ HILARY ",
     "grado": "7",
     "activo": true,
@@ -608,7 +608,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM601",
+    "codigo": "IEM0601",
     "nombre_completo": "ANGULO CABRERA ALAN RICARDO",
     "grado": "6",
     "activo": true,
@@ -616,7 +616,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM602",
+    "codigo": "IEM0602",
     "nombre_completo": "BALANTA MENDOZA ANA VALERIA",
     "grado": "6",
     "activo": true,
@@ -624,7 +624,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM603",
+    "codigo": "IEM0603",
     "nombre_completo": "BRAVO MOSQUERA JAMINTON DAMIAN",
     "grado": "6",
     "activo": true,
@@ -632,7 +632,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM604",
+    "codigo": "IEM0604",
     "nombre_completo": "CAIPE LOPEZ ALISON SALOME",
     "grado": "6",
     "activo": true,
@@ -640,7 +640,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM605",
+    "codigo": "IEM0605",
     "nombre_completo": "DIAZ PALACIOS JHON JADER",
     "grado": "6",
     "activo": true,
@@ -648,7 +648,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM606",
+    "codigo": "IEM0606",
     "nombre_completo": "DIAZ SOL DENILSON FERNANDO",
     "grado": "6",
     "activo": true,
@@ -656,7 +656,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM607",
+    "codigo": "IEM0607",
     "nombre_completo": "FERNANDEZ IMBACHI CAROLINA ",
     "grado": "6",
     "activo": true,
@@ -664,7 +664,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM608",
+    "codigo": "IEM0608",
     "nombre_completo": "GOMEZ MUÑOZ BREINER FARID",
     "grado": "6",
     "activo": true,
@@ -672,7 +672,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM609",
+    "codigo": "IEM0609",
     "nombre_completo": "GONZALEZ VELASCO HELEN CAMILA",
     "grado": "6",
     "activo": true,
@@ -680,7 +680,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM610",
+    "codigo": "IEM0610",
     "nombre_completo": "GONZALEZ VELASCO YAIRA LISBET",
     "grado": "6",
     "activo": true,
@@ -688,7 +688,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM611",
+    "codigo": "IEM0611",
     "nombre_completo": "GUERRON BENITEZ DIEGO ARMANDO",
     "grado": "6",
     "activo": true,
@@ -696,7 +696,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM612",
+    "codigo": "IEM0612",
     "nombre_completo": "HERNANDEZ DIAZ THIAGO ",
     "grado": "6",
     "activo": true,
@@ -704,7 +704,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM613",
+    "codigo": "IEM0613",
     "nombre_completo": "HERRAN JIMENEZ JOHANYERLIS SOFIA",
     "grado": "6",
     "activo": true,
@@ -712,7 +712,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM614",
+    "codigo": "IEM0614",
     "nombre_completo": "LOPEZ NARVAEZ MIGUEL ANGEL",
     "grado": "6",
     "activo": true,
@@ -720,7 +720,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM615",
+    "codigo": "IEM0615",
     "nombre_completo": "MARTINEZ DIAZ CAMILO ALEXIS",
     "grado": "6",
     "activo": true,
@@ -728,7 +728,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM616",
+    "codigo": "IEM0616",
     "nombre_completo": "MEZA GOMEZ NEILIN VALERIA",
     "grado": "6",
     "activo": true,
@@ -736,7 +736,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM617",
+    "codigo": "IEM0617",
     "nombre_completo": "MONTENEGRO FERNANDEZ DILAN ",
     "grado": "6",
     "activo": true,
@@ -744,7 +744,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM618",
+    "codigo": "IEM0618",
     "nombre_completo": "MOSQUERA IBARRA WILSON ANDRES",
     "grado": "6",
     "activo": true,
@@ -752,7 +752,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM619",
+    "codigo": "IEM0619",
     "nombre_completo": "MUÑOZ VELASCO KAREN TATIANA",
     "grado": "6",
     "activo": true,
@@ -760,7 +760,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM620",
+    "codigo": "IEM0620",
     "nombre_completo": "NARVAEZ RUEDA ANDRES JAVIER",
     "grado": "6",
     "activo": true,
@@ -768,7 +768,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM621",
+    "codigo": "IEM0621",
     "nombre_completo": "RENGIFO GONZALEZ JULIANA ANDREA",
     "grado": "6",
     "activo": true,
@@ -776,7 +776,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM622",
+    "codigo": "IEM0622",
     "nombre_completo": "SALAZAR MONTENEGRO SARAY JULIANA",
     "grado": "6",
     "activo": true,
@@ -784,7 +784,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM623",
+    "codigo": "IEM0623",
     "nombre_completo": "SALAZAR CAICEDO JESUS DAVID",
     "grado": "6",
     "activo": true,
@@ -792,7 +792,7 @@
     "role": "USER"
   },
   {
-    "codigo": "IEM624",
+    "codigo": "IEM0624",
     "nombre_completo": "TRUJILLO GONZALEZ SAMUEL DAVID",
     "grado": "6",
     "activo": true,
