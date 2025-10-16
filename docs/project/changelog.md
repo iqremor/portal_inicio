@@ -283,3 +283,23 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
     - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
 - Tests: No hay testing framework configurado.
 ### Finalización: [PENDIENTE]
+
+## Sesión 12 - 15 de octubre de 2025
+### Objetivos de la sesión:
+- Corregir bug en el envío de resultados del examen (`guardarIntento`).
+- Pausar la implementación de la funcionalidad de guardado en el backend.
+- Documentar el plan de implementación del backend en el `roadmap.md`.
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica: Funcionalidad de exámenes incompleta, falta de herramientas de calidad, documentación incompleta.
+- Tests: No hay testing framework configurado.
+
+### Acciones Realizadas:
+- Se corrigió la llamada a `guardarIntento` en `cuestionario.js` para pasar los datos de sesión correctos.
+- Se solucionó un `TypeError` en `storage.js` simplificando la función `guardarIntento`.
+- Se comentó la llamada a `guardarIntento` en `cuestionario.js` para desactivar temporalmente la función.
+- Se actualizó `roadmap.md` con el plan detallado para la implementación del backend.
+- Se guardaron todos los cambios en el repositorio.
+
+### Finalización: 15 de octubre de 2025
