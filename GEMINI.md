@@ -233,6 +233,7 @@ portal_inicio/
 6. **Sugerencias de mejora:** Proponer refactorizaciones o mejoras para próximas sesiones
 7. **Generar commit de sugerencias**: Crear un commit que resuma las sugerencias de mejora propuestas.
 8. **Limpieza:** Borrar datos temporales de sesión
+9. **Cerrar Sesión:** terminando sesión `/quit`
 
 ## 3. Sistema de Documentación
 

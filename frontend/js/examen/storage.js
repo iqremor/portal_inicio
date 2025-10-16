@@ -8,14 +8,14 @@ import { submitExam } from '../api/index.js';
  * @returns {Promise<object>} Una promesa que se resuelve con los resultados del examen.
  */
 export async function guardarIntento(sessionId, answers, userCodigo) {
-    const response = await submitExam(sessionId, answers, userCodigo);
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'No se pudo guardar el intento.');
+    try {
+        const resultado = await submitExam(sessionId, answers, userCodigo);
+        return resultado;
+    } catch (error) {
+        console.error("Error al guardar el intento:", error);
+        // Re-lanzar el error para que el llamador sepa que algo salió mal.
+        throw new Error(error.message || 'No se pudo guardar el intento.');
     }
-
-    return response.json();
 }
 
 /**

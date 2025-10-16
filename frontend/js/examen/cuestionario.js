@@ -164,8 +164,8 @@ export async function siguienteImagen() {
     } else {
         cleanup();
         // Guardar el intento antes de mostrar la página final.
-        // Por ahora, no tenemos un sistema de puntuación, así que guardamos una nota de 0.
-        await guardarIntento({ nota: 0, fecha: new Date() });
+        // Se guarda el orden de las preguntas en lugar de las respuestas.
+        await guardarIntento(state.sessionId, state.imageList, state.userCodigo);
         state.attemptCount++; // Incrementamos el contador en el estado local
         showEndPage();
     }

@@ -61,7 +61,8 @@ async function main() {
 
     try {
         state.currentUser = await fetchUserData(userCode);
-        state.currentUser.codigo = userCode; 
+        state.userCodigo = userCode;
+        state.sessionId = sessionId;
 
         state.attemptCount = await obtenerNumeroDeIntentos(sessionId, areaId);
         

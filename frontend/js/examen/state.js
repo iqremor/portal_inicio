@@ -5,4 +5,6 @@ export const state = {
     isAnimationPlaying: false,
     attemptCount: 0,
     intentoAnulado: false,
+    sessionId: null,
+    userCodigo: null,
 };
