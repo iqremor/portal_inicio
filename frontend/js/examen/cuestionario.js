@@ -165,7 +165,7 @@ export async function siguienteImagen() {
         cleanup();
         // Guardar el intento antes de mostrar la página final.
         // Se guarda el orden de las preguntas en lugar de las respuestas.
-        await guardarIntento(state.sessionId, state.imageList, state.userCodigo);
+        // await guardarIntento(state.sessionId, state.imageList, state.userCodigo);
         state.attemptCount++; // Incrementamos el contador en el estado local
         showEndPage();
     }

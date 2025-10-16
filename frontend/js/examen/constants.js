@@ -7,9 +7,9 @@
 
 // Configuración para pruebas estándar
 export const quizConfig = {
-    timerDuration: 120, // Duración del temporizador en segundos (2 minutos)
+    timerDuration: 240, // Duración del temporizador en segundos (4 minutos)
     warningTime: 30, // Mostrar advertencia cuando queden 30 segundos.
-    nextButtonDelay: 30000, // 30 segundos
+    nextButtonDelay: 180000, // 3 minutos
 };
 
 // --- BANCO DE IMÁGENES ---
