@@ -249,6 +249,42 @@ class ExamAvailability(db.Model):
 
     cuadernillo = db.relationship('Cuadernillo')
 
+class ExamAnswer(db.Model):
+    __tablename__ = 'exam_answers'
+    id = db.Column(db.Integer, primary_key=True)
+    session_id = db.Column(db.String(256), db.ForeignKey('active_sessions.session_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey('cuadernillos.id'), nullable=False)
+    question_number = db.Column(db.Integer, nullable=False)
+    selected_option = db.Column(db.Integer, nullable=False)
+    is_correct = db.Column(db.Boolean, nullable=True)
+    score_points = db.Column(db.Integer, nullable=True)
+    answered_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    active_session = db.relationship('ActiveSession', backref=db.backref('exam_answers', lazy=True))
+    user = db.relationship('User', backref=db.backref('exam_answers', lazy=True))
+    cuadernillo = db.relationship('Cuadernillo', backref=db.backref('exam_answers', lazy=True))
+
+    def __repr__(self):
+        return f'<ExamAnswer User:{self.user_id} Session:{self.session_id} Q:{self.question_number}>'
+
+class ExamResult(db.Model):
+    __tablename__ = 'exam_results'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey('cuadernillos.id'), nullable=False)
+    final_score = db.Column(db.Float, nullable=False)
+    correct_answers = db.Column(db.Integer, nullable=False)
+    incorrect_answers = db.Column(db.Integer, nullable=False)
+    unanswered_questions = db.Column(db.Integer, nullable=False)
+    completion_date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('exam_results', lazy=True))
+    cuadernillo = db.relationship('Cuadernillo', backref=db.backref('exam_results', lazy=True))
+
+    def __repr__(self):
+        return f'<ExamResult User:{self.user_id} Cuadernillo:{self.cuadernillo_id} Score:{self.final_score}>'
+
 
 # Función para inicializar la base de datos
 def init_db(app):
