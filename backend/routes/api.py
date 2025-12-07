@@ -1,6 +1,8 @@
 # backend/routes/api.py
+import os
+import json
 from flask import Blueprint, jsonify, request
-from models import Cuadernillo, User, ActiveSession, db
+from models import Cuadernillo, User, ActiveSession, db, ExamAnswer, ExamResult
 import random
 
 api_bp = Blueprint('api_bp', __name__)
@@ -123,26 +125,126 @@ def get_attempts():
     return jsonify({"attemptCount": 0})
 
 @api_bp.route('/examen/<string:session_id>/finalizar', methods=['POST'])
-def submit_exam(session_id):
-    # Lógica para recibir respuestas, calcular nota y guardar en BD irá aquí
-    # Por ahora, devolvemos un resultado de ejemplo
+def finalizar_examen(session_id):
+    """
+    Recibe las respuestas del examen, las califica, las guarda en la base de datos
+    y devuelve el resultado final al usuario.
+    """
     data = request.get_json()
+    if not data:
+        return jsonify({"error": "Cuerpo de la solicitud vacío o no es JSON"}), 400
+
+    # 1. Extracción de Datos
     user_codigo = data.get('codigo')
-    attempts_count = data.get('intentos')
+    answers = data.get('answers')
 
-    if not user_codigo:
-        return jsonify({"message": "Código de usuario no proporcionado para finalizar el examen"}), 400
+    if not user_codigo or not isinstance(answers, list):
+        return jsonify({"error": "Faltan 'codigo' o 'answers' en la solicitud"}), 400
 
-    print(f"Sesión ID: {session_id}, Código de Usuario: {user_codigo}, Intentos: {attempts_count}")
+    # 2. Validación
+    active_session = ActiveSession.query.filter_by(session_id=session_id).first()
+    if not active_session:
+        return jsonify({"error": "Sesión de examen no encontrada o inválida."}), 404
 
     user = User.query.filter_by(codigo=user_codigo).first()
-    if user:
-        active_session = ActiveSession.query.filter_by(user_id=user.id, session_id=session_id).first()
-        if active_session:
-            active_session.cuadernillo_id = None # Clear the exam ID
-            db.session.commit()
+    if not user or user.id != active_session.user_id:
+        return jsonify({"error": "El usuario no corresponde a la sesión activa."}), 403
+
+    if not active_session.cuadernillo_id:
+        return jsonify({"error": "La sesión no está asociada a ningún examen activo."}), 400
+
+    cuadernillo = Cuadernillo.query.get(active_session.cuadernillo_id)
+    if not cuadernillo:
+        return jsonify({"error": "El cuadernillo asociado a la sesión no fue encontrado."}), 404
+
+    NUM_PREGUNTAS_EXAMEN = 10 
+    if len(answers) != NUM_PREGUNTAS_EXAMEN:
+        return jsonify({"error": f"Se esperaban {NUM_PREGUNTAS_EXAMEN} respuestas, pero se recibieron {len(answers)}."}), 400
+
+    # 3. Lógica de Calificación
+    try:
+        # Construir la ruta al archivo consolidado de respuestas
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
+        all_answers_file_path = os.path.join(project_root, 'backend', 'data', 'all_exam_answers.json')
+
+        if not os.path.exists(all_answers_file_path):
+            return jsonify({"error": "Archivo consolidado de respuestas 'all_exam_answers.json' no encontrado."}), 500
+
+        with open(all_answers_file_path, 'r', encoding='utf-8') as f:
+            all_correct_answers_data = json.load(f)
+        
+        # Construir la clave para buscar las respuestas de este examen
+        exam_identifier = f"{cuadernillo.grado}_{cuadernillo.area}".lower()
+        
+        correct_answers = all_correct_answers_data.get(exam_identifier, [])
+
+        if not correct_answers:
+            return jsonify({"error": f"No se encontraron respuestas correctas para el examen '{exam_identifier}'."}), 500
+
+    except Exception as e:
+        return jsonify({"error": f"Error al procesar el archivo consolidado de respuestas: {str(e)}"}), 500
+
+    correct_answers_count = 0
+    incorrect_answers_count = 0
     
-    return jsonify({"message": "Examen recibido", "score": 0})
+    answers.sort(key=lambda x: x['questionNumber'])
+
+    for i, user_answer in enumerate(answers):
+        # Asegurarse de no exceder los límites de correct_answers
+        if i < len(correct_answers) and user_answer.get('selectedOption') == correct_answers[i]:
+            correct_answers_count += 1
+        else:
+            incorrect_answers_count += 1
+            
+    final_score = correct_answers_count * 10
+
+    # 4. Almacenamiento en BD y Limpieza de Sesión
+    try:
+        # Guardar cada respuesta individual
+        for i, user_answer in enumerate(answers):
+            is_correct = (i < len(correct_answers) and user_answer.get('selectedOption') == correct_answers[i])
+            score = 10 if is_correct else 0
+            
+            answer_record = ExamAnswer(
+                session_id=session_id,
+                user_id=user.id,
+                cuadernillo_id=cuadernillo.id,
+                question_number=user_answer.get('questionNumber'),
+                selected_option=user_answer.get('selectedOption'),
+                is_correct=is_correct,
+                score_points=score
+            )
+            db.session.add(answer_record)
+
+        # Guardar el resultado general del examen
+        exam_result = ExamResult(
+            user_id=user.id,
+            cuadernillo_id=cuadernillo.id,
+            final_score=final_score,
+            correct_answers=correct_answers_count,
+            incorrect_answers=incorrect_answers_count,
+            unanswered_questions=NUM_PREGUNTAS_EXAMEN - (correct_answers_count + incorrect_answers_count)
+        )
+        db.session.add(exam_result)
+        
+        # Limpiar el cuadernillo de la sesión activa para que no se pueda volver a enviar
+        active_session.cuadernillo_id = None
+        
+        db.session.commit()
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error al guardar los resultados en la base de datos: {str(e)}"}), 500
+
+
+    # 5. Respuesta al Frontend
+    return jsonify({
+        "message": "Examen finalizado con éxito.",
+        "score": final_score,
+        "totalQuestions": NUM_PREGUNTAS_EXAMEN,
+        "correctAnswers": correct_answers_count
+    }), 200
 
 from functools import wraps
 from flask import session, redirect, url_for, flash
