@@ -47,6 +47,21 @@ class Cuadernillo(db.Model):
 ```
 *   **Relación con JSON:** Los datos para este modelo se construyen a partir de la combinación de `backend/data/examenes.json` y `backend/data/cuadernillos.json`.
 
+#### Modelo `ActiveSession`
+Almacena las sesiones activas de los usuarios, incluyendo el examen que están realizando y las preguntas específicas que se les presentaron.
+
+```python
+class ActiveSession(db.Model):
+    __tablename__ = 'active_sessions'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    session_id = db.Column(db.String(256), unique=True, nullable=False)
+    login_time = db.Column(db.DateTime, default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey('cuadernillos.id'), nullable=True)
+    presented_questions = db.Column(db.JSON, nullable=True) # Almacena las preguntas presentadas al usuario como JSON
+```
+
 ### Relación entre los Datos y Flujo de Información
 
 1.  **`usuarios.json` -> Tabla `users`**:

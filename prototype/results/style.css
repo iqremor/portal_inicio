@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+body {
+    font-family: 'Inter', sans-serif;
+}
+.print-only {
+    display: none;
+}
+@media print {
+    /* Oculta elementos que no deben imprimirse */
+    .no-print {
+        display: none !important;
+    }
+    /* Muestra elementos exclusivos de la impresión (si los hubiera) */
+    .print-only {
+        display: block !important;
+    }
+    /* Asegura un fondo blanco para la impresión */
+    body {
+        background: white;
+    }
+}

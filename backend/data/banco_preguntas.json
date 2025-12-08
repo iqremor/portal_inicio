@@ -1,0 +1,92 @@
+{    "preguntas": [
+      {
+        "id": "question_id_1",
+        "subject": "matematicas",
+        "grade_level": ["6", "7", "8"],
+        "type": "multiple_choice",
+        "difficulty": "facil",
+        "points": 1,
+        "question_text": "¿Cuál es el resultado de 15 + 27?",
+        "options": ["40", "42", "44", "46"],
+        "correct_answer_index": 1,
+        "explanation": "La suma de 15 y 27 es 42."
+      },
+      {
+        "id": "question_id_2",
+        "subject": "matematicas",
+        "grade_level": ["9", "10"],
+        "type": "multiple_choice",
+        "difficulty": "medio",
+        "points": 2,
+        "question_text": "Si x = 5, ¿cuál es el valor de 3x + 2?",
+        "options": ["15", "17", "19", "21"],
+        "correct_answer_index": 1,
+        "explanation": "Sustituyendo x=5 en 3x+2, obtenemos 35+2 = 15+2 = 17."
+      },
+      {
+        "id": "question_id_3",
+        "subject": "ciencias_naturales",
+        "grade_level": ["6", "7"],
+        "type": "multiple_choice",
+        "difficulty": "facil",
+        "points": 1,
+        "question_text": "¿Cuál es la unidad básica de la vida?",
+        "options": ["Átomo", "Célula", "Molécula", "Tejido"],
+        "correct_answer_index": 1,
+        "explanation": "La célula es la unidad estructural y funcional de todos los seres vivos."
+      },
+      {
+        "id": "question_id_4",
+        "subject": "analisis_imagen",
+        "grade_level": ["8", "9", "10"],
+        "type": "image_multiple_choice",
+        "difficulty": "medio",
+        "points": 2,
+        "question_text": "Observa la imagen de un gráfico de barras que muestra ventas por mes. ¿En qué mes se registraron las mayores ventas?",
+        "image_url": "/images/grafico_ventas.png",
+        "options": ["Enero", "Marzo", "Junio", "Diciembre"],
+        "correct_answer_index": 2,
+        "explanation": "Según el gráfico, el mes de junio muestra la barra más alta, indicando las mayores ventas."
+      },
+      {
+        "id": "question_id_5",
+        "subject": "comprension_textos",
+        "grade_level": ["10", "11"],
+        "type": "text_multiple_choice",
+        "difficulty": "medio",
+        "points": 2,
+        "text_content": "El agua es fundamental para la vida. Sin ella, ningún ser vivo podría existir. Cubre aproximadamente el 70% de la superficie terrestre.",
+        "question_text": "¿Cuál es la idea principal del texto?",
+        "options": [
+          "El agua cubre el 70% de la Tierra",
+          "Los seres vivos necesitan agua",
+          "La importancia vital del agua",
+          "La superficie terrestre es acuática"
+        ],
+        "correct_answer_index": 2,
+        "explanation": "El texto enfatiza la necesidad y el rol crucial del agua para la existencia de la vida."
+      },
+      {
+        "id": "question_id_6",
+        "subject": "ciencias_naturales",
+        "grade_level": ["11"],
+        "type": "true_false",
+        "difficulty": "dificil",
+        "points": 3,
+        "question_text": "¿La fotosíntesis es el proceso por el cual las plantas convierten la luz solar en energía química?",
+        "correct_answer": true,
+        "explanation": "La fotosíntesis es el proceso fundamental para la producción de energía en las plantas."
+      },
+      {
+        "id": "question_id_7",
+        "subject": "matematicas",
+        "grade_level": ["10", "11"],
+        "type": "fill_in_the_blank",
+        "difficulty": "medio",
+        "points": 2,
+        "question_text": "La fórmula del área de un círculo es πr² donde 'r' es el ____ del círculo.",
+        "correct_answer": "radio",
+        "explanation": "El radio es la distancia desde el centro del círculo hasta cualquier punto de su circunferencia."
+      }
+    ]
+  }

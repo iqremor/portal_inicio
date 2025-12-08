@@ -9,8 +9,6 @@ let doRecargarImagen;
 let doSaveUserAnswer; // New variable
 
 export async function entrarEnModoInmersivo() {
-
-export async function entrarEnModoInmersivo() {
     const elem = document.documentElement;
     try {
         if (elem.requestFullscreen) {

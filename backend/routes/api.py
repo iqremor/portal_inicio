@@ -1,7 +1,7 @@
 # backend/routes/api.py
 import os
 import json
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from models import Cuadernillo, User, ActiveSession, db, ExamAnswer, ExamResult
 import random
 
@@ -92,13 +92,18 @@ def get_exam_questions_by_session(session_id):
     questions_file_path = os.path.join(project_root, 'data', cleaned_dir_banco, 'questions.json')
 
     if not os.path.exists(questions_file_path):
-        return jsonify({"error": f"Archivo de preguntas '{questions_file_path}' no encontrado para el cuadernillo '{cuadernillo.nombre}'."}), 500
+        current_app.logger.error(f"Error: Archivo de preguntas '{questions_file_path}' no encontrado para el cuadernillo '{cuadernillo.nombre}'.")
+        return jsonify({"error": f"Archivo de preguntas '{os.path.basename(questions_file_path)}' no encontrado en el servidor para el cuadernillo '{cuadernillo.nombre}'."}), 500
 
     try:
         with open(questions_file_path, 'r', encoding='utf-8') as f:
             all_questions_bank = json.load(f)
+    except json.JSONDecodeError as e:
+        current_app.logger.error(f"Error: El archivo de preguntas '{questions_file_path}' está mal formado (JSON inválido): {str(e)}")
+        return jsonify({"error": f"Error al leer el archivo de preguntas para el cuadernillo '{cuadernillo.nombre}'. El archivo JSON está mal formado."}), 500
     except Exception as e:
-        return jsonify({"error": f"Error al leer o parsear el archivo de preguntas: {str(e)}"}), 500
+        current_app.logger.error(f"Error: Ocurrió un error inesperado al leer el archivo de preguntas '{questions_file_path}': {str(e)}")
+        return jsonify({"error": f"Error inesperado al procesar el archivo de preguntas para el cuadernillo '{cuadernillo.nombre}'."}), 500
 
     # Ensure enough questions are available
     if len(all_questions_bank) < num_questions_to_present:

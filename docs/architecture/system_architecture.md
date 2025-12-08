@@ -9,8 +9,8 @@ Sistema web para evaluaciones académicas que permite a estudiantes realizar pru
 - **Tecnología**: HTML5, CSS3, JavaScript (Vanilla)
 - **Estructura**:
   - `index.html`: Página de login
-  - `frontend/pages/`: Páginas de la aplicación
-  - `frontend/js/`: Scripts de validación, funcionalidad y carga dinámica de exámenes
+  - `frontend/pages/`: Páginas de la aplicación (ahora incluye `upload_answers.html` para subir respuestas)
+  - `frontend/js/`: Scripts de validación, funcionalidad, carga dinámica de exámenes, y lógica de subida de respuestas.
   - `frontend/css/`: Estilos responsivos
   - `frontend/images/`: Recursos gráficos
 
@@ -19,8 +19,9 @@ Sistema web para evaluaciones académicas que permite a estudiantes realizar pru
 - **Puerto**: 5000
 - **Funcionalidades**:
   - Autenticación de usuarios
-  - Gestión de exámenes (incluyendo listado por grado)
-  - Almacenamiento de resultados
+  - Gestión de exámenes (incluyendo listado por grado, selección aleatoria de preguntas detalladas y almacenamiento en sesión)
+  - Almacenamiento de resultados detallados y calificación (0-5)
+  - Carga y calificación de archivos de respuestas de examen (JSON/CSV)
   - API REST para frontend
 
 ### Base de Datos

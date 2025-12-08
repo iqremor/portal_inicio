@@ -325,3 +325,40 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Se modificó `data/resultados/conversor.py` para eliminar rutas codificadas y permitir la selección interactiva de directorios de entrada/salida.
 - Se limpió y actualizó `.gitignore` para ignorar correctamente los archivos generados y temporales.
 ### Finalización: 7 de diciembre de 2025
+
+## Sesión 14 - 8 de diciembre de 2025
+### Objetivos de la sesión:
+- Implementar la funcionalidad de recargar imagen en la interfaz del examen (frontend).
+- Desarrollar la página web para subir respuestas de exámenes (frontend y backend), incluyendo la calificación de 0 a 5.
+
+### Acciones Realizadas:
+- **Frontend:**
+    - Se añadió la función `recargarImagen()` en `frontend/js/examen/cuestionario.js`.
+    - Se modificó `frontend/js/examen/ui.js` para declarar `doRecargarImagen`, actualizar la función `setup` para recibir `recargarImagen`, e integrar un botón de "Recargar Imagen" (con icono SVG y estilo `btn-secondary`) junto al temporizador en la función `renderizarImagen`.
+    - Se modificó `frontend/js/examen/examen-main.js` para importar y pasar `recargarImagen` a `setupUI`.
+    - Se corrigió un error `Uncaught SyntaxError: Unexpected token 'export'` en `frontend/js/examen/ui.js` eliminando una definición de función duplicada.
+    - Se creó el directorio `frontend/js/results/`.
+    - Se creó el archivo `frontend/pages/upload_answers.html` con una estructura básica para la subida de archivos, utilizando estilos existentes e incluyendo un campo para el ID del examen.
+    - Se añadió la función `uploadExamAnswers(formData)` en `frontend/js/api/index.js` para manejar la llamada a la API de subida de respuestas.
+    - Se creó el archivo `frontend/js/pages/upload_answers.js` para la lógica frontend del formulario de subida, que incluye verificación de sesión, validación de tipo de archivo, manejo de estados de carga, y el uso de `uploadExamAnswers` para comunicarse con el backend, mostrando la calificación recibida.
+- **Backend:**
+    - Se añadió el endpoint `/api/upload_exam_answers` (POST) en `backend/routes/api.py`.
+    - Este endpoint maneja la recepción de archivos (JSON/CSV), la validación de los datos (`examId`, `userCodigo`, formato del archivo), el procesamiento del contenido del archivo para extraer las respuestas, la carga de las respuestas correctas desde `backend/data/all_exam_answers.json`, la calificación de las respuestas del usuario en una escala de 0 a 5, y el almacenamiento detallado de `ExamAnswer` y `ExamResult` en la base de datos (incluyendo el número de intento).
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta (específicamente la parte del frontend para la carga dinámica de áreas a evaluar).
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada (aún falta `CODE_STYLE.md` y organización general).
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión.
+- Tests: No hay testing framework configurado.
+
+### Próximo a implementar:
+- Realizar pruebas manuales exhaustivas de la funcionalidad de subida de respuestas (frontend y backend).
+- Ajustar los estilos de `frontend/pages/upload_answers.html` si es necesario.
+- Considerar la visualización de un historial de subidas o resultados en el frontend.
+- Mejorar la robustez del manejo de errores y mensajes al usuario.
+
+### Finalización: lunes, 8 de diciembre de 2025

@@ -50,7 +50,7 @@ demo/
 # Data files (containing sensitive or generated data)
 # These files contain sample user data and should not be committed to a public repository.
 data/resultados
-backend/data/*.json
+# backend/data/*.json
 backend/data/datos_alumnos.csv
 # Ignore the raw text answer files
 backend/data/respuesta/ 

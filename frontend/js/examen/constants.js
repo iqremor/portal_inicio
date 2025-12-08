@@ -9,7 +9,7 @@
 export const quizConfig = {
     timerDuration: 240, // Duración del temporizador en segundos (4 minutos)
     warningTime: 30, // Mostrar advertencia cuando queden 30 segundos.
-    nextButtonDelay: 180000, // 3 minutos
+    nextButtonDelay: 10000, // 10 segundos
 };
 
 // --- BANCO DE IMÁGENES ---
