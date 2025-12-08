@@ -70,50 +70,59 @@ def get_exam_questions_by_session(session_id):
     if not active_session:
         return jsonify({"error": "Sesión de examen no encontrada o inactiva."}), 404
 
-
     cuadernillo = Cuadernillo.query.get(active_session.cuadernillo_id)
     if not cuadernillo:
-
         return jsonify({"error": "Cuadernillo asociado a la sesión no encontrado."}), 404
 
-    # Aquí deberíamos recuperar las preguntas que se seleccionaron al iniciar la sesión.
-    # Por ahora, para que el flujo funcione, generaremos un conjunto aleatorio de preguntas.
-    # Esto es una deuda técnica: las preguntas seleccionadas deberían persistir en la ActiveSession
-    # o en una tabla intermedia al iniciar el examen.
-    total_preguntas = cuadernillo.total_preguntas_banco
+    # Determine the number of questions to present
+    num_questions_to_present = 10 # Default value, can be configurable later
+
+    # Construct path to questions.json
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
     
-    # Ensure dir_banco starts with the correct relative path for /data_files/
-    # It should remove any leading 'data/' or '/data/'
-
+    # Clean dir_banco to get the relative path from the 'data' folder
     cleaned_dir_banco = cuadernillo.dir_banco
-
-    # Remove leading 'data/' or '/data/' repeatedly until no more prefixes are found
     while cleaned_dir_banco.startswith('data/') or cleaned_dir_banco.startswith('/data/'):
         if cleaned_dir_banco.startswith('/data/'):
             cleaned_dir_banco = cleaned_dir_banco[len('/data/'):]
         elif cleaned_dir_banco.startswith('data/'):
             cleaned_dir_banco = cleaned_dir_banco[len('data/'):]
+            
+    questions_file_path = os.path.join(project_root, 'data', cleaned_dir_banco, 'questions.json')
 
-    base_path = f"/data_files/{cleaned_dir_banco}"
-    
-    image_filenames = [f"pregunta_{i:02d}.jpg" for i in range(1, total_preguntas + 1)]
-    
-    random.shuffle(image_filenames)
-    # Asumimos que siempre se seleccionan 10 preguntas, como en la ruta /examenes/start
-    preguntas_seleccionadas = image_filenames[:10] 
+    if not os.path.exists(questions_file_path):
+        return jsonify({"error": f"Archivo de preguntas '{questions_file_path}' no encontrado para el cuadernillo '{cuadernillo.nombre}'."}), 500
 
-    questions_urls = [f"{base_path}/{filename}" for filename in preguntas_seleccionadas]
+    try:
+        with open(questions_file_path, 'r', encoding='utf-8') as f:
+            all_questions_bank = json.load(f)
+    except Exception as e:
+        return jsonify({"error": f"Error al leer o parsear el archivo de preguntas: {str(e)}"}), 500
 
+    # Ensure enough questions are available
+    if len(all_questions_bank) < num_questions_to_present:
+        num_questions_to_present = len(all_questions_bank) # Present all available questions
+
+    # Randomly select questions
+    presented_questions = random.sample(all_questions_bank, num_questions_to_present)
+
+    # Store presented questions in the ActiveSession
+    active_session.presented_questions = presented_questions
+    db.session.commit()
+
+    # Prepare data for frontend
     exam_data = {
-        "titulo": cuadernillo.nombre, # Usar el nombre del cuadernillo como título del examen
-        "dir_banco": cuadernillo.dir_banco, # Añadir dir_banco
-        "total_preguntas_banco": cuadernillo.total_preguntas_banco, # Añadir total_preguntas_banco
-        "config": { # Añadir la configuración esperada por el frontend
-            "nextButtonDelay": 1000, # Valor fijo o configurable
+        "titulo": cuadernillo.nombre,
+        "dir_banco": cuadernillo.dir_banco,
+        "total_preguntas_banco": cuadernillo.total_preguntas_banco,
+        "config": {
+            "nextButtonDelay": 1000,
             "subject": cuadernillo.area,
             "Grado": cuadernillo.grado,
-            "numQuestions": 10 # Asumir 10 preguntas seleccionadas para el examen
-        }
+            "numQuestions": num_questions_to_present
+        },
+        "questions": presented_questions # Pass the full question objects
     }
 
     return jsonify(exam_data)
@@ -136,7 +145,7 @@ def finalizar_examen(session_id):
 
     # 1. Extracción de Datos
     user_codigo = data.get('codigo')
-    answers = data.get('answers')
+    answers = data.get('answers') # Frontend envía [{question_number: X, selected_option: Y}]
 
     if not user_codigo or not isinstance(answers, list):
         return jsonify({"error": "Faltan 'codigo' o 'answers' en la solicitud"}), 400
@@ -156,80 +165,91 @@ def finalizar_examen(session_id):
     cuadernillo = Cuadernillo.query.get(active_session.cuadernillo_id)
     if not cuadernillo:
         return jsonify({"error": "El cuadernillo asociado a la sesión no fue encontrado."}), 404
+        
+    presented_questions = active_session.presented_questions
+    if not presented_questions:
+        return jsonify({"error": "No se encontraron preguntas presentadas para esta sesión de examen."}), 400
 
-    NUM_PREGUNTAS_EXAMEN = 10 
+    NUM_PREGUNTAS_EXAMEN = len(presented_questions)
     if len(answers) != NUM_PREGUNTAS_EXAMEN:
         return jsonify({"error": f"Se esperaban {NUM_PREGUNTAS_EXAMEN} respuestas, pero se recibieron {len(answers)}."}), 400
 
+    # Construir un mapa de preguntas presentadas para una búsqueda eficiente
+    presented_questions_map = {q['question_number']: q for q in presented_questions}
+
     # 3. Lógica de Calificación
-    try:
-        # Construir la ruta al archivo consolidado de respuestas
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
-        all_answers_file_path = os.path.join(project_root, 'backend', 'data', 'all_exam_answers.json')
-
-        if not os.path.exists(all_answers_file_path):
-            return jsonify({"error": "Archivo consolidado de respuestas 'all_exam_answers.json' no encontrado."}), 500
-
-        with open(all_answers_file_path, 'r', encoding='utf-8') as f:
-            all_correct_answers_data = json.load(f)
-        
-        # Construir la clave para buscar las respuestas de este examen
-        exam_identifier = f"{cuadernillo.grado}_{cuadernillo.area}".lower()
-        
-        correct_answers = all_correct_answers_data.get(exam_identifier, [])
-
-        if not correct_answers:
-            return jsonify({"error": f"No se encontraron respuestas correctas para el examen '{exam_identifier}'."}), 500
-
-    except Exception as e:
-        return jsonify({"error": f"Error al procesar el archivo consolidado de respuestas: {str(e)}"}), 500
-
     correct_answers_count = 0
-    incorrect_answers_count = 0
-    
-    answers.sort(key=lambda x: x['questionNumber'])
+    total_questions_answered = len(answers)
+    detailed_answers = []
 
-    for i, user_answer in enumerate(answers):
-        # Asegurarse de no exceder los límites de correct_answers
-        if i < len(correct_answers) and user_answer.get('selectedOption') == correct_answers[i]:
+    for user_ans in answers:
+        q_num = user_ans.get('question_number')
+        selected_opt = str(user_ans.get('selected_option')).upper()
+
+        if q_num not in presented_questions_map:
+            # Esto no debería pasar si la lógica frontend es correcta, pero es una buena validación
+            continue 
+
+        presented_q = presented_questions_map[q_num]
+        correct_opt = str(presented_q.get('correct_answer')).upper() # Asume que 'correct_answer' está en el objeto de pregunta
+
+        is_correct = False
+        score_points = 0
+
+        if selected_opt == correct_opt:
             correct_answers_count += 1
-        else:
-            incorrect_answers_count += 1
-            
-    final_score = correct_answers_count * 10
+            is_correct = True
+            score_points = 1 # Cada acierto suma 1 punto base para el cálculo de la calificación 0-5
+
+        detailed_answers.append({
+            'question_number': q_num,
+            'user_answer': selected_opt,
+            'correct_answer': correct_opt,
+            'is_correct': is_correct,
+            'score_points': score_points
+        })
+
+    # Calificación en escala de 0 a 5
+    grade = 0.0
+    if total_questions_answered > 0:
+        grade = (correct_answers_count / total_questions_answered) * 5.0
 
     # 4. Almacenamiento en BD y Limpieza de Sesión
     try:
         # Guardar cada respuesta individual
-        for i, user_answer in enumerate(answers):
-            is_correct = (i < len(correct_answers) and user_answer.get('selectedOption') == correct_answers[i])
-            score = 10 if is_correct else 0
-            
+        for ans_detail in detailed_answers:
             answer_record = ExamAnswer(
-                session_id=session_id,
+                session_id=session_id, # Usar el session_id actual
                 user_id=user.id,
                 cuadernillo_id=cuadernillo.id,
-                question_number=user_answer.get('questionNumber'),
-                selected_option=user_answer.get('selectedOption'),
-                is_correct=is_correct,
-                score_points=score
+                question_number=ans_detail['question_number'],
+                selected_option=ans_detail['user_answer'],
+                is_correct=ans_detail['is_correct'],
+                score_points=ans_detail['score_points']
             )
             db.session.add(answer_record)
+
+        # Contar intentos previos para este examen y usuario
+        previous_attempts = ExamResult.query.filter_by(
+            user_id=user.id,
+            cuadernillo_id=cuadernillo.id
+        ).count()
 
         # Guardar el resultado general del examen
         exam_result = ExamResult(
             user_id=user.id,
             cuadernillo_id=cuadernillo.id,
-            final_score=final_score,
+            final_score=grade, # Guardar la calificación de 0 a 5
             correct_answers=correct_answers_count,
-            incorrect_answers=incorrect_answers_count,
-            unanswered_questions=NUM_PREGUNTAS_EXAMEN - (correct_answers_count + incorrect_answers_count)
+            incorrect_answers=total_questions_answered - correct_answers_count,
+            unanswered_questions=0, # Asumimos que todas las del archivo están respondidas
+            attempt_number=previous_attempts + 1
         )
         db.session.add(exam_result)
         
-        # Limpiar el cuadernillo de la sesión activa para que no se pueda volver a enviar
+        # Limpiar el cuadernillo de la sesión activa y las preguntas presentadas
         active_session.cuadernillo_id = None
+        active_session.presented_questions = None
         
         db.session.commit()
 
@@ -237,13 +257,12 @@ def finalizar_examen(session_id):
         db.session.rollback()
         return jsonify({"error": f"Error al guardar los resultados en la base de datos: {str(e)}"}), 500
 
-
     # 5. Respuesta al Frontend
     return jsonify({
         "message": "Examen finalizado con éxito.",
-        "score": final_score,
-        "totalQuestions": NUM_PREGUNTAS_EXAMEN,
-        "correctAnswers": correct_answers_count
+        "grade": round(grade, 2), # Redondear la calificación para la respuesta
+        "correct_answers": correct_answers_count,
+        "total_questions_graded": total_questions_answered
     }), 200
 
 from functools import wraps
@@ -303,3 +322,153 @@ def toggle_cuadernillo_activation(user_id, cuadernillo_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "message": f"Error al actualizar la base de datos: {str(e)}"}), 500
+
+
+@api_bp.route('/upload_exam_answers', methods=['POST'])
+def upload_exam_answers():
+    """
+    Recibe un archivo con respuestas de examen (JSON o CSV), las califica
+    y guarda el resultado en la base de datos.
+    """
+    user_codigo = request.form.get('userCodigo')
+    exam_id = request.form.get('examId')
+    exam_file = request.files.get('examFile')
+
+    if not user_codigo or not exam_id or not exam_file:
+        return jsonify({"success": False, "message": "Faltan datos: userCodigo, examId o examFile."}), 400
+
+    user = User.query.filter_by(codigo=user_codigo).first()
+    if not user:
+        return jsonify({"success": False, "message": "Usuario no encontrado."}), 404
+
+    cuadernillo = Cuadernillo.query.filter_by(id=exam_id).first()
+    if not cuadernillo:
+        return jsonify({"success": False, "message": f"Examen (Cuadernillo) con ID '{exam_id}' no encontrado."}), 404
+
+    # Validar tipo de archivo
+    file_extension = exam_file.filename.rsplit('.', 1)[1].lower()
+    if file_extension not in ['json', 'csv']:
+        return jsonify({"success": False, "message": "Tipo de archivo no permitido. Solo se aceptan JSON y CSV."}), 400
+
+    user_answers_data = []
+    try:
+        file_content = exam_file.read().decode('utf-8')
+        if file_extension == 'json':
+            user_answers_data = json.loads(file_content)
+        elif file_extension == 'csv':
+            import csv
+            from io import StringIO
+            csv_file = StringIO(file_content)
+            reader = csv.DictReader(csv_file)
+            for row in reader:
+                # Asumimos que el CSV tiene columnas 'question_number' y 'answer'
+                if 'question_number' in row and 'answer' in row:
+                    user_answers_data.append({
+                        'question_number': int(row['question_number']),
+                        'answer': row['answer']
+                    })
+                else:
+                    raise ValueError("El archivo CSV debe contener las columnas 'question_number' y 'answer'.")
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Error al leer o parsear el archivo: {str(e)}"}), 400
+
+    if not isinstance(user_answers_data, list):
+        return jsonify({"success": False, "message": "El contenido del archivo debe ser una lista de respuestas."}), 400
+
+    # Cargar respuestas correctas
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
+    all_answers_file_path = os.path.join(project_root, 'backend', 'data', 'all_exam_answers.json')
+
+    if not os.path.exists(all_answers_file_path):
+        return jsonify({"success": False, "message": "Archivo consolidado de respuestas 'all_exam_answers.json' no encontrado en el servidor."}), 500
+
+    with open(all_answers_file_path, 'r', encoding='utf-8') as f:
+        all_correct_answers_bank = json.load(f)
+
+    exam_identifier = f"{cuadernillo.area.lower()}_{cuadernillo.grado}".replace(" ", "_") # ej: matematicas_7
+    
+    # Assuming all_correct_answers_bank is a dictionary where keys are exam_identifier
+    # and values are dictionaries of question_number to correct_answer
+    correct_answers_for_exam = all_correct_answers_bank.get(exam_identifier)
+
+    if not correct_answers_for_exam:
+        return jsonify({"success": False, "message": f"No se encontraron respuestas correctas para el examen '{exam_identifier}'."}), 500
+    
+    correct_answers_count = 0
+    total_questions_answered = len(user_answers_data)
+    detailed_answers = [] # Para almacenar el detalle de cada respuesta
+
+    for ua in user_answers_data:
+        q_num = str(ua.get('question_number')) # Asegurarse de que la clave sea string para la búsqueda
+        u_ans = str(ua.get('answer')).upper() # Normalizar la respuesta del usuario
+        
+        is_correct = False
+        score_points = 0
+
+        if q_num in correct_answers_for_exam:
+            c_ans = str(correct_answers_for_exam[q_num]).upper() # Normalizar la respuesta correcta
+            if u_ans == c_ans:
+                correct_answers_count += 1
+                is_correct = True
+                score_points = 1 # Cada acierto suma 1 punto base para el cálculo de la calificación 0-5
+        
+        detailed_answers.append({
+            'question_number': int(q_num),
+            'user_answer': u_ans,
+            'correct_answer': correct_answers_for_exam.get(q_num),
+            'is_correct': is_correct,
+            'score_points': score_points
+        })
+
+    # Calificación en escala de 0 a 5
+    grade = 0.0
+    if total_questions_answered > 0:
+        grade = (correct_answers_count / total_questions_answered) * 5.0
+
+    # Almacenar resultados en la base de datos
+    try:
+        # Guardar cada respuesta individual
+        for ans_detail in detailed_answers:
+            answer_record = ExamAnswer(
+                session_id=None, # No hay session_id de ActiveSession aquí, es un upload
+                user_id=user.id,
+                cuadernillo_id=cuadernillo.id,
+                question_number=ans_detail['question_number'],
+                selected_option=ans_detail['user_answer'],
+                is_correct=ans_detail['is_correct'],
+                score_points=ans_detail['score_points']
+            )
+            db.session.add(answer_record)
+
+        # Contar intentos previos para este examen y usuario
+        previous_attempts = ExamResult.query.filter_by(
+            user_id=user.id,
+            cuadernillo_id=cuadernillo.id
+        ).count()
+
+        # Guardar el resultado general del examen
+        exam_result = ExamResult(
+            user_id=user.id,
+            cuadernillo_id=cuadernillo.id,
+            final_score=grade, # Guardar la calificación de 0 a 5
+            correct_answers=correct_answers_count,
+            incorrect_answers=total_questions_answered - correct_answers_count,
+            unanswered_questions=0, # Asumimos que todas las del archivo están respondidas
+            attempt_number=previous_attempts + 1
+        )
+        db.session.add(exam_result)
+        
+        db.session.commit()
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "message": f"Error al guardar los resultados en la base de datos: {str(e)}"}), 500
+
+    return jsonify({
+        "success": True,
+        "message": "Respuestas subidas y calificadas exitosamente.",
+        "grade": grade,
+        "correct_answers": correct_answers_count,
+        "total_questions_graded": total_questions_answered
+    }), 200

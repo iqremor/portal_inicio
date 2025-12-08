@@ -50,14 +50,14 @@ export async function getExamQuestions(sessionId) {
     return response.json();
 }
 
-export async function submitExam(sessionId, attemptsCount, userCodigo) {
+export async function submitExam(sessionId, answers, userCodigo) {
     const response = await fetch(`${API_BASE}/api/examen/${sessionId}/finalizar`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            intentos: attemptsCount,
+            answers: answers,
             codigo: userCodigo
         })
     });
@@ -88,4 +88,16 @@ export async function logout(codigo) {
     } catch (error) {
         console.error('Error during logout:', error);
     }
+}
+
+export async function uploadExamAnswers(formData) {
+    const response = await fetch(`${API_BASE}/api/upload_exam_answers`, {
+        method: 'POST',
+        body: formData // FormData se envía directamente sin 'Content-Type' header
+    });
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al subir el archivo de respuestas.');
+    }
+    return response.json();
 }

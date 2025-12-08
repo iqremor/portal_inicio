@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Respuestas de Examen - Portal Estudiantil IEM</title>
+    <!-- Incluir los estilos globales que ya contienen reset, variables, tipografía y utilidades -->
+    <link rel="stylesheet" href="../css/global.css">
+    <!-- Incluir el CSS del header principal de la aplicación -->
+    <link rel="stylesheet" href="../css/header.css">
+    <!-- Incluir CSS para componentes de modal y notificaciones si se usan -->
+    <link rel="stylesheet" href="../css/components/modal.css">
+    <link rel="stylesheet" href="../css/components/notification.css">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts para tipografía consistente -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-container">
+        <!-- Header de la aplicación (se cargará dinámicamente o se incluirá directamente) -->
+        <header id="main-header"></header>
+
+        <main class="dashboard-main">
+            <div class="results-card"> <!-- Reutilizando una clase existente para un contenedor con estilo de tarjeta -->
+                <h2 class="results-header">Subir Archivo de Respuestas</h2>
+                <p class="results-header">Por favor, selecciona un archivo JSON o CSV con las respuestas del examen para subirlo.</p>
+                
+                <form id="uploadForm" class="upload-form">
+                    <div class="input-group">
+                        <label for="examId" class="input-label">
+                            <i class="fas fa-id-card"></i> ID del Examen (Cuadernillo):
+                        </label>
+                        <input type="text" id="examId" name="examId" class="input-field" placeholder="Ej: MATEMATICAS_7_A" required>
+                        <p class="input-help">Ingresa el ID único del examen o cuadernillo.</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="examFile" class="input-label">
+                            <i class="fas fa-upload"></i> Seleccionar Archivo:
+                        </label>
+                        <input type="file" id="examFile" name="examFile" accept=".json,.csv" class="input-file">
+                        <p class="input-help">Formatos aceptados: .json, .csv</p>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary upload-btn">
+                        <i class="fas fa-paper-plane"></i> Subir Respuestas
+                    </button>
+                </form>
+
+                <div id="uploadStatus" class="mensaje hidden mt-4"></div>
+                <div id="loadingOverlay" class="loading-overlay hidden">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Subiendo archivo...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer de la aplicación -->
+        <footer id="main-footer" class="dashboard-footer"></footer>
+    </div>
+
+    <!-- Script principal para esta página -->
+    <script src="../js/pages/upload_answers.js" type="module"></script>
+    <!-- Script para cargar Header y Footer dinámicamente -->
+    <script src="../js/main.js" type="module"></script>
+</body>
+</html>

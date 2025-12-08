@@ -1,8 +1,8 @@
 import { state } from './state.js';
-import { quizConfig, Data } from './constants.js'; // <--- MODIFICADO: Importar quizConfig y Data
+import { quizConfig, Data } from './constants.js';
 import { handleZoomKeys } from './zoom.js';
 import { entrarEnModoInmersivo, mostrarAlertaPersonalizada, mostrarPaginaFinal, mostrarConfirmacion, mostrarAlertaPersonalizadaConBoton } from './ui.js';
-import { guardarIntento } from './storage.js';
+import { submitExam } from '../api/index.js'; // Importar submitExam desde el API
 
 let renderImage;
 let showEndPage;
@@ -28,13 +28,9 @@ function cleanup() {
 async function anularIntentoPorInfraccion(motivo) {
     if (state.intentoAnulado || state.paginaActual !== 'quiz') return;
 
-    // Pausar el temporizador
     clearInterval(state.temporizadorIntervalo);
-
-    // Anular el intento directamente sin pedir confirmación.
     state.intentoAnulado = true;
     cleanup();
-    // Mostrar un mensaje de que el intento fue anulado y por qué.
     await mostrarAlertaPersonalizada("Intento Anulado", `Has ${motivo}. Tu intento ha sido anulado.`, 4000);
     if (state.paginaActual === 'quiz') {
         showEndPage();
@@ -66,14 +62,48 @@ function shuffleArray(array) {
     return array;
 }
 
+export function saveUserAnswer(questionIndex, selectedOption) {
+    state.userAnswers[questionIndex] = selectedOption;
+}
+
+async function submitQuizResults() {
+    try {
+        const userSession = JSON.parse(localStorage.getItem('userSession'));
+        const userCodigo = userSession ? userSession.codigo : null;
+
+        if (!userCodigo) {
+            mostrarAlertaPersonalizada("Error", "Código de usuario no encontrado para finalizar el examen.", 4000);
+            return;
+        }
+
+        // Prepare answers for submission in the expected format by the backend
+        const answersToSubmit = state.userAnswers.map((answer, index) => {
+            // Assuming presentedQuestions[index] has a 'question_number' property
+            const questionNumber = state.presentedQuestions[index] ? state.presentedQuestions[index].question_number : (index + 1);
+            return {
+                question_number: questionNumber,
+                selected_option: answer // 'A', 'B', 'C', 'D'
+            };
+        });
+
+        const result = await submitExam(state.sessionId, answersToSubmit, userCodigo);
+        localStorage.setItem('ultimoResultado', JSON.stringify(result));
+        window.location.href = `/frontend/pages/resultados.html`;
+
+    } catch (error) {
+        console.error("Error al finalizar el examen:", error);
+        mostrarAlertaPersonalizada("Error", error.message || "Ocurrió un error al finalizar el examen.", 4000);
+    }
+}
+
 export function iniciarQuiz(examData) {
     state.paginaActual = 'quiz';
     state.indicePreguntaActual = 0;
     state.intentoAnulado = false;
+    state.examData = examData; // Store full examData
 
-    // --- Lógica para construir imageList dinámicamente ---
+    // --- Lógica para construir imageList y presentedQuestions dinámicamente ---
     let cleanedDirBanco = examData.dir_banco;
-    // Remove leading 'data/' or '/data/' repeatedly until no more prefixes are found
     while (cleanedDirBanco.startsWith('data/') || cleanedDirBanco.startsWith('/data/')) {
         if (cleanedDirBanco.startsWith('/data/')) {
             cleanedDirBanco = cleanedDirBanco.substring('/data/'.length);
@@ -81,16 +111,30 @@ export function iniciarQuiz(examData) {
             cleanedDirBanco = cleanedDirBanco.substring('data/'.length);
         }
     }
-    const imageBaseUrl = `/data_files/${cleanedDirBanco}`; // Always use /data_files/
+    const imageBaseUrl = `/data_files/${cleanedDirBanco}`;
     
-    const totalImages = examData.total_preguntas_banco;
-    const imageList = Array.from({ length: totalImages }, (_, i) => {
-        const num = (i + 1).toString().padStart(2, '0');
+    // Assuming examData.questions is an array of question objects from the backend
+    // each with a 'question_number' and 'options'
+    // If not, we still need to derive them from imageList for now.
+    
+    // Fallback if examData.questions is not available yet (backend still needs update)
+    const questionsForQuiz = examData.questions && examData.questions.length > 0
+        ? examData.questions
+        : Array.from({ length: examData.total_preguntas_banco }, (_, i) => ({
+            question_number: i + 1,
+            options: ['A', 'B', 'C', 'D'] // Placeholder options
+        }));
+
+    const shuffledQuestions = shuffleArray(questionsForQuiz);
+    state.presentedQuestions = shuffledQuestions.slice(0, examData.config.numQuestions);
+
+    state.imageList = state.presentedQuestions.map(q => {
+        const num = String(q.question_number).padStart(2, '0');
         return `${imageBaseUrl}pregunta_${num}.jpg`;
     });
 
-    const shuffledImageList = shuffleArray(imageList); // Use the shuffleArray from this file
-    state.imageList = shuffledImageList.slice(0, examData.config.numQuestions); // Seleccionar solo numQuestions
+    // Initialize user answers array
+    state.userAnswers = new Array(state.presentedQuestions.length).fill(null);
 
     // Format subject name for display (moved from examen-main.js)
     if (examData.config && examData.config.subject) {
@@ -114,8 +158,7 @@ export function iniciarTemporizador() {
         clearInterval(state.temporizadorIntervalo);
     }
 
-    // Usa la configuración de tiempo del estado, recibida del backend
-    state.tiempoRestante = quizConfig.timerDuration; // <--- MODIFICADO: Usar quizConfig.timerDuration
+    state.tiempoRestante = quizConfig.timerDuration;
 
     function actualizarTemporizador() {
         const temporizadorElemento = document.getElementById('temporizador-display');
@@ -143,7 +186,6 @@ export function iniciarTemporizador() {
             return;
         }
 
-        // Usa el warningTime de la configuración del estado
         if (state.tiempoRestante === quizConfig.warningTime) {
             mostrarAlertaPersonalizada("¡Atención!", `¡Apúrate! Quedan solo ${quizConfig.warningTime} segundos.`, 3000);
         }
@@ -162,15 +204,12 @@ export function iniciarTemporizador() {
 export async function siguienteImagen() {
     if (state.indicePreguntaActual < state.imageList.length - 1) {
         state.indicePreguntaActual++;
-        // Renderiza la nueva imagen y reinicia el temporizador para ella.
         renderImage();
         iniciarTemporizador();
     } else {
         cleanup();
-        // Guardar el intento antes de mostrar la página final.
-        // Se guarda el orden de las preguntas en lugar de las respuestas.
-        // await guardarIntento(state.sessionId, state.imageList, state.userCodigo);
-        state.attemptCount++; // Incrementamos el contador en el estado local
-        showEndPage();
+        await submitQuizResults(); // Call submitQuizResults when quiz ends
+        state.attemptCount++;
+        // showEndPage(); // No longer needed as we redirect after submission
     }
 }

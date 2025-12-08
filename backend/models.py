@@ -229,6 +229,8 @@ class ActiveSession(db.Model):
     ip_address = db.Column(db.String(45))
     user_agent = db.Column(db.String(256))
     cuadernillo_id = db.Column(db.Integer, db.ForeignKey('cuadernillos.id'), nullable=True)
+    presented_questions = db.Column(db.JSON, nullable=True) # Almacena las preguntas presentadas al usuario como JSON
+
 
     # Relaciones
     user = db.relationship('User', backref=db.backref('active_sessions', lazy=True))

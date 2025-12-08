@@ -6,6 +6,9 @@ let doIniciarQuiz;
 let doSiguienteImagen;
 let doIniciarTemporizador;
 let doRecargarImagen;
+let doSaveUserAnswer; // New variable
+
+export async function entrarEnModoInmersivo() {
 
 export async function entrarEnModoInmersivo() {
     const elem = document.documentElement;
@@ -70,12 +73,13 @@ export function mostrarAlertaPersonalizada(titulo, mensaje, duracion = 4000) {
 
 let contenedorApp; // Declare it here, but initialize in setup
 
-export function setup(iniciarQuiz, siguienteImagen, iniciarTemporizador, appElement, recargarImagen) { // Add appElement argument
+export function setup(iniciarQuiz, siguienteImagen, iniciarTemporizador, appElement, recargarImagen, saveUserAnswer) { // Add saveUserAnswer argument
     doIniciarQuiz = iniciarQuiz;
     doSiguienteImagen = siguienteImagen;
     doIniciarTemporizador = iniciarTemporizador;
     contenedorApp = appElement; // Initialize it here
     doRecargarImagen = recargarImagen;
+    doSaveUserAnswer = saveUserAnswer; // Assign new function
 }
 
 export function mostrarPaginaInicio(examDetails) {
@@ -119,8 +123,9 @@ export function mostrarPaginaInicio(examDetails) {
 
 export function renderizarImagen() {
     const imagePath = state.imageList[state.indicePreguntaActual];
+    const currentQuestion = state.presentedQuestions[state.indicePreguntaActual];
+    const currentAnswer = state.userAnswers[state.indicePreguntaActual];
 
-    // Para un temporizador por pregunta, mostramos el tiempo inicial completo.
     const initialMinutes = Math.floor(quizConfig.timerDuration / 60);
     const initialSeconds = quizConfig.timerDuration % 60;
     const tiempoFormateado = `${initialMinutes}:${initialSeconds.toString().padStart(2, '0')}`;
@@ -139,14 +144,28 @@ export function renderizarImagen() {
                     </svg>
                     Recargar
                 </button>
-                <button id="btnSiguiente" class="btn btn-secondary" disabled>Siguiente</button>
+                <button id="btnSiguiente" class="btn btn-secondary" ${state.indicePreguntaActual === state.imageList.length - 1 ? '' : ''}>Siguiente</button>
             </div>
-        </div>
-        <div class="mb-8">
-            <img id="zoomable-image" src="${imagePath}" alt="Imagen del cuadernillo" class="imagen-quiz">
         </div>
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="question-container">
+            <div class="question-header">
+                <span class="question-number">${state.indicePreguntaActual + 1}</span>
+                <p class="question-text">${currentQuestion.text || 'Cargando pregunta...'}</p>
+            </div>
+            <div class="mb-8">
+                <img id="zoomable-image" src="${imagePath}" alt="Imagen del cuadernillo" class="imagen-quiz">
+            </div>
+            <div class="options-container" id="options-container">
+                ${currentQuestion.options.map((option, index) => `
+                    <div class="option-item ${currentAnswer === option ? 'selected' : ''}">
+                        <input type="radio" name="question_option_${state.indicePreguntaActual}" id="option_${state.indicePreguntaActual}_${index}" value="${option}" ${currentAnswer === option ? 'checked' : ''}>
+                        <label for="option_${state.indicePreguntaActual}_${index}" class="option-text">${option}</label>
+                    </div>
+                `).join('')}
+            </div>
         </div>
     `;
 
@@ -162,10 +181,25 @@ export function renderizarImagen() {
     }
 
     const nextButton = document.getElementById('btnSiguiente');
-    nextButton.addEventListener('click', doSiguienteImagen);
+    if (nextButton) {
+        nextButton.addEventListener('click', doSiguienteImagen);
+        // Deshabilita el botón "Siguiente" hasta que se seleccione una respuesta
+        // nextButton.disabled = state.userAnswers[state.indicePreguntaActual] === null;
+    }
+
+    // Attach event listeners for options
+    const optionsContainer = document.getElementById('options-container');
+    if (optionsContainer) {
+        optionsContainer.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                doSaveUserAnswer(state.indicePreguntaActual, event.target.value);
+                // nextButton.disabled = false; // Enable next button when an answer is selected
+            });
+        });
+    }
 
     setTimeout(() => {
-        nextButton.disabled = false;
+        // nextButton.disabled = false; // This might override the above logic, consider if needed
     }, quizConfig.nextButtonDelay);
 
     const imageElement = document.getElementById('zoomable-image');
@@ -182,19 +216,11 @@ export function mostrarPaginaFinal() {
         <div style="text-align: center; animation: fadeIn 0.5s ease-out;">
             <h2 style="font-size: 2rem; color: #ff6b35;">Prueba Finalizada</h2>
             <p style="font-size: 1.2em; margin: 1.5rem 0;">
-                Has completado la prueba.
+                Has completado la prueba. Redirigiendo a tus resultados...
             </p>
-            <div style="text-align: center; margin-top: 2.5rem;">
-                <button id="btnReiniciarQuiz" class="btn btn-primary">Volver a Intentar</button>
-                <button id="btnVolverInicio" class="btn btn-secondary" style="margin-left: 1rem;">Volver al Inicio</button>
-            </div>
         </div>
     `;
-
-    document.getElementById('btnReiniciarQuiz').addEventListener('click', doIniciarQuiz);
-    document.getElementById('btnVolverInicio').addEventListener('click', () => {
-        window.location.href = '/frontend/pages/dashboard.html';
-    });
+    // No event listeners needed as redirection is handled by cuestionario.js
 }
 
 export function mostrarConfirmacion(titulo, mensaje) {
