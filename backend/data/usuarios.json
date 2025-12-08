@@ -798,5 +798,13 @@
     "activo": true,
     "fecha_registro": "2/1/2025",
     "role": "USER"
+  },
+  {
+    "codigo": "IEM0625",
+    "nombre_completo": "ANGULO RENTERIA JHOAN ALBEIRO",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "3/1/2025",
+    "role": "USER"
   }
 ]

@@ -317,6 +317,11 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
     - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
 - Tests: No hay testing framework configurado.
 ### Acciones Realizadas:
-- Se realizó un análisis de la situación actual del repositorio y se revisó el historial de sesiones.
-- Se identificaron los archivos modificados y no rastreados desde la última sesión.
-### Finalización: [PENDIENTE]
+- Se implementó el endpoint backend `/api/examen/<session_id>/finalizar`, incluyendo extracción de datos, validación (sesión activa, usuario, cuadernillo, conteo de respuestas), lógica de calificación (lectura de `respuestas.json` para obtener respuestas correctas), almacenamiento en base de datos (`ExamAnswer` y `ExamResult`) y limpieza de sesión.
+- Se resolvieron problemas de migración de la base de datos, re-inicializando la base de datos y aplicando una migración consolidada para todos los modelos.
+- Se creó y refino `backend/data/generador_respuestas.py` para generar un único archivo `all_exam_answers.json` a partir de archivos `.txt` de respuestas en `backend/data/respuesta/`.
+- Se actualizó el endpoint `/api/examen/<session_id>/finalizar` para utilizar el archivo consolidado `all_exam_answers.json` para la búsqueda de respuestas correctas.
+- Se actualizó `docs/development/exam_answers_flow.md` con instrucciones detalladas sobre cómo agregar respuestas correctas.
+- Se modificó `data/resultados/conversor.py` para eliminar rutas codificadas y permitir la selección interactiva de directorios de entrada/salida.
+- Se limpió y actualizó `.gitignore` para ignorar correctamente los archivos generados y temporales.
+### Finalización: 7 de diciembre de 2025
