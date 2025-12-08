@@ -12,6 +12,10 @@ export function setupQuiz(renderImageFn, showEndPageFn) {
     showEndPage = showEndPageFn;
 }
 
+export function recargarImagen() {
+    renderImage();
+}
+
 function cleanup() {
     document.removeEventListener('visibilitychange', handleVisibilityChange);
     document.removeEventListener('fullscreenchange', handleFullscreenChange);

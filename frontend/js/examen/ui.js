@@ -5,8 +5,7 @@ import { initZoom } from './zoom.js';
 let doIniciarQuiz;
 let doSiguienteImagen;
 let doIniciarTemporizador;
-
-
+let doRecargarImagen;
 
 export async function entrarEnModoInmersivo() {
     const elem = document.documentElement;
@@ -71,11 +70,12 @@ export function mostrarAlertaPersonalizada(titulo, mensaje, duracion = 4000) {
 
 let contenedorApp; // Declare it here, but initialize in setup
 
-export function setup(iniciarQuiz, siguienteImagen, iniciarTemporizador, appElement) { // Add appElement argument
+export function setup(iniciarQuiz, siguienteImagen, iniciarTemporizador, appElement, recargarImagen) { // Add appElement argument
     doIniciarQuiz = iniciarQuiz;
     doSiguienteImagen = siguienteImagen;
     doIniciarTemporizador = iniciarTemporizador;
     contenedorApp = appElement; // Initialize it here
+    doRecargarImagen = recargarImagen;
 }
 
 export function mostrarPaginaInicio(examDetails) {
@@ -131,7 +131,14 @@ export function renderizarImagen() {
                 <span class="timer-label">Tiempo:</span>
                 <span id="temporizador-display" class="timer-time">${tiempoFormateado}</span>
             </div>
-            <div class="navigation-buttons">
+            <div class="action-buttons">
+                <button id="btnRecargarImagen" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                        <path d="M8 4.466V.534h-.5a.5.5 0 0 1-.5-.5H8a.5.5 0 0 1 .5.5v3.932a.25.25 0 0 1-.418.157L6.879 2.5a.5.5 0 1 1 .707-.707L7.5 3.793V.5a.5.5 0 0 1 1 0v3.293l1.121-1.122a.5.5 0 1 1 .707.707L8.418 4.623A.25.25 0 0 1 8 4.466z"/>
+                    </svg>
+                    Recargar
+                </button>
                 <button id="btnSiguiente" class="btn btn-secondary" disabled>Siguiente</button>
             </div>
         </div>
@@ -147,6 +154,11 @@ export function renderizarImagen() {
     if (progressBar) {
         const progress = ((state.indicePreguntaActual + 1) / state.imageList.length) * 100;
         progressBar.style.width = `${progress}%`;
+    }
+
+    const reloadImageButton = document.getElementById('btnRecargarImagen');
+    if (reloadImageButton) {
+        reloadImageButton.addEventListener('click', doRecargarImagen);
     }
 
     const nextButton = document.getElementById('btnSiguiente');

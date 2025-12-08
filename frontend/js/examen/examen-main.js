@@ -1,5 +1,5 @@
 import { setup as setupUI, mostrarPaginaInicio, renderizarImagen, mostrarPaginaFinal, mostrarAlertaPersonalizada } from './ui.js';
-import { setupQuiz, iniciarQuiz, siguienteImagen, iniciarTemporizador } from './cuestionario.js';
+import { setupQuiz, iniciarQuiz, siguienteImagen, iniciarTemporizador, recargarImagen } from './cuestionario.js';
 import { obtenerNumeroDeIntentos } from './storage.js';
 import { state } from './state.js';
 import { fetchUserData, getExamQuestions } from '../api/index.js';
@@ -39,7 +39,7 @@ async function main() {
         mostrarErrorCarga("Error: No se encontró el elemento principal de la aplicación ('app').");
         return;
     }
-    setupUI(handleStartQuiz, siguienteImagen, iniciarTemporizador, appElement); // Pass it
+    setupUI(handleStartQuiz, siguienteImagen, iniciarTemporizador, appElement, recargarImagen); // Pass it
     setupQuiz(renderizarImagen, mostrarPaginaFinal);
 
     const urlParams = new URLSearchParams(window.location.search);
