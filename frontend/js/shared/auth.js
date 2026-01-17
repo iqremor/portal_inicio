@@ -1,35 +1,37 @@
-export function saveSession(codigo, username, role) {
-    localStorage.setItem('codigoEstudiantil', codigo);
-    localStorage.setItem('usuario_username', username);
-    localStorage.setItem('usuario_role', role);
-    localStorage.setItem('sesion_inicio', new Date().toISOString());
+export function saveSession(sessionData) {
+    const session = {
+        active: true,
+        codigo: sessionData.usuario.codigo,
+        username: sessionData.usuario.username,
+        role: sessionData.usuario.role,
+        nombre_completo: sessionData.usuario.nombre_completo,
+        grado: sessionData.usuario.grado,
+        sessionId: sessionData.session_id,
+        inicio: new Date().toISOString()
+    };
+    localStorage.setItem('userSession', JSON.stringify(session));
 }
 
 export function clearSession() {
-    localStorage.removeItem('codigoEstudiantil');
-    localStorage.removeItem('usuario_username');
-    localStorage.removeItem('usuario_role');
-    localStorage.removeItem('sesion_inicio');
+    localStorage.removeItem('userSession');
 }
 
 export function checkSession() {
-    const codigoGuardado = localStorage.getItem('codigoEstudiantil');
-    const usernameGuardado = localStorage.getItem('usuario_username');
-    const roleGuardado = localStorage.getItem('usuario_role');
-    const sesionInicio = localStorage.getItem('sesion_inicio');
-
-    if (codigoGuardado && usernameGuardado && roleGuardado && sesionInicio) {
-        const tiempoSesion = new Date() - new Date(sesionInicio);
-        const horasTranscurridas = tiempoSesion / (1000 * 60 * 60);
-
-        if (horasTranscurridas < 24) {
-            return { active: true, codigo: codigoGuardado, username: usernameGuardado, role: roleGuardado };
-        } else {
-            clearSession();
-            return { active: false };
-        }
+    const sessionStr = localStorage.getItem('userSession');
+    if (!sessionStr) {
+        return { active: false };
     }
-    return { active: false };
+
+    const session = JSON.parse(sessionStr);
+    const tiempoSesion = new Date() - new Date(session.inicio);
+    const horasTranscurridas = tiempoSesion / (1000 * 60 * 60);
+
+    if (horasTranscurridas < 24) {
+        return session;
+    } else {
+        clearSession();
+        return { active: false };
+    }
 }
 
 import { logout } from '../api/index.js';

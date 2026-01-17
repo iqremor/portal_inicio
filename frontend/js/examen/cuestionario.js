@@ -102,41 +102,14 @@ export function iniciarQuiz(examData) {
     state.intentoAnulado = false;
     state.examData = examData; // Store full examData
 
-    // --- Lógica para construir imageList y presentedQuestions dinámicamente ---
-    let cleanedDirBanco = examData.dir_banco;
-    while (cleanedDirBanco.startsWith('data/') || cleanedDirBanco.startsWith('/data/')) {
-        if (cleanedDirBanco.startsWith('/data/')) {
-            cleanedDirBanco = cleanedDirBanco.substring('/data/'.length);
-        } else if (cleanedDirBanco.startsWith('data/')) {
-            cleanedDirBanco = cleanedDirBanco.substring('data/'.length);
-        }
-    }
-    const imageBaseUrl = `/data_files/${cleanedDirBanco}`;
-    
-    // Assuming examData.questions is an array of question objects from the backend
-    // each with a 'question_number' and 'options'
-    // If not, we still need to derive them from imageList for now.
-    
-    // Fallback if examData.questions is not available yet (backend still needs update)
-    const questionsForQuiz = examData.questions && examData.questions.length > 0
-        ? examData.questions
-        : Array.from({ length: examData.total_preguntas_banco }, (_, i) => ({
-            question_number: i + 1,
-            options: ['A', 'B', 'C', 'D'] // Placeholder options
-        }));
-
-    const shuffledQuestions = shuffleArray(questionsForQuiz);
-    state.presentedQuestions = shuffledQuestions.slice(0, examData.config.numQuestions);
-
-    state.imageList = state.presentedQuestions.map(q => {
-        const num = String(q.question_number).padStart(2, '0');
-        return `${imageBaseUrl}pregunta_${num}.jpg`;
-    });
+    // Las preguntas ya vienen seleccionadas y con la URL de la imagen desde el backend
+    state.presentedQuestions = examData.questions;
+    state.imageList = state.presentedQuestions.map(q => q.image_url);
 
     // Initialize user answers array
     state.userAnswers = new Array(state.presentedQuestions.length).fill(null);
 
-    // Format subject name for display (moved from examen-main.js)
+    // Format subject name for display
     if (examData.config && examData.config.subject) {
         let subject = examData.config.subject;
         subject = subject.charAt(0).toUpperCase() + subject.slice(1);

@@ -89,21 +89,80 @@ def get_exam_questions_by_session(session_id):
         elif cleaned_dir_banco.startswith('data/'):
             cleaned_dir_banco = cleaned_dir_banco[len('data/'):]
             
-    questions_file_path = os.path.join(project_root, 'data', cleaned_dir_banco, 'questions.json')
+    questions_dir_path = os.path.join(project_root, 'data', cleaned_dir_banco)
 
-    if not os.path.exists(questions_file_path):
-        current_app.logger.error(f"Error: Archivo de preguntas '{questions_file_path}' no encontrado para el cuadernillo '{cuadernillo.nombre}'.")
-        return jsonify({"error": f"Archivo de preguntas '{os.path.basename(questions_file_path)}' no encontrado en el servidor para el cuadernillo '{cuadernillo.nombre}'."}), 500
+    if not os.path.isdir(questions_dir_path):
+        current_app.logger.error(f"Error: Directorio de preguntas '{questions_dir_path}' no encontrado para el cuadernillo '{cuadernillo.nombre}'.")
+        return jsonify({"error": f"Directorio de preguntas no encontrado en el servidor para el cuadernillo '{cuadernillo.nombre}'."}), 500
 
+    # Load all correct answers
+    all_answers_file_path = os.path.join(project_root, 'backend', 'data', 'respuestas.json')
+    if not os.path.exists(all_answers_file_path):
+        current_app.logger.error(f"Error: Archivo de respuestas '{all_answers_file_path}' no encontrado.")
+        return jsonify({"error": "Archivo de respuestas no encontrado en el servidor."}), 500
+    
+    with open(all_answers_file_path, 'r', encoding='utf-8') as f:
+        all_correct_answers = json.load(f)
+
+    # Mapa para convertir el número del grado a palabra, asegurando consistencia con generador_respuestas.py
+    mapa_grados_api = {
+        '6': 'sexto',
+        '7': 'septimo',
+        '8': 'octavo',
+        '9': 'noveno',
+        '10': 'decimo',
+        '11': 'once'
+    }
+    
+    # Convertir el grado del cuadernillo (que puede ser un número) a string para la búsqueda
+    grado_str = str(cuadernillo.grado).lower()
+    grado_en_palabra = mapa_grados_api.get(grado_str)
+    
+    if not grado_en_palabra:
+        current_app.logger.error(f"Error: Grado '{cuadernillo.grado}' no es válido o no se encuentra en el mapa de grados.")
+        return jsonify({"error": f"Grado '{cuadernillo.grado}' inválido para generar la clave del examen."}), 500
+
+    # Construir la clave del examen de forma consistente (ej: "sexto_ciencias_sociales")
+    exam_key = f"{grado_en_palabra}_{cuadernillo.area}".lower().replace(' ', '_')
+    correct_answers = all_correct_answers.get(exam_key)
+
+    if correct_answers is None:
+        current_app.logger.error(f"Error: No se encontraron respuestas para el examen con clave '{exam_key}' en '{all_answers_file_path}'.")
+        return jsonify({"error": f"No se encontraron respuestas para el cuadernillo '{cuadernillo.nombre}'."}), 500
+
+    all_questions_bank = []
     try:
-        with open(questions_file_path, 'r', encoding='utf-8') as f:
-            all_questions_bank = json.load(f)
-    except json.JSONDecodeError as e:
-        current_app.logger.error(f"Error: El archivo de preguntas '{questions_file_path}' está mal formado (JSON inválido): {str(e)}")
-        return jsonify({"error": f"Error al leer el archivo de preguntas para el cuadernillo '{cuadernillo.nombre}'. El archivo JSON está mal formado."}), 500
+        image_files = sorted([f for f in os.listdir(questions_dir_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
+        
+        # Mapping from index to option letter
+        option_map = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H'}
+
+        for i, image_file in enumerate(image_files):
+            question_id = i + 1
+            
+            if i < len(correct_answers):
+                correct_answer_index = correct_answers[i]
+                correct_answer_letter = option_map.get(correct_answer_index, 'N/A')
+            else:
+                correct_answer_letter = 'N/A' # No answer found for this question
+
+            all_questions_bank.append({
+                "id": question_id,
+                "text": f"Pregunta {question_id}",
+                "imagen": image_file,
+                "image_url": f"/data_files/{cleaned_dir_banco}/{image_file}",
+                "options": ["A", "B", "C", "D"],
+                "correct_answer": correct_answer_letter
+            })
+
     except Exception as e:
-        current_app.logger.error(f"Error: Ocurrió un error inesperado al leer el archivo de preguntas '{questions_file_path}': {str(e)}")
-        return jsonify({"error": f"Error inesperado al procesar el archivo de preguntas para el cuadernillo '{cuadernillo.nombre}'."}), 500
+        current_app.logger.error(f"Error: Ocurrió un error inesperado al procesar las imágenes de las preguntas en '{questions_dir_path}': {str(e)}")
+        return jsonify({"error": f"Error inesperado al procesar las preguntas para el cuadernillo '{cuadernillo.nombre}'."}), 500
+    
+    # Ensure all_questions_bank is not empty
+    if not all_questions_bank:
+        current_app.logger.error(f"Error: No se encontraron archivos de imagen de preguntas en '{questions_dir_path}' para el cuadernillo '{cuadernillo.nombre}'.")
+        return jsonify({"error": f"No se encontraron preguntas para el cuadernillo '{cuadernillo.nombre}'."}), 500
 
     # Ensure enough questions are available
     if len(all_questions_bank) < num_questions_to_present:
@@ -119,7 +178,6 @@ def get_exam_questions_by_session(session_id):
     # Prepare data for frontend
     exam_data = {
         "titulo": cuadernillo.nombre,
-        "dir_banco": cuadernillo.dir_banco,
         "total_preguntas_banco": cuadernillo.total_preguntas_banco,
         "config": {
             "nextButtonDelay": 1000,

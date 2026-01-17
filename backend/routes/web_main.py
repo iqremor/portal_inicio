@@ -6,7 +6,7 @@ import logging
 from functools import wraps
 from flask import (
     Blueprint, send_from_directory, abort, jsonify, flash,
-    render_template_string, session, redirect, url_for, request, render_template
+    render_template_string, session, redirect, url_for, request, render_template, Response
 )
 import json
 from models import db, User, UserRole, ConfiguracionSistema, Cuadernillo, ActiveSession, UserCuadernilloActivation
@@ -212,8 +212,12 @@ def promote_to_main():
 
 @web_main_bp.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(web_main_bp.root_path, '..', 'frontend', 'css', 'assets', 'images'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    icon_path = os.path.join(web_main_bp.root_path, '..', 'frontend', 'css', 'assets', 'images', 'favicon.ico')
+    if os.path.exists(icon_path):
+        return send_from_directory(os.path.dirname(icon_path), os.path.basename(icon_path), mimetype='image/vnd.microsoft.icon')
+    else:
+        # Return 204 No Content if the favicon is not found
+        return Response(status=204)
 
 @web_main_bp.route('/admin/api/promote', methods=['POST'])
 @require_auth
