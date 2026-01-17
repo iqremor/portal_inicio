@@ -148,6 +148,7 @@ def get_exam_questions_by_session(session_id):
 
             all_questions_bank.append({
                 "id": question_id,
+                "question_number": question_id,
                 "text": f"Pregunta {question_id}",
                 "imagen": image_file,
                 "image_url": f"/data_files/{cleaned_dir_banco}/{image_file}",
@@ -208,7 +209,7 @@ def finalizar_examen(session_id):
 
     # 1. Extracción de Datos
     user_codigo = data.get('codigo')
-    answers = data.get('answers') # Frontend envía [{question_number: X, selected_option: Y}]
+    answers = data.get('answers')
 
     if not user_codigo or not isinstance(answers, list):
         return jsonify({"error": "Faltan 'codigo' o 'answers' en la solicitud"}), 400
@@ -242,31 +243,40 @@ def finalizar_examen(session_id):
 
     # 3. Lógica de Calificación
     correct_answers_count = 0
+    incorrect_answers_count = 0
+    unanswered_questions_count = 0
     total_questions_answered = len(answers)
     detailed_answers = []
+    
+    # Mapa inverso para convertir la letra de la opción a un índice numérico
+    reverse_option_map = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7}
 
     for user_ans in answers:
         q_num = user_ans.get('question_number')
-        selected_opt = str(user_ans.get('selected_option')).upper()
+        selected_opt_letter = str(user_ans.get('selected_option')).upper()
 
         if q_num not in presented_questions_map:
-            # Esto no debería pasar si la lógica frontend es correcta, pero es una buena validación
             continue 
 
         presented_q = presented_questions_map[q_num]
-        correct_opt = str(presented_q.get('correct_answer')).upper() # Asume que 'correct_answer' está en el objeto de pregunta
+        correct_opt = str(presented_q.get('correct_answer')).upper()
 
         is_correct = False
         score_points = 0
+        selected_opt_index = reverse_option_map.get(selected_opt_letter, -1)
 
-        if selected_opt == correct_opt:
+        if selected_opt_letter == "NONE":
+            unanswered_questions_count += 1
+        elif selected_opt_letter == correct_opt:
             correct_answers_count += 1
             is_correct = True
-            score_points = 1 # Cada acierto suma 1 punto base para el cálculo de la calificación 0-5
+            score_points = 1
+        else: # Selected option is incorrect
+            incorrect_answers_count += 1
 
         detailed_answers.append({
             'question_number': q_num,
-            'user_answer': selected_opt,
+            'user_answer': selected_opt_index,
             'correct_answer': correct_opt,
             'is_correct': is_correct,
             'score_points': score_points
@@ -282,7 +292,7 @@ def finalizar_examen(session_id):
         # Guardar cada respuesta individual
         for ans_detail in detailed_answers:
             answer_record = ExamAnswer(
-                session_id=session_id, # Usar el session_id actual
+                session_id=session_id,
                 user_id=user.id,
                 cuadernillo_id=cuadernillo.id,
                 question_number=ans_detail['question_number'],
@@ -302,10 +312,10 @@ def finalizar_examen(session_id):
         exam_result = ExamResult(
             user_id=user.id,
             cuadernillo_id=cuadernillo.id,
-            final_score=grade, # Guardar la calificación de 0 a 5
+            final_score=grade,
             correct_answers=correct_answers_count,
-            incorrect_answers=total_questions_answered - correct_answers_count,
-            unanswered_questions=0, # Asumimos que todas las del archivo están respondidas
+            incorrect_answers=incorrect_answers_count,
+            unanswered_questions=unanswered_questions_count,
             attempt_number=previous_attempts + 1
         )
         db.session.add(exam_result)
@@ -323,7 +333,7 @@ def finalizar_examen(session_id):
     # 5. Respuesta al Frontend
     return jsonify({
         "message": "Examen finalizado con éxito.",
-        "grade": round(grade, 2), # Redondear la calificación para la respuesta
+        "grade": round(grade, 2),
         "correct_answers": correct_answers_count,
         "total_questions_graded": total_questions_answered
     }), 200
@@ -516,8 +526,8 @@ def upload_exam_answers():
             cuadernillo_id=cuadernillo.id,
             final_score=grade, # Guardar la calificación de 0 a 5
             correct_answers=correct_answers_count,
-            incorrect_answers=total_questions_answered - correct_answers_count,
-            unanswered_questions=0, # Asumimos que todas las del archivo están respondidas
+            incorrect_answers=incorrect_answers_count, # Actualizado
+            unanswered_questions=unanswered_questions_count, # Actualizado
             attempt_number=previous_attempts + 1
         )
         db.session.add(exam_result)
