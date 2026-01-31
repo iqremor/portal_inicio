@@ -29,6 +29,9 @@ export function obtenerMensajeError(codigo) {
 }
 
 export function getInitials(fullName) {
+    if (!fullName || typeof fullName !== 'string') {
+        return 'NN';
+    }
     const names = fullName.trim().split(' ');
     if (names.length >= 3) {
         return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();

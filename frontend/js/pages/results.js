@@ -48,8 +48,8 @@ class Results {
         const userName = document.getElementById('userName');
         const userGrade = document.getElementById('userGrade');
 
-        if (userAvatar) userAvatar.textContent = getInitials(this.session.nombre);
-        if (userName) userName.textContent = this.session.nombre;
+        if (userAvatar) userAvatar.textContent = getInitials(this.session.nombre_completo);
+        if (userName) userName.textContent = this.session.nombre_completo;
         if (userGrade) userGrade.textContent = localStorage.getItem('usuario_grado') || 'Grado X';
     }
 

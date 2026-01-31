@@ -279,6 +279,7 @@ class ExamResult(db.Model):
     correct_answers = db.Column(db.Integer, nullable=False)
     incorrect_answers = db.Column(db.Integer, nullable=False)
     unanswered_questions = db.Column(db.Integer, nullable=False)
+    attempt_number = db.Column(db.Integer, nullable=False, default=1)
     completion_date = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship('User', backref=db.backref('exam_results', lazy=True))

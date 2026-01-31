@@ -362,3 +362,84 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Mejorar la robustez del manejo de errores y mensajes al usuario.
 
 ### Finalización: lunes, 8 de diciembre de 2025
+
+## Sesión 15 - miércoles, 10 de diciembre de 2025
+### Objetivos de la sesión:
+- Continuar el desarrollo del proyecto basándose en las recomendaciones y la deuda técnica actual.
+- Realizar pruebas manuales exhaustivas de la funcionalidad de subida de respuestas (frontend y backend).
+- Ajustar los estilos de `frontend/pages/upload_answers.html` si es necesario.
+- Considerar la visualización de un historial de subidas o resultados en el frontend.
+- Mejorar la robustez del manejo de errores y mensajes al usuario.
+
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta (específicamente la parte del frontend para la carga dinámica de áreas a evaluar).
+    - Falta de Herramientas de Calidad y Testing.
+    - Documentación Incompleta/Desorganizada (aún falta `CODE_STYLE.md` y organización general).
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión.
+    - Pendiente realizar pruebas manuales exhaustivas de la funcionalidad de subida de respuestas (frontend y backend).
+    - Pendiente ajustar los estilos de `frontend/pages/upload_answers.html` si es necesario.
+    - Pendiente considerar la visualización de un historial de subidas o resultados en el frontend.
+    - Pendiente mejorar la robustez del manejo de errores y mensajes al usuario.
+- Tests: No hay testing framework configurado.
+### Finalización: [PENDIENTE]
+
+## Sesión 16 - sábado, 17 de enero de 2026
+### Objetivos de la sesión:
+- Continuar con las tareas pendientes de la Sesión 15, enfocándose en la implementación y mejora de la funcionalidad de subida de respuestas y el manejo de errores.
+- Resolver errores en la carga de preguntas y finalizar el examen.
+- Organizar la documentación y crear `CODE_STYLE.MD`.
+
+### Acciones Realizadas:
+- **`backend/routes/api.py`:**
+    - Modificada la función `get_exam_questions_by_session` para generar dinámicamente datos de preguntas a partir de archivos de imagen (JPG, PNG) en el directorio del banco de preguntas, eliminando la dependencia de `questions.json`.
+    - Integración de `backend/data/respuestas.json` para asociar respuestas correctas con preguntas.
+    - Corrección en la generación de `exam_key` para usar el formato consistente con `respuestas.json` (ej. `sexto_ciencias_sociales`).
+    - Ajuste de la estructura del objeto de pregunta (`text` en lugar de `pregunta`, y `options` como array en lugar de `opciones` como objeto) para coincidir con las expectativas del frontend.
+    - Se añadió `image_url` a los objetos de pregunta y se eliminó `dir_banco` de `exam_data`.
+    - **Corrección Final en `finalizar_examen`:** Se refactorizó la lógica de calificación para contar con precisión las respuestas correctas, incorrectas y no respondidas, y se corrigió la conversión de la letra de la opción seleccionada a un índice entero para la base de datos.
+- **`backend/routes/web_main.py`:**
+    - Modificada la ruta `favicon` para devolver un 204 No Content si `favicon.ico` no se encuentra, evitando errores 404.
+- **`frontend/js/examen/cuestionario.js`:**
+    - Simplificación de `iniciarQuiz` para usar directamente `image_url` proporcionada por el backend.
+- **`frontend/js/pages/login.js`:**
+    - Modificada la llamada a `saveSession` para pasar el objeto `data` completo.
+- **`frontend/js/shared/auth.js`:**
+    - Refactorización del manejo de sesiones para usar un único objeto `userSession` en `localStorage`.
+- **`CODE_STYLE.md`:** Creación de un nuevo archivo `CODE_STYLE.md` en la raíz del proyecto para documentar las convenciones de estilo de código.
+- **`frontend/js/examen/zoom.js`:**
+    - Se modificó `zoom.js` para corregir las advertencias de `[Violation]` al cambiar el event listener `wheel` a `{ passive: true }` y eliminar `e.preventDefault()`.
+
+### Estado del Proyecto al Final de la Sesión:
+- **Calidad de código:** No hay checks automáticos configurados.
+- **Deuda técnica:**
+    - Implementar Herramientas de Calidad de Código y Testing.
+    - Auditar Dependencias.
+- **Tests:** No hay testing framework configurado.
+
+### Finalización: sábado, 17 de enero de 2026
+
+## Sesión 17 - sábado, 31 de enero de 2026
+### Objetivos de la sesión:
+- Resolver el error 500 al finalizar un examen.
+- Revisar la deuda técnica y establecer prioridades.
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta (pendiente la carga dinámica de áreas a evaluar en el frontend).
+    - Falta de Herramientas de Calidad y Testing (linters, formatters, Git hooks, testing framework).
+    - Documentación Incompleta/Desorganizada (aún falta organización general de la documentación).
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión (estado a verificar después de refactorizaciones).
+- Tests: No hay testing framework configurado.
+### Acciones Realizadas:
+- Se identificó que el error 500 al finalizar el examen era causado por la falta de la columna `attempt_number` en el modelo `ExamResult`.
+- Se añadió la columna `attempt_number` al modelo `ExamResult` en `backend/models.py`.
+- Se generó una nueva migración de base de datos (`805606c99ece_add_attempt_number_to_examresult.py`) para reflejar el cambio en el modelo.
+- Se aplicó la migración a la base de datos para actualizar el esquema.
+- Se corrigió un `TypeError` en la página de resultados (`results.js`) cambiando la propiedad `this.session.nombre` a `this.session.nombre_completo` para que coincida con el objeto de sesión.
+- Se añadió una validación a la función `getInitials` en `utils.js` para prevenir errores si el nombre es nulo o indefinido.
+- Se solucionó un `TypeError` en `results.js` reemplazando un elemento SVG `<path>` por un `<circle>` en `resultados.html`, permitiendo que el script de animación del puntaje funcione correctamente.
+### Finalización: [PENDIENTE]
