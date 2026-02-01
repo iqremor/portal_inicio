@@ -55,7 +55,8 @@ function initializeLogin() {
                 showMessage(data.mensaje || 'Código no permitido', 'error');
             }
         } catch (error) {
-            showMessage('Error de conexión. Por favor, intenta nuevamente.', 'error');
+            // Display the specific error message from the backend, or a generic one if not available
+            showMessage(error.message || 'Error de conexión. Por favor, intenta nuevamente.', 'error');
         } finally {
             showLoading(false);
         }

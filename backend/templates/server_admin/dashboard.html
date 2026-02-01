@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración del Servidor</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_custom.css') }}">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -105,6 +106,29 @@
             <button id="restart-btn" class="btn-restart">Reiniciar Servidor</button>
         </div>
         <div id="message-box" class="message-box"></div>
+
+        <hr style="margin: 30px 0;">
+
+        <h2>Sesiones de Usuario Activas</h2>
+        <div class="active-sessions-container">
+            <table id="active-sessions-table">
+                <thead>
+                    <tr>
+                        <th>ID de Usuario</th>
+                        <th>Usuario</th>
+                        <th>Inicio de Sesión</th>
+                        <th>Última Actividad</th>
+                        <th>IP</th>
+                        <th>User Agent</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Active sessions will be loaded here by JavaScript -->
+                </tbody>
+            </table>
+            <p id="no-sessions-message" style="display: none;">No hay sesiones activas.</p>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/server_admin.js') }}"></script>

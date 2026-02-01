@@ -1,7 +1,8 @@
 import {
     fetchUserData,
     startExam,
-    loadRecentResults
+    loadRecentResults,
+    loadExamsForGrade as apiLoadExamsForGrade // Renamed to avoid conflict with method name
 } from '../api/index.js';
 import { checkSession, clearSession, handleLogout } from '../shared/auth.js';
 import { getInitials, formatDate } from '../shared/utils.js';
@@ -93,15 +94,9 @@ class Dashboard {
     }
 
     async loadExamsForGrade(grade) {
-
         try {
-            const userCodigo = this.currentUser.codigo; // Obtener el código del usuario
-            const response = await fetch(`/api/examenes/grado/${grade}?user_codigo=${userCodigo}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const exams = await response.json();
-
+            // Use the imported API function which now handles authentication
+            const exams = await apiLoadExamsForGrade(grade, this.currentUser.codigo);
             this.renderExamCards(exams);
         } catch (error) {
             console.error('Error loading exams for grade:', error);

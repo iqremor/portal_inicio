@@ -442,4 +442,46 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Se corrigió un `TypeError` en la página de resultados (`results.js`) cambiando la propiedad `this.session.nombre` a `this.session.nombre_completo` para que coincida con el objeto de sesión.
 - Se añadió una validación a la función `getInitials` en `utils.js` para prevenir errores si el nombre es nulo o indefinido.
 - Se solucionó un `TypeError` en `results.js` reemplazando un elemento SVG `<path>` por un `<circle>` en `resultados.html`, permitiendo que el script de animación del puntaje funcione correctamente.
-### Finalización: [PENDIENTE]
+- Se corrigió un `IntegrityError` (`NOT NULL constraint failed: exam_answers.session_id`) modificando el modelo `ExamAnswer` en `backend/models.py` para permitir que la columna `session_id` sea nula, y aplicando una nueva migración de base de datos.
+- Se identificó que el error `IntegrityError` persistía y afectaba la funcionalidad de logout, lo que indicaba que la base de datos del usuario no estaba sincronizada con los últimos cambios de esquema.
+- Se modificó `backend/init_db.py` para crear un script de reseteo completo de la base de datos (eliminar archivo DB, recrear tablas, sembrar datos).
+### Finalización: sábado, 31 de enero de 2026
+
+## Sesión 18 - domingo, 1 de febrero de 2026
+### Objetivos de la sesión:
+- Iniciar una nueva sesión de trabajo, revisar el estado actual del proyecto y planificar los próximos pasos.
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta (pendiente la carga dinámica de áreas a evaluar en el frontend).
+    - Falta de Herramientas de Calidad y Testing (linters, formatters, Git hooks, testing framework).
+    - Documentación Incompleta/Desorganizada (aún falta organización general de la documentación).
+    - Dependencias no auditadas.
+    - Problema de cierre de sesión (estado a verificar después de refactorizaciones).
+- Tests: No hay testing framework configurado.
+### Acciones Realizadas:
+- Se inició una nueva sesión de trabajo y se revisó el contexto del proyecto.
+- Se realizó un resumen del progreso, la deuda técnica y los próximos pasos pendientes.
+- Se implementó la funcionalidad para que un administrador pueda cerrar la sesión de otro usuario:
+    - Se añadió `User` al `backend/routes/server_admin.py` y se actualizaron las importaciones.
+    - Se añadió la ruta `POST /server-admin/logout_user/<int:user_id>` al `backend/routes/server_admin.py` para eliminar sesiones activas de un usuario.
+    - Se añadió la ruta `GET /server-admin/active_sessions` al `backend/routes/server_admin.py` para obtener la lista de sesiones activas.
+    - Se actualizó `backend/templates/server_admin/dashboard.html` con una nueva sección para mostrar sesiones activas y un botón "Cerrar Sesión" por usuario.
+    - Se añadieron estilos a `backend/static/css/admin_custom.css` para la nueva sección de sesiones activas.
+    - Se modificó `backend/static/js/server_admin.js` para:
+        - Fetch y renderizar las sesiones activas.
+        - Implementar la lógica para el botón "Cerrar Sesión" que llama a la API de cierre de sesión.
+        - Añadir un refresco periódico de las sesiones activas.
+- Se implementó un mecanismo para que el cliente detecte sesiones invalidadas por el administrador:
+    - Se añadió un decorador `api_login_required` en `backend/routes/api.py` para asegurar que las rutas API devuelvan `401 Unauthorized` si la sesión es inválida.
+    - Se aplicó `api_login_required` a las rutas API que requieren autenticación: `start_examen`, `get_exam_questions_by_session`, `finalizar_examen`, `get_user_data`, `get_examenes_por_grado`, `get_attempts` y el nuevo endpoint `/api/logout`.
+    - Se movieron las rutas `get_user_data` y `get_examenes_por_grado` de `backend/routes/web_main.py` a `backend/routes/api.py` para centralizar las API y su autenticación.
+    - Se eliminó la función `api_logout` duplicada de `backend/routes/web_main.py`.
+    - Se refactorizaron las llamadas API en `frontend/js/api/index.js` usando un wrapper `apiFetch` que intercepta respuestas `401 Unauthorized` y llama a `handleLogout` (borrando datos de sesión local y redirigiendo a `login.html`).
+- Se mejoró el manejo de mensajes de error en el inicio de sesión:
+    - Se modificó el bloque `catch` en `frontend/js/pages/login.js` para mostrar el mensaje de error específico del backend (proporcionado por el objeto `Error` lanzado por `apiFetch`) en lugar de un mensaje genérico de "Error de conexión".
+- Se corrigió el problema de redirección inmediata a la página de inicio de sesión después de un inicio de sesión exitoso:
+    - Se modificó la función `apiFetch` en `frontend/js/api/index.js` para inyectar automáticamente el encabezado `X-Session-ID` en todas las solicitudes autenticadas.
+    - Se añadió un parámetro `requiresAuth` a `apiFetch` (por defecto `true`) para controlar cuándo se requiere autenticación.
+    - Se actualizó la llamada a `validateCode` para establecer `requiresAuth` en `false`, ya que no requiere autenticación previa.
+### Finalización: domingo, 1 de febrero de 2026

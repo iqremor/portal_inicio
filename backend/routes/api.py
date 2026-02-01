@@ -2,20 +2,39 @@
 import os
 import json
 from flask import Blueprint, jsonify, request, current_app
-from models import Cuadernillo, User, ActiveSession, db, ExamAnswer, ExamResult
+from models import Cuadernillo, User, ActiveSession, db, ExamAnswer, ExamResult, UserCuadernilloActivation
 import random
+from functools import wraps # Added for decorator
+
+# Decorator for API authentication
+def api_login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        session_id = request.headers.get('X-Session-ID')
+        if not session_id:
+            return jsonify({"error": "Se requiere autenticación. Sesión no proporcionada."}), 401
+
+        active_session = ActiveSession.query.filter_by(session_id=session_id).first()
+        if not active_session:
+            return jsonify({"error": "Sesión inválida o expirada. Por favor, inicie sesión nuevamente."}), 401
+
+        # Optionally pass the active_session object to the decorated function
+        kwargs['active_session'] = active_session
+        return f(*args, **kwargs)
+    return decorated_function
 
 api_bp = Blueprint('api_bp', __name__)
 
 @api_bp.route('/examenes/<string:area_id>/iniciar', methods=['POST'])
-def start_examen(area_id):
+@api_login_required
+def start_examen(area_id, active_session): # active_session is passed by the decorator
     """
     Inicia una sesión de examen para un usuario, asociando un cuadernillo a su sesión activa.
     Devuelve el session_id de la sesión activa.
     """
     data = request.get_json()
     user_codigo = data.get('codigo')
-    grade = data.get('grado') # Asumimos que el grado también viene en el body para consistencia
+    grade = data.get('grado')
 
     if not area_id or not grade or not user_codigo:
         return jsonify({"error": "Los parámetros 'areaId', 'grade' y 'codigo' son requeridos"}), 400
@@ -24,9 +43,9 @@ def start_examen(area_id):
     if not user:
         return jsonify({"error": "Usuario no encontrado"}), 404
 
-    active_session = ActiveSession.query.filter_by(user_id=user.id).first()
-    if not active_session:
-        return jsonify({"error": "No se encontró una sesión activa para este usuario. Por favor, inicie sesión nuevamente."}), 404
+    # The decorator already ensures active_session is valid, just verify it matches the requested user
+    if user.id != active_session.user_id:
+        return jsonify({"error": "El código de usuario no coincide con la sesión activa."}), 403
 
     cuadernillo = Cuadernillo.query.filter_by(area=area_id, grado=grade).first()
     if not cuadernillo:
@@ -61,14 +80,14 @@ def get_examenes():
     return jsonify(cuadernillos_data)
 
 @api_bp.route('/examen/<string:session_id>', methods=['GET'])
-def get_exam_questions_by_session(session_id):
+@api_login_required
+def get_exam_questions_by_session(session_id, active_session):
     """
     Obtiene las preguntas y la configuración de un examen para una sesión activa específica.
     """
-    active_session = ActiveSession.query.filter_by(session_id=session_id).first()
-
-    if not active_session:
-        return jsonify({"error": "Sesión de examen no encontrada o inactiva."}), 404
+    # The decorator already ensures active_session is valid, just verify the session_id matches
+    if active_session.session_id != session_id:
+        return jsonify({"error": "El ID de sesión proporcionado no coincide con la sesión activa."}), 403
 
     cuadernillo = Cuadernillo.query.get(active_session.cuadernillo_id)
     if not cuadernillo:
@@ -189,16 +208,86 @@ def get_exam_questions_by_session(session_id):
         "questions": presented_questions # Pass the full question objects
     }
 
-    return jsonify(exam_data)
+    return jsonify({
+        "titulo": cuadernillo.nombre,
+        "total_preguntas_banco": cuadernillo.total_preguntas_banco,
+        "config": {
+            "nextButtonDelay": 1000,
+            "subject": cuadernillo.area,
+            "Grado": cuadernillo.grado,
+            "numQuestions": num_questions_to_present
+        },
+        "questions": presented_questions # Pass the full question objects
+    })
+
+@api_bp.route('/usuario/<string:codigo>', methods=['GET'])
+@api_login_required
+def get_user_data(codigo, active_session):
+    """Obtiene los datos completos de un usuario por su código."""
+    user = active_session.user # User object is available via active_session relation
+
+    # Verify that the requested user_codigo matches the session's user
+    if user.codigo != codigo:
+        return jsonify({"error": "El código de usuario solicitado no coincide con la sesión activa."}), 403
+
+    if user:
+        return jsonify({
+            "codigo": user.codigo,
+            "nombre_completo": user.nombre_completo,
+            "grado": user.grado,
+            "role": user.role.value
+        }), 200
+    else:
+        # This case should ideally not be reached if api_login_required works
+        return jsonify({"mensaje": "Usuario no encontrado"}), 404
+
+@api_bp.route('/examenes/grado/<string:grado>', methods=['GET'])
+@api_login_required
+def get_examenes_por_grado(grado, active_session):
+    """
+    Devuelve una lista de TODOS los exámenes (cuadernillos) para un grado específico.
+    Ahora incluye los activos y los inactivos para que el frontend decida cómo mostrarlos.
+    """
+    user = active_session.user
+    
+    examenes = Cuadernillo.query.filter_by(grado=grado).all()
+    
+    examenes_dict = []
+    for examen in examenes:
+        examen_data = examen.to_dict()
+        
+        # 1. Verificar UserCuadernilloActivation (específico del usuario)
+        user_activation = UserCuadernilloActivation.query.filter_by(
+            user_id=user.id,
+            cuadernillo_id=examen.id
+        ).first()
+        # Si no hay un registro específico para el usuario, asumimos que está activo por defecto
+        is_user_active = user_activation.is_active if user_activation else True 
+
+        # 2. Verificar ExamAvailability (general)
+        from models import ExamAvailability 
+        exam_availability = ExamAvailability.query.filter_by(
+            cuadernillo_id=examen.id,
+            grado=examen.grado 
+        ).first()
+        # Si no hay un registro de disponibilidad general, asumimos que está habilitado
+        is_general_available = exam_availability.is_enabled if exam_availability else True 
+
+        # El examen está activo si AMBAS condiciones son verdaderas
+        examen_data['activo'] = is_user_active and is_general_available
+        examenes_dict.append(examen_data)
+    
+    return jsonify(examenes_dict)
 
 @api_bp.route('/examenes/attempts', methods=['GET'])
-def get_attempts():
-    # Lógica de autenticación y base de datos irá aquí
+@api_login_required
+def get_attempts(active_session): # Lógica de autenticación y base de datos irá aquí
     # Por ahora, devolvemos un valor fijo para que el frontend pueda avanzar
     return jsonify({"attemptCount": 0})
 
 @api_bp.route('/examen/<string:session_id>/finalizar', methods=['POST'])
-def finalizar_examen(session_id):
+@api_login_required
+def finalizar_examen(session_id, active_session): # active_session is passed by the decorator
     """
     Recibe las respuestas del examen, las califica, las guarda en la base de datos
     y devuelve el resultado final al usuario.
@@ -214,11 +303,10 @@ def finalizar_examen(session_id):
     if not user_codigo or not isinstance(answers, list):
         return jsonify({"error": "Faltan 'codigo' o 'answers' en la solicitud"}), 400
 
-    # 2. Validación
-    active_session = ActiveSession.query.filter_by(session_id=session_id).first()
-    if not active_session:
-        return jsonify({"error": "Sesión de examen no encontrada o inválida."}), 404
-
+    # The decorator already ensures active_session is valid, just verify it matches the requested user
+    if active_session.session_id != session_id:
+        return jsonify({"error": "El ID de sesión proporcionado no coincide con la sesión activa."}), 403
+    
     user = User.query.filter_by(codigo=user_codigo).first()
     if not user or user.id != active_session.user_id:
         return jsonify({"error": "El usuario no corresponde a la sesión activa."}), 403
@@ -545,3 +633,18 @@ def upload_exam_answers():
         "correct_answers": correct_answers_count,
         "total_questions_graded": total_questions_answered
     }), 200
+
+@api_bp.route('/logout', methods=['POST'])
+@api_login_required
+def logout_user_api(active_session):
+    """
+    Cierra la sesión activa del usuario actual.
+    """
+    try:
+        db.session.delete(active_session)
+        db.session.commit()
+        return jsonify({"message": "Sesión cerrada correctamente."}), 200
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error al cerrar la sesión {active_session.session_id}: {e}")
+        return jsonify({"error": "Error interno al cerrar la sesión."}), 500

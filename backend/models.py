@@ -254,7 +254,7 @@ class ExamAvailability(db.Model):
 class ExamAnswer(db.Model):
     __tablename__ = 'exam_answers'
     id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(db.String(256), db.ForeignKey('active_sessions.session_id'), nullable=False)
+    session_id = db.Column(db.String(256), db.ForeignKey('active_sessions.session_id'), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     cuadernillo_id = db.Column(db.Integer, db.ForeignKey('cuadernillos.id'), nullable=False)
     question_number = db.Column(db.Integer, nullable=False)

@@ -127,21 +127,6 @@ def validar_usuario():
     else:
         return jsonify({"permitido": False, "mensaje": "Código de usuario no reconocido o inactivo."}), 401
 
-@web_main_bp.route('/api/usuario/<string:codigo>', methods=['GET'])
-def get_user_data(codigo):
-    """Obtiene los datos completos de un usuario por su código."""
-    user = User.query.filter_by(codigo=codigo).first()
-
-    if user:
-        return jsonify({
-            "codigo": user.codigo,
-            "nombre_completo": user.nombre_completo,
-            "grado": user.grado,
-            "role": user.role.value
-        }), 200
-    else:
-        return jsonify({"mensaje": "Usuario no encontrado"}), 404
-
 # Get the absolute path to the project root
 bp_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(bp_dir, '..', '..'))
@@ -224,68 +209,3 @@ def favicon():
 def api_promote_site():
     """API endpoint para promover el sitio de prueba a principal."""
     return promote_to_main()
-
-@web_main_bp.route('/api/examenes/grado/<string:grado>')
-def get_examenes_por_grado(grado):
-    """
-    Devuelve una lista de TODOS los exámenes (cuadernillos) para un grado específico.
-    Ahora incluye los activos y los inactivos para que el frontend decida cómo mostrarlos.
-    """
-    user_codigo = request.args.get('user_codigo')
-    if not user_codigo:
-        return jsonify({"error": "Código de usuario no proporcionado"}), 400
-
-    user = User.query.filter_by(codigo=user_codigo).first()
-    if not user:
-        return jsonify({"error": "Usuario no encontrado"}), 404
-
-    examenes = Cuadernillo.query.filter_by(grado=grado).all()
-    
-    examenes_dict = []
-    for examen in examenes:
-        examen_data = examen.to_dict()
-        activation = UserCuadernilloActivation.query.filter_by(
-            user_id=user.id,
-            cuadernillo_id=examen.id
-        ).first()
-        # 1. Verificar UserCuadernilloActivation (específico del usuario)
-        user_activation = UserCuadernilloActivation.query.filter_by(
-            user_id=user.id,
-            cuadernillo_id=examen.id
-        ).first()
-        # Si no hay un registro específico para el usuario, asumimos que está activo por defecto
-        is_user_active = user_activation.is_active if user_activation else True 
-
-        # 2. Verificar ExamAvailability (general)
-        from models import ExamAvailability 
-        exam_availability = ExamAvailability.query.filter_by(
-            cuadernillo_id=examen.id,
-            grado=examen.grado 
-        ).first()
-        # Si no hay un registro de disponibilidad general, asumimos que está habilitado
-        is_general_available = exam_availability.is_enabled if exam_availability else True 
-
-        # El examen está activo si AMBAS condiciones son verdaderas
-        examen_data['activo'] = is_user_active and is_general_available
-        examenes_dict.append(examen_data)
-    
-    return jsonify(examenes_dict)
-
-@web_main_bp.route('/api/logout', methods=['POST'])
-def api_logout():
-    """API endpoint para manejar el logout del estudiante."""
-    if not request.is_json:
-        return jsonify({"message": "Content-Type debe ser application/json"}), 400
-
-    data = request.get_json()
-    codigo = data.get('codigo')
-
-    if not codigo:
-        return jsonify({"message": "Código de usuario no proporcionado"}), 400
-
-    user = User.query.filter_by(codigo=codigo).first()
-    if user:
-        ActiveSession.query.filter_by(user_id=user.id).delete()
-        db.session.commit()
-    
-    return jsonify({"message": "Logout procesado"}), 200
