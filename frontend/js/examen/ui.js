@@ -1,5 +1,5 @@
 import { state } from './state.js';
-import { quizConfig, Data } from './constants.js'; // <--- MODIFICADO: Importar Data
+import { quizConfig } from './constants.js'; // Removed Data import
 import { initZoom } from './zoom.js';
 
 let doIniciarQuiz;
@@ -80,27 +80,13 @@ export function setup(iniciarQuiz, siguienteImagen, iniciarTemporizador, appElem
     doSaveUserAnswer = saveUserAnswer; // Assign new function
 }
 
-export function mostrarPaginaInicio(examDetails) {
+export function mostrarPaginaInicio(examDetails, currentAttempt, totalAttemptsAllowed) { // Added parameters
     salirDeModoInmersivo();
     state.paginaActual = 'inicio';
 
-    // Comprobar si el usuario ha superado el número de intentos
-    if (state.attemptCount >= Data.numIntentos) { // <--- MODIFICADO: Usar Data.numIntentos
-        contenedorApp.innerHTML = `
-            <div style="text-align: center; animation: fadeIn 0.5s ease-out;">
-                <h1>Prueba Saber</h1>
-                <h2 style="font-size: 1.5rem; color: #d9534f;">Has alcanzado el límite de intentos</h2>
-                <p style="font-size: 1.1em; line-height: 1.6; color: #0a0a0aff; max-width: 600px; margin: 1rem auto 2rem;">
-                    Has completado los ${Data.numIntentos} intentos permitidos para esta prueba.
-                </p>
-            </div>
-        `;
-        return; // Detener la ejecución para no mostrar el botón de inicio
-    }
+    const remainingAttempts = totalAttemptsAllowed - currentAttempt;
 
-    // Si tiene intentos, mostrar la página de inicio normal
-    const intentosRestantes = Data.numIntentos - state.attemptCount; // <--- MODIFICADO: Usar Data.numIntentos
-    contenedorApp.innerHTML = `
+    let content = `
         <div style="text-align: center; animation: fadeIn 0.5s ease-out;">
             <h1>Prueba Saber</h1>
             <h2 style="font-size: 2rem; color: #ff6b35; text-align: center;">${examDetails.subject}</h2>
@@ -109,15 +95,42 @@ export function mostrarPaginaInicio(examDetails) {
                 En cada una encontrarás una situación en la que tendrás que aplicar tus
                 conocimientos para tomar decisiones y elegir la respuesta correcta.
             </p>
-            <button id="btnIniciarQuiz" class="btn btn-primary">Iniciar</button>
-        </div>
     `;
-    // ...
+
+    if (remainingAttempts <= 0) {
+        content += `
+            <h2 style="font-size: 1.5rem; color: #d9534f;">Has alcanzado el límite de intentos</h2>
+            <p style="font-size: 1.1em; line-height: 1.6; color: #0a0a0aff; max-width: 600px; margin: 1rem auto 2rem;">
+                Has completado los ${totalAttemptsAllowed} intentos permitidos para esta prueba.
+            </p>
+            <button id="btnVolverDashboard" class="btn btn-primary">Volver al Dashboard</button>
+        `;
+    } else {
+        content += `
+            <p style="font-size: 1em; color: #0a0a0aff; margin-bottom: 1rem;">
+                Intentos restantes: <strong>${remainingAttempts} de ${totalAttemptsAllowed}</strong>
+            </p>
+            <button id="btnIniciarQuiz" class="btn btn-primary">Iniciar</button>
+        `;
+    }
+
+    content += `</div>`;
+    contenedorApp.innerHTML = content;
+    
+    // Setup event listeners for new buttons
     const btnIniciar = document.getElementById('btnIniciarQuiz');
     if (btnIniciar) {
         btnIniciar.addEventListener('click', doIniciarQuiz);
     }
+
+    const btnVolverDashboard = document.getElementById('btnVolverDashboard');
+    if (btnVolverDashboard) {
+        btnVolverDashboard.addEventListener('click', () => {
+            window.location.href = `/frontend/pages/dashboard.html?codigo=${state.userCodigo}`;
+        });
+    }
 }
+
 
 export function renderizarImagen() {
     const imagePath = state.imageList[state.indicePreguntaActual];

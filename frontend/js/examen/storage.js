@@ -1,4 +1,4 @@
-import { submitExam } from '../api/index.js';
+import { submitExam, apiFetch } from '../api/index.js'; // Add apiFetch
 
 /**
  * Guarda un intento de quiz en el backend.
@@ -19,25 +19,12 @@ export async function guardarIntento(sessionId, answers, userCodigo) {
 }
 
 /**
- * Obtiene el número de intentos para un examen específico desde el backend.
- * @param {string} sessionId - El ID de la sesión del examen.
- * @param {string} areaId - El ID del área del examen.
+ * Obtiene el número de intentos realizados por un usuario para un cuadernillo específico.
+ * @param {number} cuadernilloId - El ID del cuadernillo.
  * @returns {Promise<number>} El número de intentos realizados.
  */
-export async function obtenerNumeroDeIntentos(sessionId, areaId) {
-    // NOTA: La ruta de la API es un ejemplo y la crearemos en el backend más adelante.
-    const response = await fetch(`/api/examenes/attempts?sessionId=${sessionId}&areaId=${areaId}`, {
-        headers: {
-            // En el futuro, aquí se incluirá el token de autenticación JWT
-            // 'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'No se pudo obtener el número de intentos.');
-    }
-
+export async function obtenerNumeroDeIntentos(cuadernilloId) {
+    const response = await apiFetch(`/api/examenes/${cuadernilloId}/attempts`, {}, 'No se pudo obtener el número de intentos.');
     const data = await response.json();
-    return data.attemptCount;
+    return data.current_attempts;
 }

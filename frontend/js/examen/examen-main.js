@@ -3,7 +3,8 @@ import { setupQuiz, iniciarQuiz, siguienteImagen, iniciarTemporizador, recargarI
 import { obtenerNumeroDeIntentos } from './storage.js';
 import { state } from './state.js';
 import { fetchUserData, getExamQuestions } from '../api/index.js';
-import { checkSession } from '../shared/auth.js'; // <--- NUEVO: Importar checkSession
+import { checkSession } from '../shared/auth.js';
+import { quizConfig } from './constants.js'; // Import quizConfig
 
 // Función para mostrar un error de carga y detener la ejecución
 function mostrarErrorCarga(mensaje) {
@@ -64,15 +65,16 @@ async function main() {
         state.userCodigo = userCode;
         state.sessionId = sessionId;
 
-        state.attemptCount = await obtenerNumeroDeIntentos(sessionId, areaId);
-        
-        // --- MODIFICADO: Usar la nueva API GET para obtener examData ---
         const examData = await getExamQuestions(sessionId);
         state.examData = examData; // Guardar examData en el estado para usarlo en handleStartQuiz
+        console.log("Fetched examData:", state.examData); // ADDED LOG
 
+        // Fetch current attempts using cuadernilloId
+        const attemptsData = await obtenerNumeroDeIntentos(state.examData.id); // Pass cuadernilloId
+        state.currentAttempt = attemptsData.current_attempts;
+        state.totalAttemptsAllowed = quizConfig.numAttempts; // Use static config value
 
-
-        mostrarPaginaInicio(examData.config); // <--- MODIFICADO: Pasar examData.config a mostrarPaginaInicio
+        mostrarPaginaInicio(examData.config, state.currentAttempt, state.totalAttemptsAllowed); // Pass attempt data
 
     } catch (error) {
         console.error("Error al verificar los intentos o cargar datos de usuario:", error);

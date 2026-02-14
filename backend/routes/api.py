@@ -79,6 +79,8 @@ def get_examenes():
         })
     return jsonify(cuadernillos_data)
 
+
+
 @api_bp.route('/examen/<string:session_id>', methods=['GET'])
 @api_login_required
 def get_exam_questions_by_session(session_id, active_session):
@@ -209,6 +211,7 @@ def get_exam_questions_by_session(session_id, active_session):
     }
 
     return jsonify({
+        "id": cuadernillo.id, # ADDED: Cuadernillo ID for frontend use
         "titulo": cuadernillo.nombre,
         "total_preguntas_banco": cuadernillo.total_preguntas_banco,
         "config": {
@@ -277,14 +280,55 @@ def get_examenes_por_grado(grado, active_session):
         examen_data['activo'] = is_user_active and is_general_available
         examenes_dict.append(examen_data)
     
-    return jsonify(examenes_dict)
-
-@api_bp.route('/examenes/attempts', methods=['GET'])
-@api_login_required
-def get_attempts(active_session): # Lógica de autenticación y base de datos irá aquí
-    # Por ahora, devolvemos un valor fijo para que el frontend pueda avanzar
-    return jsonify({"attemptCount": 0})
-
+        return jsonify(examenes_dict)
+    
+        
+    
+    @api_bp.route('/examenes/<int:cuadernillo_id>/attempts', methods=['GET'])
+    
+    @api_login_required
+    
+    def get_attempts(cuadernillo_id, active_session):
+    
+        """
+    
+        Retorna el número de intentos realizados por un usuario para un cuadernillo específico.
+    
+        """
+    
+        user_id = active_session.user_id
+    
+    
+    
+        # Check if cuadernillo exists, though not strictly needed for counting attempts,
+    
+        # it's good practice for valid IDs.
+    
+        cuadernillo = Cuadernillo.query.get(cuadernillo_id)
+    
+        if not cuadernillo:
+    
+            return jsonify({"error": "Cuadernillo no encontrado."}), 404
+    
+    
+    
+        current_attempts = ExamResult.query.filter_by(
+    
+            user_id=user_id,
+    
+            cuadernillo_id=cuadernillo_id
+    
+        ).count()
+    
+    
+    
+        return jsonify({
+    
+            "current_attempts": current_attempts
+    
+        })
+    
+    
 @api_bp.route('/examen/<string:session_id>/finalizar', methods=['POST'])
 @api_login_required
 def finalizar_examen(session_id, active_session): # active_session is passed by the decorator
@@ -299,6 +343,132 @@ def finalizar_examen(session_id, active_session): # active_session is passed by 
     # 1. Extracción de Datos
     user_codigo = data.get('codigo')
     answers = data.get('answers')
+
+    if not user_codigo or not isinstance(answers, list):
+        return jsonify({"error": "Faltan 'codigo' o 'answers' en la solicitud"}), 400
+
+    # The decorator already ensures active_session is valid, just verify it matches the requested user
+    if active_session.session_id != session_id:
+        return jsonify({"error": "El ID de sesión proporcionado no coincide con la sesión activa."}), 403
+    
+    user = User.query.filter_by(codigo=user_codigo).first()
+    if not user or user.id != active_session.user_id:
+        return jsonify({"error": "El usuario no corresponde a la sesión activa."}), 403
+
+    if not active_session.cuadernillo_id:
+        return jsonify({"error": "La sesión no está asociada a ningún examen activo."}), 400
+
+    cuadernillo = Cuadernillo.query.get(active_session.cuadernillo_id)
+    if not cuadernillo:
+        return jsonify({"error": "El cuadernillo asociado a la sesión no fue encontrado."}), 404
+        
+    presented_questions = active_session.presented_questions
+    if not presented_questions:
+        return jsonify({"error": "No se encontraron preguntas presentadas para esta sesión de examen."}), 400
+
+    NUM_PREGUNTAS_EXAMEN = len(presented_questions)
+    if len(answers) != NUM_PREGUNTAS_EXAMEN:
+        return jsonify({"error": f"Se esperaban {NUM_PREGUNTAS_EXAMEN} respuestas, pero se recibieron {len(answers)}."}), 400
+
+    # Construir un mapa de preguntas presentadas para una búsqueda eficiente
+    presented_questions_map = {q['question_number']: q for q in presented_questions}
+
+    # 3. Lógica de Calificación
+    correct_answers_count = 0
+    incorrect_answers_count = 0
+    unanswered_questions_count = 0
+    total_questions_answered = len(answers)
+    detailed_answers = []
+    
+    # Mapa inverso para convertir la letra de la opción a un índice numérico
+    reverse_option_map = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7}
+
+    for user_ans in answers:
+        q_num = user_ans.get('question_number')
+        selected_opt_letter = str(user_ans.get('selected_option')).upper()
+
+        if q_num not in presented_questions_map:
+            continue 
+
+        presented_q = presented_questions_map[q_num]
+        correct_opt = str(presented_q.get('correct_answer')).upper()
+
+        is_correct = False
+        score_points = 0
+        selected_opt_index = reverse_option_map.get(selected_opt_letter, -1)
+
+        if selected_opt_letter == "NONE":
+            unanswered_questions_count += 1
+        elif selected_opt_letter == correct_opt:
+            correct_answers_count += 1
+            is_correct = True
+            score_points = 1
+        else: # Selected option is incorrect
+            incorrect_answers_count += 1
+
+        detailed_answers.append({
+            'question_number': q_num,
+            'user_answer': selected_opt_index,
+            'correct_answer': correct_opt,
+            'is_correct': is_correct,
+            'score_points': score_points
+        })
+
+    # Calificación en escala de 0 a 5
+    grade = 0.0
+    if total_questions_answered > 0:
+        grade = (correct_answers_count / total_questions_answered) * 5.0
+
+    # 4. Almacenamiento en BD y Limpieza de Sesión
+    try:
+        # Guardar cada respuesta individual
+        for ans_detail in detailed_answers:
+            answer_record = ExamAnswer(
+                session_id=session_id,
+                user_id=user.id,
+                cuadernillo_id=cuadernillo.id,
+                question_number=ans_detail['question_number'],
+                selected_option=ans_detail['user_answer'],
+                is_correct=ans_detail['is_correct'],
+                score_points=ans_detail['score_points']
+            )
+            db.session.add(answer_record)
+
+        # Contar intentos previos para este examen y usuario
+        previous_attempts = ExamResult.query.filter_by(
+            user_id=user.id,
+            cuadernillo_id=cuadernillo.id
+        ).count()
+
+        # Guardar el resultado general del examen
+        exam_result = ExamResult(
+            user_id=user.id,
+            cuadernillo_id=cuadernillo.id,
+            final_score=grade,
+            correct_answers=correct_answers_count,
+            incorrect_answers=incorrect_answers_count,
+            unanswered_questions=unanswered_questions_count,
+            attempt_number=previous_attempts + 1
+        )
+        db.session.add(exam_result)
+        
+        # Limpiar el cuadernillo de la sesión activa y las preguntas presentadas
+        active_session.cuadernillo_id = None
+        active_session.presented_questions = None
+        
+        db.session.commit()
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error al guardar los resultados en la base de datos: {str(e)}"}), 500
+
+    # 5. Respuesta al Frontend
+    return jsonify({
+        "message": "Examen finalizado con éxito.",
+        "grade": round(grade, 2),
+        "correct_answers": correct_answers_count,
+        "total_questions_graded": total_questions_answered
+    }), 200
 
     if not user_codigo or not isinstance(answers, list):
         return jsonify({"error": "Faltan 'codigo' o 'answers' en la solicitud"}), 400

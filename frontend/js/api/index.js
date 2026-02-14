@@ -9,7 +9,7 @@ import { handleLogout, checkSession } from '../shared/auth.js'; // Import checkS
  * @param {boolean} requiresAuth - Whether the request requires authentication. Defaults to true.
  * @returns {Promise<Response>} - The fetch response.
  */
-async function apiFetch(url, options = {}, errorMessage = 'Error en la solicitud.', requiresAuth = true) {
+export async function apiFetch(url, options = {}, errorMessage = 'Error en la solicitud.', requiresAuth = true) {
     // Inject X-Session-ID header if authentication is required
     if (requiresAuth) {
         const session = checkSession();

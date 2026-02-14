@@ -441,7 +441,7 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Se aplicó la migración a la base de datos para actualizar el esquema.
 - Se corrigió un `TypeError` en la página de resultados (`results.js`) cambiando la propiedad `this.session.nombre` a `this.session.nombre_completo` para que coincida con el objeto de sesión.
 - Se añadió una validación a la función `getInitials` en `utils.js` para prevenir errores si el nombre es nulo o indefinido.
-- Se solucionó un `TypeError` en `results.js` reemplazando un elemento SVG `<path>` por un `<circle>` en `resultados.html`, permitiendo que el script de animación del puntaje funcione correctamente.
+- Se solucionó un `TypeError` en `results.js` reemplazando un elemento SVG `<path>` por un `<circle>` por un `<circle>` en `resultados.html`, permitiendo que el script de animación del puntaje funcione correctamente.
 - Se corrigió un `IntegrityError` (`NOT NULL constraint failed: exam_answers.session_id`) modificando el modelo `ExamAnswer` en `backend/models.py` para permitir que la columna `session_id` sea nula, y aplicando una nueva migración de base de datos.
 - Se identificó que el error `IntegrityError` persistía y afectaba la funcionalidad de logout, lo que indicaba que la base de datos del usuario no estaba sincronizada con los últimos cambios de esquema.
 - Se modificó `backend/init_db.py` para crear un script de reseteo completo de la base de datos (eliminar archivo DB, recrear tablas, sembrar datos).
@@ -485,3 +485,32 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
     - Se añadió un parámetro `requiresAuth` a `apiFetch` (por defecto `true`) para controlar cuándo se requiere autenticación.
     - Se actualizó la llamada a `validateCode` para establecer `requiresAuth` en `false`, ya que no requiere autenticación previa.
 ### Finalización: domingo, 1 de febrero de 2026
+
+## Sesión 19 - sábado, 14 de febrero de 2026
+### Objetivos de la sesión:
+- Continuar con la mejora del proyecto, abordando la deuda técnica pendiente.
+- Proponer la configuración de herramientas de calidad de código (linters, formatters) y un testing framework.
+- Implementar la carga dinámica de áreas y grados para los exámenes.
+- Revertir las modificaciones de carga dinámica de áreas y grados.
+- Revertir la configuración de herramientas de herramientas de calidad de código y testing.
+- Corregir el error `401 UNAUTHORIZED` en la llamada a `/api/examenes/attempts`.
+- Corregir el error `Uncaught SyntaxError: ... doesn't provide an export named: 'apiFetch'`.
+### Estado inicial:
+- Calidad de código: No hay checks automáticos configurados.
+- Deuda técnica:
+    - Funcionalidad de Exámenes Incompleta (pendiente la carga dinámica de áreas a evaluar en el frontend).
+    - Falta de Herramientas de Calidad y Testing (linters, formatters, Git hooks, testing framework).
+    - Documentación Incompleta/Desorganizada (aún falta organización general de la documentación).
+    - Dependencias no auditadas.
+- Tests: No hay testing framework configurado.
+### Acciones Realizadas:
+- Se propuso la configuración de herramientas de calidad de código (Black, Flake8, Pytest para Python; Prettier, ESLint, Jest para JS/CSS/HTML).
+- Se agregó un nuevo endpoint `/api/examenes/meta` al backend para obtener grados y áreas únicos.
+- Se modificó el frontend (`frontend/js/api/index.js`, `frontend/js/pages/dashboard.js`, `frontend/pages/dashboard.html`) para consumir este endpoint y renderizar selectores dinámicos de grados y áreas.
+- Se revirtieron todas las modificaciones relacionadas con la carga dinámica de áreas y grados en el frontend (`frontend/pages/dashboard.html`, `frontend/js/pages/dashboard.js`, `frontend/js/api/index.js`).
+- Se revirtió la adición del endpoint `/api/examenes/meta` en el backend (`backend/routes/api.py`).
+- Se revirtieron las actualizaciones al archivo `GEMINI.md` relacionadas con la configuración de herramientas de calidad y la funcionalidad de exámenes.
+- Se identificó que la llamada a `/api/examenes/attempts` en `frontend/js/examen/storage.js` estaba usando `fetch` directamente en lugar de `apiFetch`, causando el error `401 UNAUTHORIZED`.
+- Se modificó `frontend/js/examen/storage.js` para utilizar `apiFetch` y eliminar los parámetros `sessionId` y `areaId` de la URL, permitiendo que `apiFetch` gestione el `X-Session-ID` header.
+- Se corrigió el `Uncaught SyntaxError` exportando correctamente la función `apiFetch` en `frontend/js/api/index.js`.
+### Finalización: [PENDIENTE]

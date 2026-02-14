@@ -1,5 +1,5 @@
 import { state } from './state.js';
-import { quizConfig, Data } from './constants.js';
+import { quizConfig } from './constants.js';
 import { handleZoomKeys } from './zoom.js';
 import { entrarEnModoInmersivo, mostrarAlertaPersonalizada, mostrarPaginaFinal, mostrarConfirmacion, mostrarAlertaPersonalizadaConBoton } from './ui.js';
 import { submitExam } from '../api/index.js'; // Importar submitExam desde el API
@@ -97,6 +97,7 @@ async function submitQuizResults() {
 }
 
 export function iniciarQuiz(examData) {
+    console.log("iniciarQuiz received examData:", examData); // ADDED LOG
     state.paginaActual = 'quiz';
     state.indicePreguntaActual = 0;
     state.intentoAnulado = false;
