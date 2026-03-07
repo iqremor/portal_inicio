@@ -1,0 +1,22 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "Frontend for the Academic Evaluation Portal",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.x.x",
+    "eslint-config-prettier": "^9.x.x",
+    "jest": "^29.x.x",
+    "prettier": "^3.x.x"
+  }
+}

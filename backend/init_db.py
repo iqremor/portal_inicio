@@ -1,11 +1,13 @@
 import os
 import time
+
 from app import create_app
 from models import db
-from seed_db import seed_users, seed_cuadernillos
+from seed_db import seed_cuadernillos, seed_users
 
 # --- Configuration ---
 DB_FILENAME = "sistema_gestion.db"
+
 
 def reset_database():
     """
@@ -33,14 +35,16 @@ def reset_database():
                 time.sleep(0.1)
             except OSError as e:
                 print(f"--- Error deleting database file: {e} ---")
-                print("--- Please close any programs using the database and try again. ---")
+                print(
+                    "--- Please close any programs using the database and try again. ---"
+                )
                 return
 
         # 2. Drop all tables (just in case the file wasn't deleted)
         print("--- Dropping all database tables... ---")
         db.drop_all()
         print("--- Tables dropped. ---")
-        
+
         # 3. Create all tables
         print("--- Creating all database tables from models... ---")
         db.create_all()
@@ -56,14 +60,14 @@ def reset_database():
             print(f"\n--- An error occurred during seeding: {e} ---")
             db.session.rollback()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     print("=============================================")
     print("===      DATABASE RESET SCRIPT      ===")
     print("=============================================")
     print("This script will completely wipe and reset your database.")
     # Simple confirmation prompt
-    if input("Are you sure you want to continue? (y/n): ").lower() != 'y':
+    if input("Are you sure you want to continue? (y/n): ").lower() != "y":
         print("--- Aborted by user. ---")
     else:
         reset_database()
-
