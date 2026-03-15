@@ -636,6 +636,8 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 
 ### Finalización: sábado, 7 de marzo de 2026
 
+### Finalización: domingo, 15 de marzo de 2026
+
 ## Sesión 22 - 15 de marzo de 2026
 
 ### Objetivos de la sesión:
@@ -644,10 +646,27 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - Revisar y completar tareas pendientes de sesiones anteriores.
 - Iniciar auditoría de dependencias y pruebas de integración.
 
-### Estado inicial:
+### Logros:
 
-- Calidad de código: Herramientas configuradas (Black, Flake8, ESLint). Backend formateado en sesión 21.
-- Deuda técnica: Funcionalidad de exámenes con carga dinámica pendiente en frontend, auditoría de dependencias.
-- Tests: Testing framework configurado pero sin suite de integración completa.
+- **Tiempo Acumulativo:** Implementada lógica donde el tiempo sobrante de una pregunta se suma a la siguiente.
+- **Base de Datos:** Añadido campo `time_used` a `ExamResult` y aplicada migración.
+- **Sincronización:** El backend ahora devuelve resultados reales tras finalizar el examen, eliminando el uso de datos "mock" en el frontend.
+- **Flujo de Anulación:** Mejorado para que registre el intento fallido en el servidor y recargue la página mostrando el contador actualizado.
+- **Auto-recuperación:** El frontend ahora maneja errores 404 de sesión inactiva iniciando automáticamente un nuevo examen.
+- **Panel Admin:** Nueva pestaña "Gestión de Intentos" en Flask-Admin con funciones de reseteo individual y masivo (por grado).
+- **Control de Sesiones:** Añadido botón de "Cerrar Todas las Sesiones" en el panel administrativo.
+- **UI/UX:** Rediseño de las opciones de respuesta como botones superiores y unificación visual de la página de resultados con el Dashboard.
 
-### Finalización: [PENDIENTE]
+### Estado final:
+
+- Calidad de código: Herramientas de calidad aplicadas y errores de linting corregidos en nuevas rutas.
+- Deuda técnica: Auditoría de dependencias pendiente.
+- Tests: Pruebas manuales exitosas del flujo de anulación e intentos.
+
+### Sugerencias para la próxima sesión:
+
+- Realizar la auditoría de dependencias en `requirements.txt`.
+- Implementar logs de auditoría para las acciones administrativas de reseteo.
+- Revisar la carga dinámica de áreas en el Dashboard para asegurar compatibilidad total con el nuevo sistema de intentos.
+
+### Finalización: domingo, 15 de marzo de 2026
