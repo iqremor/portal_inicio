@@ -1,66 +1,106 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Resultados - Portal Estudiantil IEM</title>
-    
-    <link rel="stylesheet" href="../css/resultados.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <div class="results-container">
-        <header class="results-header">
-            <div class="user-info">
-                <div id="userAvatar" class="user-avatar"></div>
-                <div>
-                    <span id="userName" class="user-name"></span>
-                    <span id="userGrade" class="user-grade"></span>
-                </div>
-            </div>
-        </header>
 
-        <main class="results-main">
-            <h1 id="examAreaTitle"></h1>
-            <div class="score-summary">
-                <div class="score-circle">
-                    <svg viewBox="0 0 36 36">
-                        <circle class="circle-bg" cx="18" cy="18" r="15.9155" />
-                        <circle id="scoreRing" class="circle" cx="18" cy="18" r="15.9155" stroke-dasharray="100, 100" />
-                    </svg>
-                    <span id="scorePercentage" class="score-percentage"></span>
-                </div>
-                <p id="scoreStatus"></p>
-            </div>
+    <link rel="stylesheet" href="../css/resultados.css" />
+    <link rel="stylesheet" href="../css/header.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-container">
+      <!-- Header Dinámico -->
+      <div id="header-placeholder"></div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Respuestas Correctas</h3>
-                    <p id="correctAnswers"></p>
-                </div>
-                <div class="stat-card">
-                    <h3>Respuestas Incorrectas</h3>
-                    <p id="incorrectAnswers"></p>
-                </div>
-                <div class="stat-card">
-                    <h3>Tiempo Utilizado</h3>
-                    <p id="timeUsed"></p>
-                </div>
-                <div class="stat-card">
-                    <h3>Puntuación</h3>
-                    <p id="score"></p>
-                </div>
-            </div>
+      <main class="dashboard-main">
+        <!-- Hero Section (Igual al Dashboard) -->
+        <section class="hero-section">
+          <div class="hero-card">
+            <p class="hero-subtitle">
+              ¡Excelente trabajo, <span id="heroUserName"></span>! Aquí están
+              los resultados de tu prueba de <span id="heroUserGrade"></span>
+            </p>
+          </div>
+        </section>
 
-            <div class="results-actions">
-                <button id="backToDashboard" class="btn-primary">Volver al Inicio</button>
-                <button id="backToExams" class="btn-secondary">Ver otros exámenes</button>
+        <!-- Contenedor de Resultados -->
+        <div class="results-content-card">
+          <h1 id="examAreaTitle" class="results-title"></h1>
+
+          <div class="score-summary">
+            <div class="score-circle">
+              <svg viewBox="0 0 36 36">
+                <circle class="circle-bg" cx="18" cy="18" r="15.9155" />
+                <circle
+                  id="scoreRing"
+                  class="circle"
+                  cx="18"
+                  cy="18"
+                  r="15.9155"
+                  stroke-dasharray="100, 100"
+                />
+              </svg>
+              <span id="scorePercentage" class="score-percentage"></span>
             </div>
-        </main>
+            <p id="scoreStatus"></p>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h3>Respuestas Correctas</h3>
+              <p id="correctAnswers"></p>
+            </div>
+            <div class="stat-card">
+              <h3>Respuestas Incorrectas</h3>
+              <p id="incorrectAnswers"></p>
+            </div>
+            <div class="stat-card">
+              <h3>Tiempo Utilizado</h3>
+              <p id="timeUsed"></p>
+            </div>
+            <div class="stat-card">
+              <h3>Puntuación</h3>
+              <p id="score"></p>
+            </div>
+          </div>
+
+          <div class="results-actions">
+            <button id="backToDashboard" class="btn-primary">
+              Volver al Inicio
+            </button>
+            <button id="backToExams" class="btn-secondary">
+              Ver otros exámenes
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer Dinámico -->
+      <div id="footer-placeholder"></div>
     </div>
 
+    <script>
+      fetch('header.html')
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById('header-placeholder').innerHTML = data;
+        });
+      fetch('footer.html')
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById('footer-placeholder').innerHTML = data;
+        });
+    </script>
     <script src="../js/main.js" defer></script>
     <script type="module" src="../js/pages/results.js"></script>
-</body>
+  </body>
 </html>

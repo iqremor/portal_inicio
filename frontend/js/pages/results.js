@@ -44,16 +44,15 @@ class Results {
   }
 
   displayUserInfo() {
-    const userAvatar = document.getElementById('userAvatar');
-    const userName = document.getElementById('userName');
-    const userGrade = document.getElementById('userGrade');
+    const heroUserName = document.getElementById('heroUserName');
+    const heroUserGrade = document.getElementById('heroUserGrade');
 
-    if (userAvatar)
-      userAvatar.textContent = getInitials(this.session.nombre_completo);
-    if (userName) userName.textContent = this.session.nombre_completo;
-    if (userGrade)
-      userGrade.textContent =
-        localStorage.getItem('usuario_grado') || 'Grado X';
+    // Priorizar el nombre de la sesión
+    if (heroUserName) heroUserName.textContent = this.session.nombre_completo;
+
+    // Obtener grado de la sesión o del resultado del examen
+    const grado = this.session.grado || this.examResult.grado || 'estudiante';
+    if (heroUserGrade) heroUserGrade.textContent = `del grado ${grado}°`;
   }
 
   displayResults() {

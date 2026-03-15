@@ -191,6 +191,29 @@ export function renderizarImagen() {
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
+
+        <!-- OPCIONES DE RESPUESTA SUPERIORES -->
+        <div class="options-top-container" id="options-container">
+            ${currentQuestion.options
+              .map(
+                (option, index) => `
+                <div class="option-btn-wrapper">
+                    <input type="radio" name="question_option_${
+                      state.indicePreguntaActual
+                    }" id="option_${
+                      state.indicePreguntaActual
+                    }_${index}" value="${option}" ${
+                      currentAnswer === option ? 'checked' : ''
+                    }>
+                    <label for="option_${
+                      state.indicePreguntaActual
+                    }_${index}" class="option-btn-label">${option}</label>
+                </div>
+            `
+              )
+              .join('')}
+        </div>
+
         <div class="question-container">
             <div class="question-header">
                 <span class="question-number">${
@@ -202,28 +225,6 @@ export function renderizarImagen() {
             </div>
             <div class="mb-8">
                 <img id="zoomable-image" src="${imagePath}" alt="Imagen del cuadernillo" class="imagen-quiz">
-            </div>
-            <div class="options-container" id="options-container">
-                ${currentQuestion.options
-                  .map(
-                    (option, index) => `
-                    <div class="option-item ${
-                      currentAnswer === option ? 'selected' : ''
-                    }">
-                        <input type="radio" name="question_option_${
-                          state.indicePreguntaActual
-                        }" id="option_${
-                          state.indicePreguntaActual
-                        }_${index}" value="${option}" ${
-                          currentAnswer === option ? 'checked' : ''
-                        }>
-                        <label for="option_${
-                          state.indicePreguntaActual
-                        }_${index}" class="option-text">${option}</label>
-                    </div>
-                `
-                  )
-                  .join('')}
             </div>
         </div>
     `;

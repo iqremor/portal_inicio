@@ -1,4 +1,4 @@
-/* 
+/*
  * Main Stylesheet
  * Este archivo importa todos los demás módulos de CSS.
  * El orden es importante para la cascada de estilos.
@@ -15,6 +15,7 @@
 
 /* 4. Estilos para funcionalidades específicas */
 @import url('timer.css');
+@import url('options.css');
 @import url('quiz.css');
 @import url('zoom.css');
 
@@ -23,5 +24,3 @@
 
 /* 6. Estilos responsivos (deben ir al final para sobreescribir) */
 @import url('responsive.css');
-
-

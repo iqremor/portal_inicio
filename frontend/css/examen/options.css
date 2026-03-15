@@ -1,0 +1,59 @@
+/* Opciones de Respuesta como Botones Superiores */
+.options-top-container {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  margin-bottom: 25px;
+  justify-content: space-between;
+}
+
+.option-btn-wrapper {
+  flex: 1; /* Esto hace que todos los botones tengan el mismo tamaño */
+  display: flex;
+}
+
+.option-btn-wrapper input[type='radio'] {
+  display: none; /* Ocultamos el radio original */
+}
+
+.option-btn-label {
+  width: 100%;
+  padding: 15px 10px;
+  text-align: center;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #475569;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.option-btn-label:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+/* Estado SELECCIONADO (Mismo degradado que btn-primary) */
+.option-btn-wrapper input[type='radio']:checked + .option-btn-label {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+}
+
+@media (max-width: 480px) {
+  .options-top-container {
+    gap: 5px;
+  }
+  .option-btn-label {
+    padding: 10px 5px;
+    font-size: 1rem;
+  }
+}
