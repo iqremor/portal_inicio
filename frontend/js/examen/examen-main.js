@@ -15,8 +15,9 @@ import {
 } from './cuestionario.js';
 import { obtenerNumeroDeIntentos } from './storage.js';
 import { state } from './state.js';
-import { fetchUserData, getExamQuestions } from '../api/index.js';
+import { fetchUserData, getExamQuestions, startExam } from '../api/index.js';
 import { checkSession } from '../shared/auth.js';
+
 import { quizConfig } from './constants.js'; // Import quizConfig
 
 // Función para mostrar un error de carga y detener la ejecución
@@ -91,8 +92,28 @@ async function main() {
     state.userCodigo = userCode;
     state.sessionId = sessionId;
 
-    const examData = await getExamQuestions(sessionId);
-    state.examData = examData; // Guardar examData en el estado para usarlo en handleStartQuiz
+    let examData;
+    try {
+      examData = await getExamQuestions(sessionId);
+    } catch (error) {
+      // Si el servidor dice que no hay examen activo (404), intentamos iniciarlo
+      if (error.status === 404) {
+        console.log(
+          'Sesión de examen inactiva (404). Iniciando nuevo examen...'
+        );
+        try {
+          await startExam(areaId, userCode, state.currentUser.grado);
+          examData = await getExamQuestions(sessionId);
+        } catch (startError) {
+          console.error('No se pudo auto-iniciar el examen:', startError);
+          throw startError; // Si falla el inicio, lanzamos el error
+        }
+      } else {
+        throw error;
+      }
+    }
+
+    state.examData = examData;
     console.log('Fetched examData:', state.examData); // ADDED LOG
 
     // Format subject name for display

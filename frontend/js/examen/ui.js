@@ -1,6 +1,6 @@
-import { state } from "./state.js";
-import { quizConfig } from "./constants.js"; // Removed Data import
-import { initZoom } from "./zoom.js";
+import { state } from './state.js';
+import { quizConfig } from './constants.js'; // Removed Data import
+import { initZoom } from './zoom.js';
 
 let doIniciarQuiz;
 let doSiguienteImagen;
@@ -12,10 +12,10 @@ export async function entrarEnModoInmersivo() {
   const elem = document.documentElement;
   try {
     if (elem.requestFullscreen) {
-      await elem.requestFullscreen({ navigationUI: "hide" });
+      await elem.requestFullscreen({ navigationUI: 'hide' });
     } else if (elem.mozRequestFullScreen) {
       /* Firefox */
-      await elem.mozRequestFullScreen({ navigationUI: "hide" });
+      await elem.mozRequestFullScreen({ navigationUI: 'hide' });
     } else if (elem.webkitRequestFullscreen) {
       /* Chrome, Safari & Opera */
       await elem.webkitRequestFullscreen();
@@ -56,13 +56,13 @@ export async function salirDeModoInmersivo() {
 
 export function mostrarAlertaPersonalizada(titulo, mensaje, duracion = 4000) {
   return new Promise((resolve) => {
-    if (document.querySelector(".custom-alert-overlay")) {
+    if (document.querySelector('.custom-alert-overlay')) {
       resolve();
       return;
     }
 
-    const overlay = document.createElement("div");
-    overlay.className = "custom-alert-overlay";
+    const overlay = document.createElement('div');
+    overlay.className = 'custom-alert-overlay';
 
     overlay.innerHTML = `
             <div class="custom-alert-box">
@@ -88,7 +88,7 @@ export function setup(
   iniciarTemporizador,
   appElement,
   recargarImagen,
-  saveUserAnswer,
+  saveUserAnswer
 ) {
   // Add saveUserAnswer argument
   doIniciarQuiz = iniciarQuiz;
@@ -102,13 +102,14 @@ export function setup(
 export function mostrarPaginaInicio(
   examDetails,
   currentAttempt,
-  totalAttemptsAllowed,
+  totalAttemptsAllowed
 ) {
   // Added parameters
   salirDeModoInmersivo();
-  state.paginaActual = "inicio";
+  state.paginaActual = 'inicio';
 
-  const remainingAttempts = totalAttemptsAllowed - currentAttempt;
+  // Lógica incremental: si ha hecho 0 intentos, está en el Intento 1.
+  const intentoActual = currentAttempt + 1;
 
   let content = `
         <div style="text-align: center; animation: fadeIn 0.5s ease-out;">
@@ -121,20 +122,20 @@ export function mostrarPaginaInicio(
             </p>
     `;
 
-  if (remainingAttempts <= 0) {
+  if (currentAttempt >= totalAttemptsAllowed) {
     content += `
-            <h2 style="font-size: 1.5rem; color: #d9534f;">Has alcanzado el límite de intentos</h2>
+            <h2 style="font-size: 1.5rem; color: #d9534f;">Límite de intentos alcanzado</h2>
             <p style="font-size: 1.1em; line-height: 1.6; color: #0a0a0aff; max-width: 600px; margin: 1rem auto 2rem;">
-                Has completado los ${totalAttemptsAllowed} intentos permitidos para esta prueba.
+                Has completado los <strong>${totalAttemptsAllowed}</strong> intentos permitidos para esta prueba.
             </p>
-            <button id="btnVolverDashboard" class="btn btn-primary">Volver al Dashboard</button>
+            <button id="btnVolverDashboard" class="btn btn-primary">Volver al Inicio</button>
         `;
   } else {
     content += `
-            <p style="font-size: 1em; color: #0a0a0aff; margin-bottom: 1rem;">
-                Intentos restantes: <strong>${remainingAttempts} de ${totalAttemptsAllowed}</strong>
+            <p style="font-size: 1.1em; color: #0a0a0aff; margin-bottom: 1.5rem;">
+                Usted realizará el <strong>Intento ${intentoActual} de ${totalAttemptsAllowed}</strong>
             </p>
-            <button id="btnIniciarQuiz" class="btn btn-primary">Iniciar</button>
+            <button id="btnIniciarQuiz" class="btn btn-primary">Iniciar Prueba</button>
         `;
   }
 
@@ -142,14 +143,14 @@ export function mostrarPaginaInicio(
   contenedorApp.innerHTML = content;
 
   // Setup event listeners for new buttons
-  const btnIniciar = document.getElementById("btnIniciarQuiz");
+  const btnIniciar = document.getElementById('btnIniciarQuiz');
   if (btnIniciar) {
-    btnIniciar.addEventListener("click", doIniciarQuiz);
+    btnIniciar.addEventListener('click', doIniciarQuiz);
   }
 
-  const btnVolverDashboard = document.getElementById("btnVolverDashboard");
+  const btnVolverDashboard = document.getElementById('btnVolverDashboard');
   if (btnVolverDashboard) {
-    btnVolverDashboard.addEventListener("click", () => {
+    btnVolverDashboard.addEventListener('click', () => {
       window.location.href = `/frontend/pages/dashboard.html?codigo=${state.userCodigo}`;
     });
   }
@@ -162,7 +163,9 @@ export function renderizarImagen() {
 
   const initialMinutes = Math.floor(quizConfig.timerDuration / 60);
   const initialSeconds = quizConfig.timerDuration % 60;
-  const tiempoFormateado = `${initialMinutes}:${initialSeconds.toString().padStart(2, "0")}`;
+  const tiempoFormateado = `${initialMinutes}:${initialSeconds
+    .toString()
+    .padStart(2, '0')}`;
 
   contenedorApp.innerHTML = `
         <div class="quiz-header-view">
@@ -178,7 +181,11 @@ export function renderizarImagen() {
                     </svg>
                     Recargar
                 </button>
-                <button id="btnSiguiente" class="btn btn-secondary" ${state.indicePreguntaActual === state.imageList.length - 1 ? "" : ""}>Siguiente</button>
+                <button id="btnSiguiente" class="btn btn-secondary" ${
+                  state.indicePreguntaActual === state.imageList.length - 1
+                    ? ''
+                    : ''
+                }>Siguiente</button>
             </div>
         </div>
         <div class="progress-container">
@@ -186,8 +193,12 @@ export function renderizarImagen() {
         </div>
         <div class="question-container">
             <div class="question-header">
-                <span class="question-number">${state.indicePreguntaActual + 1}</span>
-                <p class="question-text">${currentQuestion.text || "Cargando pregunta..."}</p>
+                <span class="question-number">${
+                  state.indicePreguntaActual + 1
+                }</span>
+                <p class="question-text">${
+                  currentQuestion.text || 'Cargando pregunta...'
+                }</p>
             </div>
             <div class="mb-8">
                 <img id="zoomable-image" src="${imagePath}" alt="Imagen del cuadernillo" class="imagen-quiz">
@@ -196,43 +207,53 @@ export function renderizarImagen() {
                 ${currentQuestion.options
                   .map(
                     (option, index) => `
-                    <div class="option-item ${currentAnswer === option ? "selected" : ""}">
-                        <input type="radio" name="question_option_${state.indicePreguntaActual}" id="option_${state.indicePreguntaActual}_${index}" value="${option}" ${currentAnswer === option ? "checked" : ""}>
-                        <label for="option_${state.indicePreguntaActual}_${index}" class="option-text">${option}</label>
+                    <div class="option-item ${
+                      currentAnswer === option ? 'selected' : ''
+                    }">
+                        <input type="radio" name="question_option_${
+                          state.indicePreguntaActual
+                        }" id="option_${
+                          state.indicePreguntaActual
+                        }_${index}" value="${option}" ${
+                          currentAnswer === option ? 'checked' : ''
+                        }>
+                        <label for="option_${
+                          state.indicePreguntaActual
+                        }_${index}" class="option-text">${option}</label>
                     </div>
-                `,
+                `
                   )
-                  .join("")}
+                  .join('')}
             </div>
         </div>
     `;
 
-  const progressBar = document.getElementById("progress-bar");
+  const progressBar = document.getElementById('progress-bar');
   if (progressBar) {
     const progress =
       ((state.indicePreguntaActual + 1) / state.imageList.length) * 100;
     progressBar.style.width = `${progress}%`;
   }
 
-  const reloadImageButton = document.getElementById("btnRecargarImagen");
+  const reloadImageButton = document.getElementById('btnRecargarImagen');
   if (reloadImageButton) {
-    reloadImageButton.addEventListener("click", doRecargarImagen);
+    reloadImageButton.addEventListener('click', doRecargarImagen);
   }
 
-  const nextButton = document.getElementById("btnSiguiente");
+  const nextButton = document.getElementById('btnSiguiente');
   if (nextButton) {
-    nextButton.addEventListener("click", doSiguienteImagen);
+    nextButton.addEventListener('click', doSiguienteImagen);
     // Deshabilita el botón "Siguiente" hasta que se seleccione una respuesta
     // nextButton.disabled = state.userAnswers[state.indicePreguntaActual] === null;
   }
 
   // Attach event listeners for options
-  const optionsContainer = document.getElementById("options-container");
+  const optionsContainer = document.getElementById('options-container');
   if (optionsContainer) {
     optionsContainer
       .querySelectorAll('input[type="radio"]')
       .forEach((radio) => {
-        radio.addEventListener("change", (event) => {
+        radio.addEventListener('change', (event) => {
           doSaveUserAnswer(state.indicePreguntaActual, event.target.value);
           // nextButton.disabled = false; // Enable next button when an answer is selected
         });
@@ -243,7 +264,7 @@ export function renderizarImagen() {
     // nextButton.disabled = false; // This might override the above logic, consider if needed
   }, quizConfig.nextButtonDelay);
 
-  const imageElement = document.getElementById("zoomable-image");
+  const imageElement = document.getElementById('zoomable-image');
   if (imageElement) {
     initZoom(imageElement);
   }
@@ -251,7 +272,7 @@ export function renderizarImagen() {
 
 export function mostrarPaginaFinal() {
   salirDeModoInmersivo();
-  state.paginaActual = "final";
+  state.paginaActual = 'final';
 
   contenedorApp.innerHTML = `
         <div style="text-align: center; animation: fadeIn 0.5s ease-out;">
@@ -266,8 +287,8 @@ export function mostrarPaginaFinal() {
 
 export function mostrarConfirmacion(titulo, mensaje) {
   return new Promise((resolve) => {
-    const overlay = document.createElement("div");
-    overlay.className = "custom-alert-overlay";
+    const overlay = document.createElement('div');
+    overlay.className = 'custom-alert-overlay';
 
     overlay.innerHTML = `
             <div class="custom-alert-box">
@@ -282,12 +303,12 @@ export function mostrarConfirmacion(titulo, mensaje) {
 
     document.body.appendChild(overlay);
 
-    document.getElementById("confirm-yes").addEventListener("click", () => {
+    document.getElementById('confirm-yes').addEventListener('click', () => {
       overlay.remove();
       resolve(true);
     });
 
-    document.getElementById("confirm-no").addEventListener("click", () => {
+    document.getElementById('confirm-no').addEventListener('click', () => {
       overlay.remove();
       resolve(false);
     });
@@ -296,8 +317,8 @@ export function mostrarConfirmacion(titulo, mensaje) {
 
 export function mostrarAlertaPersonalizadaConBoton(titulo, mensaje) {
   return new Promise((resolve) => {
-    const overlay = document.createElement("div");
-    overlay.className = "custom-alert-overlay";
+    const overlay = document.createElement('div');
+    overlay.className = 'custom-alert-overlay';
 
     overlay.innerHTML = `
             <div class="custom-alert-box">
@@ -311,7 +332,7 @@ export function mostrarAlertaPersonalizadaConBoton(titulo, mensaje) {
 
     document.body.appendChild(overlay);
 
-    document.getElementById("confirm-ok").addEventListener("click", () => {
+    document.getElementById('confirm-ok').addEventListener('click', () => {
       overlay.remove();
       resolve();
     });

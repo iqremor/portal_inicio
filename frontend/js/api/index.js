@@ -44,15 +44,19 @@ export async function apiFetch(
     }
 
     if (!response.ok) {
+      let message = errorMessage;
       if (response.headers.get('Content-Type')?.includes('application/json')) {
         const errorData = await response
           .json()
           .catch(() => ({ message: 'Error al parsear JSON del servidor.' }));
-        throw new Error(errorData.message || errorMessage);
+        message = errorData.message || errorMessage;
       } else {
         const textError = await response.text();
-        throw new Error(textError || errorMessage);
+        message = textError || errorMessage;
       }
+      const error = new Error(message);
+      error.status = response.status; // Guardar el código de estado (ej: 404)
+      throw error;
     }
 
     return response;

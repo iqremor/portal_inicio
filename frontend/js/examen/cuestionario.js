@@ -37,14 +37,25 @@ async function anularIntentoPorInfraccion(motivo) {
   clearInterval(state.temporizadorIntervalo);
   state.intentoAnulado = true;
   cleanup();
+
+  // 1. Enviar resultados actuales (vacíos o parciales) para que cuente como intento
+  try {
+    // Pasamos false para que NO redirija a resultados.html
+    await submitQuizResults(false);
+  } catch (e) {
+    console.error('Error al registrar anulación en el servidor:', e);
+  }
+
+  // 2. Mostrar la alerta de infracción
   await mostrarAlertaPersonalizada(
     'Intento Anulado',
-    `Has ${motivo}. Tu intento ha sido anulado.`,
-    4000
+    `Has ${motivo}. Este intento se ha descontado de tus oportunidades disponibles.`,
+    5000
   );
-  if (state.paginaActual === 'quiz') {
-    showEndPage();
-  }
+
+  // 3. Recargar la página. Al recargar, el main() de examen-main.js volverá a ejecutarse,
+  // consultará los intentos al backend (que ahora incluirá este) y mostrará la página de Inicio.
+  window.location.reload();
 }
 
 function handleVisibilityChange() {
@@ -80,7 +91,7 @@ export function saveUserAnswer(questionIndex, selectedOption) {
   state.userAnswers[questionIndex] = selectedOption;
 }
 
-async function submitQuizResults() {
+async function submitQuizResults(shouldRedirect = true) {
   try {
     const userSession = JSON.parse(localStorage.getItem('userSession'));
     const userCodigo = userSession ? userSession.codigo : null;
@@ -112,15 +123,23 @@ async function submitQuizResults() {
       userCodigo,
       state.tiempoTotalConsumido // Nuevo parámetro
     );
-    localStorage.setItem('ultimoResultado', JSON.stringify(result));
-    window.location.href = `/frontend/pages/resultados.html`;
+
+    if (shouldRedirect) {
+      localStorage.setItem('ultimoResultado', JSON.stringify(result));
+      window.location.href = `/frontend/pages/resultados.html`;
+    }
+
+    return result;
   } catch (error) {
     console.error('Error al finalizar el examen:', error);
-    mostrarAlertaPersonalizada(
-      'Error',
-      error.message || 'Ocurrió un error al finalizar el examen.',
-      4000
-    );
+    if (shouldRedirect) {
+      mostrarAlertaPersonalizada(
+        'Error',
+        error.message || 'Ocurrió un error al finalizar el examen.',
+        4000
+      );
+    }
+    throw error;
   }
 }
 

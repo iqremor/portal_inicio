@@ -114,8 +114,15 @@ def get_exam_questions_by_session(session_id, active_session):
             403,
         )
 
+    if not active_session.cuadernillo_id:
+        return (
+            jsonify({"error": "No hay un examen activo para esta sesión.", "code": "NO_ACTIVE_EXAM"}),
+            404,
+        )
+
     cuadernillo = Cuadernillo.query.get(active_session.cuadernillo_id)
     if not cuadernillo:
+
         return (
             jsonify({"error": "Cuadernillo asociado a la sesión no encontrado."}),
             404,
