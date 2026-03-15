@@ -5,10 +5,7 @@ from datetime import datetime  # Para manejar fechas y horas
 from enum import Enum  # Para definir enumeraciones
 
 from flask_sqlalchemy import SQLAlchemy  # ORM para manejar la base de datos
-from werkzeug.security import (  # Para hashear contraseñas
-    check_password_hash,
-    generate_password_hash,
-)
+from werkzeug.security import check_password_hash, generate_password_hash  # Para hashear contraseñas
 
 # Se crea la instancia de SQLAlchemy sin asociarla a la app todavía
 db = SQLAlchemy()
@@ -40,15 +37,11 @@ class User(db.Model):
     grado = db.Column(db.String(50), nullable=True)  # Nuevo campo
     role = db.Column(db.Enum(UserRole), default=UserRole.USER, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(
-        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
-    )
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
 
     # Relaciones
-    peticiones = db.relationship(
-        "Peticion", backref="usuario", lazy=True, cascade="all, delete-orphan"
-    )
+    peticiones = db.relationship("Peticion", backref="usuario", lazy=True, cascade="all, delete-orphan")
 
     def set_password(self, password):
         """Establece la contraseña hasheada"""
@@ -67,9 +60,7 @@ class Activity(db.Model):
     name = db.Column(db.String(80), unique=True, nullable=False)
     description = db.Column(db.String(200), nullable=False)
     data_activity_id = db.Column(db.String(80), unique=True, nullable=False)
-    applicable_grades = db.Column(
-        db.String(200), nullable=True
-    )  # e.g., "6,7,8,9,10,11"
+    applicable_grades = db.Column(db.String(200), nullable=True)  # e.g., "6,7,8,9,10,11"
 
     def __repr__(self):
         return "<Activity %r>" % self.name
@@ -117,9 +108,7 @@ class Cuadernillo(db.Model):
 class UserCuadernilloActivation(db.Model):
     __tablename__ = "user_cuadernillo_activation"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
-    cuadernillo_id = db.Column(
-        db.Integer, db.ForeignKey("cuadernillos.id"), primary_key=True
-    )
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey("cuadernillos.id"), primary_key=True)
     is_active = db.Column(db.Boolean, default=False, nullable=False)
 
     user = db.relationship(
@@ -138,23 +127,17 @@ class Peticion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(200), nullable=False)
     descripcion = db.Column(db.Text, nullable=False)
-    estado = db.Column(
-        db.Enum(PeticionEstado), default=PeticionEstado.PENDIENTE, nullable=False
-    )
+    estado = db.Column(db.Enum(PeticionEstado), default=PeticionEstado.PENDIENTE, nullable=False)
     prioridad = db.Column(db.Integer, default=1)  # 1=baja, 2=media, 3=alta
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(
-        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
-    )
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     fecha_limite = db.Column(db.DateTime, nullable=True)
 
     # Clave foránea
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     # Relaciones
-    comentarios = db.relationship(
-        "Comentario", backref="peticion", lazy=True, cascade="all, delete-orphan"
-    )
+    comentarios = db.relationship("Comentario", backref="peticion", lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Peticion {self.titulo}>"
@@ -168,9 +151,7 @@ class Peticion(db.Model):
             "prioridad": self.prioridad,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
-            "fecha_limite": (
-                self.fecha_limite.isoformat() if self.fecha_limite else None
-            ),
+            "fecha_limite": (self.fecha_limite.isoformat() if self.fecha_limite else None),
             "user_id": self.user_id,
             "usuario": self.usuario.username if self.usuario else None,
         }
@@ -212,9 +193,7 @@ class ConfiguracionSistema(db.Model):
     valor = db.Column(db.Text, nullable=False)
     descripcion = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(
-        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
-    )
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __repr__(self):
         return f"<Config {self.clave}: {self.valor}>"
@@ -267,12 +246,8 @@ class ActiveSession(db.Model):
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     ip_address = db.Column(db.String(45))
     user_agent = db.Column(db.String(256))
-    cuadernillo_id = db.Column(
-        db.Integer, db.ForeignKey("cuadernillos.id"), nullable=True
-    )
-    presented_questions = db.Column(
-        db.JSON, nullable=True
-    )  # Almacena las preguntas presentadas al usuario como JSON
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey("cuadernillos.id"), nullable=True)
+    presented_questions = db.Column(db.JSON, nullable=True)  # Almacena las preguntas presentadas al usuario como JSON
 
     # Relaciones
     user = db.relationship("User", backref=db.backref("active_sessions", lazy=True))
@@ -285,16 +260,12 @@ class ActiveSession(db.Model):
 class ExamAvailability(db.Model):
     __tablename__ = "exam_availability"
     id = db.Column(db.Integer, primary_key=True)
-    cuadernillo_id = db.Column(
-        db.Integer, db.ForeignKey("cuadernillos.id"), nullable=False
-    )
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey("cuadernillos.id"), nullable=False)
     grado = db.Column(db.String(50), nullable=False)
     is_enabled = db.Column(db.Boolean, default=True, nullable=False)
 
     # Unique constraint to avoid duplicate entries
-    __table_args__ = (
-        db.UniqueConstraint("cuadernillo_id", "grado", name="_cuadernillo_grado_uc"),
-    )
+    __table_args__ = (db.UniqueConstraint("cuadernillo_id", "grado", name="_cuadernillo_grado_uc"),)
 
     cuadernillo = db.relationship("Cuadernillo")
 
@@ -302,26 +273,18 @@ class ExamAvailability(db.Model):
 class ExamAnswer(db.Model):
     __tablename__ = "exam_answers"
     id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(
-        db.String(256), db.ForeignKey("active_sessions.session_id"), nullable=True
-    )
+    session_id = db.Column(db.String(256), db.ForeignKey("active_sessions.session_id"), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    cuadernillo_id = db.Column(
-        db.Integer, db.ForeignKey("cuadernillos.id"), nullable=False
-    )
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey("cuadernillos.id"), nullable=False)
     question_number = db.Column(db.Integer, nullable=False)
     selected_option = db.Column(db.Integer, nullable=False)
     is_correct = db.Column(db.Boolean, nullable=True)
     score_points = db.Column(db.Integer, nullable=True)
     answered_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    active_session = db.relationship(
-        "ActiveSession", backref=db.backref("exam_answers", lazy=True)
-    )
+    active_session = db.relationship("ActiveSession", backref=db.backref("exam_answers", lazy=True))
     user = db.relationship("User", backref=db.backref("exam_answers", lazy=True))
-    cuadernillo = db.relationship(
-        "Cuadernillo", backref=db.backref("exam_answers", lazy=True)
-    )
+    cuadernillo = db.relationship("Cuadernillo", backref=db.backref("exam_answers", lazy=True))
 
     def __repr__(self):
         return f"<ExamAnswer User:{self.user_id} Session:{self.session_id} Q:{self.question_number}>"
@@ -331,20 +294,17 @@ class ExamResult(db.Model):
     __tablename__ = "exam_results"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    cuadernillo_id = db.Column(
-        db.Integer, db.ForeignKey("cuadernillos.id"), nullable=False
-    )
+    cuadernillo_id = db.Column(db.Integer, db.ForeignKey("cuadernillos.id"), nullable=False)
     final_score = db.Column(db.Float, nullable=False)
     correct_answers = db.Column(db.Integer, nullable=False)
     incorrect_answers = db.Column(db.Integer, nullable=False)
     unanswered_questions = db.Column(db.Integer, nullable=False)
+    time_used = db.Column(db.Integer, nullable=True)  # Tiempo en segundos
     attempt_number = db.Column(db.Integer, nullable=False, default=1)
     completion_date = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship("User", backref=db.backref("exam_results", lazy=True))
-    cuadernillo = db.relationship(
-        "Cuadernillo", backref=db.backref("exam_results", lazy=True)
-    )
+    cuadernillo = db.relationship("Cuadernillo", backref=db.backref("exam_results", lazy=True))
 
     def __repr__(self):
         return f"<ExamResult User:{self.user_id} Cuadernillo:{self.cuadernillo_id} Score:{self.final_score}>"
@@ -394,18 +354,14 @@ def seed_data():
     # Crear usuario administrador por defecto
     admin_user = User.query.filter_by(username="admin").first()
     if not admin_user:
-        admin_user = User(
-            username="admin", email="admin@sistema.com", role=UserRole.ADMIN
-        )
+        admin_user = User(username="admin", email="admin@sistema.com", role=UserRole.ADMIN)
         admin_user.set_password("admin123")
         db.session.add(admin_user)
 
     # Crear usuario de prueba
     test_user = User.query.filter_by(username="usuario_test").first()
     if not test_user:
-        test_user = User(
-            username="usuario_test", email="test@sistema.com", role=UserRole.USER
-        )
+        test_user = User(username="usuario_test", email="test@sistema.com", role=UserRole.USER)
         test_user.set_password("test123")
         db.session.add(test_user)
 

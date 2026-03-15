@@ -6,15 +6,7 @@ from functools import wraps
 
 from flask import Blueprint, current_app, jsonify, request
 
-from models import (
-    ActiveSession,
-    Cuadernillo,
-    ExamAnswer,
-    ExamResult,
-    User,
-    UserCuadernilloActivation,
-    db,
-)
+from models import ActiveSession, Cuadernillo, ExamAnswer, ExamResult, User, UserCuadernilloActivation, db
 
 
 # Decorator for API authentication
@@ -24,20 +16,14 @@ def api_login_required(f):
         session_id = request.headers.get("X-Session-ID")
         if not session_id:
             return (
-                jsonify(
-                    {"error": "Se requiere autenticación. Sesión no proporcionada."}
-                ),
+                jsonify({"error": "Se requiere autenticación. Sesión no proporcionada."}),
                 401,
             )
 
         active_session = ActiveSession.query.filter_by(session_id=session_id).first()
         if not active_session:
             return (
-                jsonify(
-                    {
-                        "error": "Sesión inválida o expirada. Por favor, inicie sesión nuevamente."
-                    }
-                ),
+                jsonify({"error": "Sesión inválida o expirada. Por favor, inicie sesión nuevamente."}),
                 401,
             )
 
@@ -63,9 +49,7 @@ def start_examen(area_id, active_session):
 
     if not area_id or not grade or not user_codigo:
         return (
-            jsonify(
-                {"error": "Los parámetros 'areaId', 'grade' y 'codigo' son requeridos"}
-            ),
+            jsonify({"error": "Los parámetros 'areaId', 'grade' y 'codigo' son requeridos"}),
             400,
         )
 
@@ -75,28 +59,20 @@ def start_examen(area_id, active_session):
 
     if user.id != active_session.user_id:
         return (
-            jsonify(
-                {"error": "El código de usuario no coincide con la sesión activa."}
-            ),
+            jsonify({"error": "El código de usuario no coincide con la sesión activa."}),
             403,
         )
 
     cuadernillo = Cuadernillo.query.filter_by(area=area_id, grado=grade).first()
     if not cuadernillo:
         return (
-            jsonify(
-                {
-                    "error": f"No se encontró un cuadernillo para el área '{area_id}' y grado '{grade}'"
-                }
-            ),
+            jsonify({"error": f"No se encontró un cuadernillo para el área '{area_id}' y grado '{grade}'"}),
             404,
         )
 
     from models import ExamAvailability
 
-    availability = ExamAvailability.query.filter_by(
-        cuadernillo_id=cuadernillo.id, grado=grade
-    ).first()
+    availability = ExamAvailability.query.filter_by(cuadernillo_id=cuadernillo.id, grado=grade).first()
     if availability and not availability.is_enabled:
         return (
             jsonify({"error": "Este examen no está disponible en este momento."}),
@@ -134,11 +110,7 @@ def get_exam_questions_by_session(session_id, active_session):
     """Obtiene las preguntas y la configuración de un examen para una sesión activa específica."""
     if active_session.session_id != session_id:
         return (
-            jsonify(
-                {
-                    "error": "El ID de sesión proporcionado no coincide con la sesión activa."
-                }
-            ),
+            jsonify({"error": "El ID de sesión proporcionado no coincide con la sesión activa."}),
             403,
         )
 
@@ -154,9 +126,7 @@ def get_exam_questions_by_session(session_id, active_session):
     project_root = os.path.abspath(os.path.join(script_dir, "..", ".."))
 
     cleaned_dir_banco = cuadernillo.dir_banco
-    while cleaned_dir_banco.startswith("data/") or cleaned_dir_banco.startswith(
-        "/data/"
-    ):
+    while cleaned_dir_banco.startswith("data/") or cleaned_dir_banco.startswith("/data/"):
         if cleaned_dir_banco.startswith("/data/"):
             cleaned_dir_banco = cleaned_dir_banco[len("/data/") :]
         elif cleaned_dir_banco.startswith("data/"):
@@ -165,19 +135,13 @@ def get_exam_questions_by_session(session_id, active_session):
     questions_dir_path = os.path.join(project_root, "data", cleaned_dir_banco)
 
     if not os.path.isdir(questions_dir_path):
-        current_app.logger.error(
-            f"Error: Directorio de preguntas '{questions_dir_path}' no encontrado."
-        )
+        current_app.logger.error(f"Error: Directorio de preguntas '{questions_dir_path}' no encontrado.")
         return (
-            jsonify(
-                {"error": f"Directorio de preguntas no encontrado en el servidor."}
-            ),
+            jsonify({"error": f"Directorio de preguntas no encontrado en el servidor."}),
             500,
         )
 
-    all_answers_file_path = os.path.join(
-        project_root, "backend", "data", "respuestas.json"
-    )
+    all_answers_file_path = os.path.join(project_root, "backend", "data", "respuestas.json")
     if not os.path.exists(all_answers_file_path):
         return (
             jsonify({"error": "Archivo de respuestas no encontrado en el servidor."}),
@@ -209,20 +173,14 @@ def get_exam_questions_by_session(session_id, active_session):
 
     if correct_answers is None:
         return (
-            jsonify(
-                {"error": f"No se encontraron respuestas para '{cuadernillo.nombre}'."}
-            ),
+            jsonify({"error": f"No se encontraron respuestas para '{cuadernillo.nombre}'."}),
             500,
         )
 
     all_questions_bank = []
     try:
         image_files = sorted(
-            [
-                f
-                for f in os.listdir(questions_dir_path)
-                if f.lower().endswith((".png", ".jpg", ".jpeg"))
-            ]
+            [f for f in os.listdir(questions_dir_path) if f.lower().endswith((".png", ".jpg", ".jpeg"))]
         )
         option_map = {0: "A", 1: "B", 2: "C", 3: "D"}
 
@@ -306,19 +264,13 @@ def get_examenes_por_grado(grado, active_session):
     examenes_dict = []
     for examen in examenes:
         examen_data = examen.to_dict()
-        user_activation = UserCuadernilloActivation.query.filter_by(
-            user_id=user.id, cuadernillo_id=examen.id
-        ).first()
+        user_activation = UserCuadernilloActivation.query.filter_by(user_id=user.id, cuadernillo_id=examen.id).first()
         is_user_active = user_activation.is_active if user_activation else True
 
         from models import ExamAvailability
 
-        exam_availability = ExamAvailability.query.filter_by(
-            cuadernillo_id=examen.id, grado=examen.grado
-        ).first()
-        is_general_available = (
-            exam_availability.is_enabled if exam_availability else True
-        )
+        exam_availability = ExamAvailability.query.filter_by(cuadernillo_id=examen.id, grado=examen.grado).first()
+        is_general_available = exam_availability.is_enabled if exam_availability else True
 
         examen_data["activo"] = is_user_active and is_general_available
         examenes_dict.append(examen_data)
@@ -335,9 +287,7 @@ def get_attempts(cuadernillo_id, active_session):
     if not cuadernillo:
         return jsonify({"error": "Cuadernillo no encontrado."}), 404
 
-    current_attempts = ExamResult.query.filter_by(
-        user_id=user_id, cuadernillo_id=cuadernillo_id
-    ).count()
+    current_attempts = ExamResult.query.filter_by(user_id=user_id, cuadernillo_id=cuadernillo_id).count()
 
     return jsonify({"current_attempts": current_attempts})
 
@@ -415,6 +365,7 @@ def finalizar_examen(session_id, active_session):
         )
 
     grade = (correct_answers_count / len(answers)) * 5.0 if answers else 0.0
+    tiempo_usado = data.get("tiempo_usado", 0)
 
     try:
         for ans_detail in detailed_answers:
@@ -429,9 +380,7 @@ def finalizar_examen(session_id, active_session):
             )
             db.session.add(answer_record)
 
-        previous_attempts = ExamResult.query.filter_by(
-            user_id=user.id, cuadernillo_id=cuadernillo.id
-        ).count()
+        previous_attempts = ExamResult.query.filter_by(user_id=user.id, cuadernillo_id=cuadernillo.id).count()
 
         exam_result = ExamResult(
             user_id=user.id,
@@ -440,6 +389,7 @@ def finalizar_examen(session_id, active_session):
             correct_answers=correct_answers_count,
             incorrect_answers=incorrect_answers_count,
             unanswered_questions=unanswered_questions_count,
+            time_used=tiempo_usado,
             attempt_number=previous_attempts + 1,
         )
         db.session.add(exam_result)
@@ -456,9 +406,14 @@ def finalizar_examen(session_id, active_session):
         jsonify(
             {
                 "message": "Examen finalizado con éxito.",
-                "grade": round(grade, 2),
-                "correct_answers": correct_answers_count,
-                "total_questions_graded": len(answers),
+                "area": cuadernillo.area,
+                "grado": cuadernillo.grado,
+                "porcentaje": round((correct_answers_count / len(answers)) * 100, 2) if answers else 0,
+                "preguntas_correctas": correct_answers_count,
+                "total_preguntas": len(answers),
+                "tiempo_usado": tiempo_usado,
+                "puntuacion": round(grade, 2),
+                "puntuacion_maxima": 5.0,
             }
         ),
         200,
@@ -503,9 +458,7 @@ def upload_exam_answers():
     # Cargar respuestas correctas
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, "..", ".."))
-    all_answers_file_path = os.path.join(
-        project_root, "backend", "data", "all_exam_answers.json"
-    )
+    all_answers_file_path = os.path.join(project_root, "backend", "data", "all_exam_answers.json")
 
     with open(all_answers_file_path, "r", encoding="utf-8") as f:
         all_correct_bank = json.load(f)
@@ -552,9 +505,7 @@ def upload_exam_answers():
             )
             db.session.add(rec)
 
-        prev = ExamResult.query.filter_by(
-            user_id=user.id, cuadernillo_id=cuadernillo.id
-        ).count()
+        prev = ExamResult.query.filter_by(user_id=user.id, cuadernillo_id=cuadernillo.id).count()
         res = ExamResult(
             user_id=user.id,
             cuadernillo_id=cuadernillo.id,

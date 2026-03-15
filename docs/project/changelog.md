@@ -635,3 +635,19 @@ queda pendiente problema de cierre de sesión y carga dinamica de las areas a ev
 - **Pendiente:** Realizar pruebas de integración para asegurar que el flujo de intentos funciona correctamente en el navegador tras los cambios.
 
 ### Finalización: sábado, 7 de marzo de 2026
+
+## Sesión 22 - 15 de marzo de 2026
+
+### Objetivos de la sesión:
+
+- Continuar con la estabilización de la funcionalidad de exámenes e intentos.
+- Revisar y completar tareas pendientes de sesiones anteriores.
+- Iniciar auditoría de dependencias y pruebas de integración.
+
+### Estado inicial:
+
+- Calidad de código: Herramientas configuradas (Black, Flake8, ESLint). Backend formateado en sesión 21.
+- Deuda técnica: Funcionalidad de exámenes con carga dinámica pendiente en frontend, auditoría de dependencias.
+- Tests: Testing framework configurado pero sin suite de integración completa.
+
+### Finalización: [PENDIENTE]

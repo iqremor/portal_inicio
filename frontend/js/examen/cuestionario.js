@@ -1,14 +1,14 @@
-import { state } from "./state.js";
-import { quizConfig } from "./constants.js";
-import { handleZoomKeys } from "./zoom.js";
+import { state } from './state.js';
+import { quizConfig } from './constants.js';
+import { handleZoomKeys } from './zoom.js';
 import {
   entrarEnModoInmersivo,
   mostrarAlertaPersonalizada,
   mostrarPaginaFinal,
   mostrarConfirmacion,
   mostrarAlertaPersonalizadaConBoton,
-} from "./ui.js";
-import { submitExam } from "../api/index.js"; // Importar submitExam desde el API
+} from './ui.js';
+import { submitExam } from '../api/index.js'; // Importar submitExam desde el API
 
 let renderImage;
 let showEndPage;
@@ -23,33 +23,33 @@ export function recargarImagen() {
 }
 
 function cleanup() {
-  document.removeEventListener("visibilitychange", handleVisibilityChange);
-  document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  document.removeEventListener("keydown", handleGlobalKeys);
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
+  document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  document.removeEventListener('keydown', handleGlobalKeys);
   if (state.temporizadorIntervalo) {
     clearInterval(state.temporizadorIntervalo);
   }
 }
 
 async function anularIntentoPorInfraccion(motivo) {
-  if (state.intentoAnulado || state.paginaActual !== "quiz") return;
+  if (state.intentoAnulado || state.paginaActual !== 'quiz') return;
 
   clearInterval(state.temporizadorIntervalo);
   state.intentoAnulado = true;
   cleanup();
   await mostrarAlertaPersonalizada(
-    "Intento Anulado",
+    'Intento Anulado',
     `Has ${motivo}. Tu intento ha sido anulado.`,
-    4000,
+    4000
   );
-  if (state.paginaActual === "quiz") {
+  if (state.paginaActual === 'quiz') {
     showEndPage();
   }
 }
 
 function handleVisibilityChange() {
-  if (document.hidden && state.paginaActual === "quiz") {
-    anularIntentoPorInfraccion("cambiado de pestaña");
+  if (document.hidden && state.paginaActual === 'quiz') {
+    anularIntentoPorInfraccion('cambiado de pestaña');
   }
 }
 
@@ -59,8 +59,8 @@ function handleFullscreenChange() {
     document.webkitFullscreenElement ||
     document.mozFullScreenElement ||
     document.msFullscreenElement;
-  if (!isFullscreen && state.paginaActual === "quiz") {
-    anularIntentoPorInfraccion("salido del modo de pantalla completa");
+  if (!isFullscreen && state.paginaActual === 'quiz') {
+    anularIntentoPorInfraccion('salido del modo de pantalla completa');
   }
 }
 
@@ -82,14 +82,14 @@ export function saveUserAnswer(questionIndex, selectedOption) {
 
 async function submitQuizResults() {
   try {
-    const userSession = JSON.parse(localStorage.getItem("userSession"));
+    const userSession = JSON.parse(localStorage.getItem('userSession'));
     const userCodigo = userSession ? userSession.codigo : null;
 
     if (!userCodigo) {
       mostrarAlertaPersonalizada(
-        "Error",
-        "Código de usuario no encontrado para finalizar el examen.",
-        4000,
+        'Error',
+        'Código de usuario no encontrado para finalizar el examen.',
+        4000
       );
       return;
     }
@@ -110,22 +110,23 @@ async function submitQuizResults() {
       state.sessionId,
       answersToSubmit,
       userCodigo,
+      state.tiempoTotalConsumido // Nuevo parámetro
     );
-    localStorage.setItem("ultimoResultado", JSON.stringify(result));
+    localStorage.setItem('ultimoResultado', JSON.stringify(result));
     window.location.href = `/frontend/pages/resultados.html`;
   } catch (error) {
-    console.error("Error al finalizar el examen:", error);
+    console.error('Error al finalizar el examen:', error);
     mostrarAlertaPersonalizada(
-      "Error",
-      error.message || "Ocurrió un error al finalizar el examen.",
-      4000,
+      'Error',
+      error.message || 'Ocurrió un error al finalizar el examen.',
+      4000
     );
   }
 }
 
 export function iniciarQuiz(examData) {
-  console.log("iniciarQuiz received examData:", examData); // ADDED LOG
-  state.paginaActual = "quiz";
+  console.log('iniciarQuiz received examData:', examData); // ADDED LOG
+  state.paginaActual = 'quiz';
   state.indicePreguntaActual = 0;
   state.intentoAnulado = false;
   state.examData = examData; // Store full examData
@@ -141,14 +142,14 @@ export function iniciarQuiz(examData) {
   if (examData.config && examData.config.subject) {
     let subject = examData.config.subject;
     subject = subject.charAt(0).toUpperCase() + subject.slice(1);
-    subject = subject.replace(/_/g, " ");
+    subject = subject.replace(/_/g, ' ');
     examData.config.subject = subject;
   }
 
   entrarEnModoInmersivo();
-  document.addEventListener("visibilitychange", handleVisibilityChange);
-  document.addEventListener("fullscreenchange", handleFullscreenChange);
-  document.addEventListener("keydown", handleGlobalKeys);
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+  document.addEventListener('fullscreenchange', handleFullscreenChange);
+  document.addEventListener('keydown', handleGlobalKeys);
 
   renderImage();
   iniciarTemporizador();
@@ -159,55 +160,69 @@ export function iniciarTemporizador() {
     clearInterval(state.temporizadorIntervalo);
   }
 
-  state.tiempoRestante = quizConfig.timerDuration;
+  // TIEMPO ACUMULATIVO: Tiempo base + lo que sobró de la anterior
+  state.tiempoRestanteActual =
+    quizConfig.timerDuration + state.sobrantePreguntaAnterior;
+
+  const temporizadorElemento = document.getElementById('temporizador-display');
+
+  // Función interna para actualizar el DOM
+  const refrescarDOM = () => {
+    if (!temporizadorElemento) return;
+    const minutos = Math.floor(state.tiempoRestanteActual / 60);
+    const segundos = state.tiempoRestanteActual % 60;
+    temporizadorElemento.textContent = `${minutos}:${segundos
+      .toString()
+      .padStart(2, '0')}`;
+  };
+
+  // Actualización inmediata antes de iniciar el intervalo
+  refrescarDOM();
 
   function actualizarTemporizador() {
-    const temporizadorElemento = document.getElementById(
-      "temporizador-display",
-    );
     if (!temporizadorElemento) {
       clearInterval(state.temporizadorIntervalo);
       return;
     }
 
-    if (state.intentoAnulado || state.tiempoRestante <= 0) {
+    if (state.intentoAnulado || state.tiempoRestanteActual <= 0) {
       clearInterval(state.temporizadorIntervalo);
       return;
     }
 
-    state.tiempoRestante--;
-    const minutos = Math.floor(state.tiempoRestante / 60);
-    const segundos = state.tiempoRestante % 60;
-    temporizadorElemento.textContent = `${minutos}:${segundos.toString().padStart(2, "0")}`;
+    state.tiempoRestanteActual--;
+    state.tiempoTotalConsumido++;
+    refrescarDOM();
 
-    if (state.tiempoRestante <= 0) {
+    if (state.tiempoRestanteActual <= 0) {
       clearInterval(state.temporizadorIntervalo);
+      state.sobrantePreguntaAnterior = 0;
       mostrarAlertaPersonalizadaConBoton(
-        "¡Tiempo Agotado!",
-        "El tiempo para esta pregunta ha finalizado. ¡Sigue adelante!",
+        '¡Tiempo Agotado!',
+        'El tiempo para esta pregunta ha finalizado. ¡Sigue adelante!'
       ).then(() => {
         siguienteImagen();
       });
       return;
     }
 
-    if (state.tiempoRestante === quizConfig.warningTime) {
+    if (state.tiempoRestanteActual === quizConfig.warningTime) {
       mostrarAlertaPersonalizada(
-        "¡Atención!",
+        '¡Atención!',
         `¡Apúrate! Quedan solo ${quizConfig.warningTime} segundos.`,
-        3000,
+        3000
       );
     }
 
     if (
-      state.tiempoRestante <= quizConfig.warningTime &&
-      state.tiempoRestante > 0
+      state.tiempoRestanteActual <= quizConfig.warningTime &&
+      state.tiempoRestanteActual > 0
     ) {
       const timerContainer = temporizadorElemento.closest(
-        ".timer-container-quiz",
+        '.timer-container-quiz'
       );
       if (timerContainer) {
-        timerContainer.classList.add("timer-warning-quiz");
+        timerContainer.classList.add('timer-warning-quiz');
       }
     }
   }
@@ -216,6 +231,9 @@ export function iniciarTemporizador() {
 }
 
 export async function siguienteImagen() {
+  // Antes de pasar, guardar el sobrante actual para la siguiente
+  state.sobrantePreguntaAnterior = Math.max(0, state.tiempoRestanteActual);
+
   if (state.indicePreguntaActual < state.imageList.length - 1) {
     state.indicePreguntaActual++;
     renderImage();

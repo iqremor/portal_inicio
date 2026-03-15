@@ -1,5 +1,5 @@
 const API_BASE = window.location.origin;
-import { handleLogout, checkSession } from "../shared/auth.js"; // Import checkSession
+import { handleLogout, checkSession } from '../shared/auth.js'; // Import checkSession
 
 /**
  * Generic API fetch wrapper to handle authentication and error responses.
@@ -12,8 +12,8 @@ import { handleLogout, checkSession } from "../shared/auth.js"; // Import checkS
 export async function apiFetch(
   url,
   options = {},
-  errorMessage = "Error en la solicitud.",
-  requiresAuth = true,
+  errorMessage = 'Error en la solicitud.',
+  requiresAuth = true
 ) {
   // Inject X-Session-ID header if authentication is required
   if (requiresAuth) {
@@ -22,15 +22,15 @@ export async function apiFetch(
       // Check session.active as well
       options.headers = {
         ...options.headers,
-        "X-Session-ID": session.sessionId,
+        'X-Session-ID': session.sessionId,
       };
     } else {
       // If session is required but not found or not active, act as if unauthorized
       console.warn(
-        "Sesión requerida pero no encontrada localmente o inactiva. Redirigiendo a login.",
+        'Sesión requerida pero no encontrada localmente o inactiva. Redirigiendo a login.'
       );
       handleLogout();
-      return new Response(null, { status: 401, statusText: "Unauthorized" });
+      return new Response(null, { status: 401, statusText: 'Unauthorized' });
     }
   }
 
@@ -38,16 +38,16 @@ export async function apiFetch(
     const response = await fetch(url, options);
 
     if (response.status === 401) {
-      console.warn("Sesión no autorizada o terminada. Redirigiendo a login.");
+      console.warn('Sesión no autorizada o terminada. Redirigiendo a login.');
       handleLogout();
-      return new Response(null, { status: 401, statusText: "Unauthorized" });
+      return new Response(null, { status: 401, statusText: 'Unauthorized' });
     }
 
     if (!response.ok) {
-      if (response.headers.get("Content-Type")?.includes("application/json")) {
+      if (response.headers.get('Content-Type')?.includes('application/json')) {
         const errorData = await response
           .json()
-          .catch(() => ({ message: "Error al parsear JSON del servidor." }));
+          .catch(() => ({ message: 'Error al parsear JSON del servidor.' }));
         throw new Error(errorData.message || errorMessage);
       } else {
         const textError = await response.text();
@@ -57,7 +57,7 @@ export async function apiFetch(
 
     return response;
   } catch (error) {
-    console.error("API Fetch Error:", error);
+    console.error('API Fetch Error:', error);
     throw error;
   }
 }
@@ -67,14 +67,14 @@ export async function validateCode(codigo) {
   const response = await apiFetch(
     `${API_BASE}/api/validar`,
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ codigo: codigo }),
     },
-    "Error al validar el código.",
-    false,
+    'Error al validar el código.',
+    false
   ); // validateCode does NOT require auth
   return response.json();
 }
@@ -84,7 +84,7 @@ export async function fetchUserData(codigo) {
   const response = await apiFetch(
     `${API_BASE}/api/usuario/${codigo}`,
     {},
-    "Usuario no encontrado.",
+    'Usuario no encontrado.'
   );
   return response.json();
 }
@@ -94,7 +94,7 @@ export async function loadExamAreas() {
   const response = await apiFetch(
     `${API_BASE}/api/examenes`,
     {},
-    "Error al cargar las áreas de examen.",
+    'Error al cargar las áreas de examen.'
   );
   return response.json();
 }
@@ -103,7 +103,7 @@ export async function loadExamsForGrade(grade, userCodigo) {
   const response = await apiFetch(
     `${API_BASE}/api/examenes/grado/${grade}?user_codigo=${userCodigo}`,
     {},
-    "Error al cargar los exámenes para el grado.",
+    'Error al cargar los exámenes para el grado.'
   );
   return response.json();
 }
@@ -113,13 +113,13 @@ export async function startExam(areaId, codigo, grado) {
   const response = await apiFetch(
     `${API_BASE}/api/examenes/${areaId}/iniciar`,
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ codigo: codigo, grado: grado }),
     },
-    "Error al iniciar el examen.",
+    'Error al iniciar el examen.'
   );
   return response.json();
 }
@@ -129,26 +129,27 @@ export async function getExamQuestions(sessionId) {
   const response = await apiFetch(
     `${API_BASE}/api/examen/${sessionId}`,
     {},
-    "Error al cargar las preguntas del examen.",
+    'Error al cargar las preguntas del examen.'
   );
   return response.json();
 }
 
-export async function submitExam(sessionId, answers, userCodigo) {
+export async function submitExam(sessionId, answers, userCodigo, tiempoUsado) {
   // submitExam requires auth
   const response = await apiFetch(
     `${API_BASE}/api/examen/${sessionId}/finalizar`,
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         answers: answers,
         codigo: userCodigo,
+        tiempo_usado: tiempoUsado,
       }),
     },
-    "Error al finalizar el examen.",
+    'Error al finalizar el examen.'
   );
   return response.json();
 }
@@ -158,7 +159,7 @@ export async function loadRecentResults(codigo) {
   const response = await apiFetch(
     `${API_BASE}/api/resultados/${codigo}`,
     {},
-    "Error al cargar resultados recientes.",
+    'Error al cargar resultados recientes.'
   );
   return response.json();
 }
@@ -169,16 +170,16 @@ export async function logout(codigo) {
     await apiFetch(
       `${API_BASE}/api/logout`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ codigo: codigo }),
       },
-      "Error al intentar cerrar sesión en el servidor.",
+      'Error al intentar cerrar sesión en el servidor.'
     );
   } catch (error) {
-    console.error("Error during explicit logout:", error);
+    console.error('Error during explicit logout:', error);
   }
 }
 
@@ -187,10 +188,10 @@ export async function uploadExamAnswers(formData) {
   const response = await apiFetch(
     `${API_BASE}/api/upload_exam_answers`,
     {
-      method: "POST",
+      method: 'POST',
       body: formData,
     },
-    "Error al subir el archivo de respuestas.",
+    'Error al subir el archivo de respuestas.'
   );
   return response.json();
 }
