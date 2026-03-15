@@ -21,9 +21,7 @@ admin = Admin(name="Mi Panel de Admin", template_mode="bootstrap4")
 class MyAdminIndexView(AdminIndexView):
     def is_accessible(self):
         if self.admin.app.debug:
-            print(
-                f"is_accessible called. session['logged_in']: {session.get('logged_in')}"
-            )
+            print(f"is_accessible called. session['logged_in']: {session.get('logged_in')}")
         return session.get("logged_in")
 
     def inaccessible_callback(self, name, **kwargs):
@@ -36,13 +34,9 @@ class MyAdminIndexView(AdminIndexView):
             print(f"login_path from url_for: {login_path}")
 
             if request.endpoint == "admin.login_view":
-                print(
-                    "Match: request.endpoint == 'admin.login_view'. Allowing login view to proceed."
-                )
+                print("Match: request.endpoint == 'admin.login_view'. Allowing login view to proceed.")
 
-            print(
-                "No match: request.path != login_path. Redirecting to login with next parameter."
-            )
+            print("No match: request.path != login_path. Redirecting to login with next parameter.")
         if request.endpoint == "admin.login_view":
             return None  # This line must be outside the debug block
         return redirect(url_for("admin.login_view", next=request.url))
@@ -50,9 +44,7 @@ class MyAdminIndexView(AdminIndexView):
     @expose("/")
     def index(self):
         # Obtener el estado del sitio de prueba
-        test_site_enabled = ConfiguracionSistema.query.filter_by(
-            clave="TEST_SITE_ENABLED"
-        ).first()
+        test_site_enabled = ConfiguracionSistema.query.filter_by(clave="TEST_SITE_ENABLED").first()
         if not test_site_enabled:
             test_site_enabled = ConfiguracionSistema(
                 clave="TEST_SITE_ENABLED",
@@ -66,18 +58,12 @@ class MyAdminIndexView(AdminIndexView):
         stats = {
             "total_usuarios": User.query.count(),
             "total_peticiones": Peticion.query.count(),
-            "peticiones_pendientes": Peticion.query.filter_by(
-                estado=PeticionEstado.PENDIENTE
-            ).count(),
-            "peticiones_completadas": Peticion.query.filter_by(
-                estado=PeticionEstado.COMPLETADA
-            ).count(),
+            "peticiones_pendientes": Peticion.query.filter_by(estado=PeticionEstado.PENDIENTE).count(),
+            "peticiones_completadas": Peticion.query.filter_by(estado=PeticionEstado.COMPLETADA).count(),
         }
 
         # Peticiones recientes
-        peticiones_recientes = (
-            Peticion.query.order_by(Peticion.created_at.desc()).limit(5).all()
-        )
+        peticiones_recientes = Peticion.query.order_by(Peticion.created_at.desc()).limit(5).all()
 
         # Usuarios recientes
         usuarios_recientes = User.query.order_by(User.created_at.desc()).limit(5).all()
@@ -105,11 +91,7 @@ class MyAdminIndexView(AdminIndexView):
             username = request.form["username"]
             password = request.form["password"]
 
-            user = (
-                db.session.query(User)
-                .filter_by(username=username, role=UserRole.ADMIN)
-                .first()
-            )
+            user = db.session.query(User).filter_by(username=username, role=UserRole.ADMIN).first()
 
             if user and user.check_password(password):
                 session["logged_in"] = True
@@ -119,21 +101,15 @@ class MyAdminIndexView(AdminIndexView):
                     print(
                         f"DEBUG: After setting session['logged_in'] in POST: {session.get('logged_in')}"
                     )  # Debug print
-                    print(
-                        f"DEBUG: Full session object after login: {dict(session)}"
-                    )  # Print full session
+                    print(f"DEBUG: Full session object after login: {dict(session)}")  # Print full session
                 flash("¡Inicio de sesión exitoso!", "success")
                 return redirect(request.args.get("next") or url_for("admin.index"))
             else:
                 flash("Nombre de usuario o contraseña incorrectos.", "danger")
 
         if self.admin.app.debug:
-            print(
-                f"DEBUG: session['logged_in'] on GET/initial load: {session.get('logged_in')}"
-            )  # Debug print
-            print(
-                f"DEBUG: Full session object on GET/initial load: {dict(session)}"
-            )  # Print full session
+            print(f"DEBUG: session['logged_in'] on GET/initial load: {session.get('logged_in')}")  # Debug print
+            print(f"DEBUG: Full session object on GET/initial load: {dict(session)}")  # Print full session
         return self.render("admin/login.html")
 
     @expose("/logout/")
@@ -192,9 +168,7 @@ class UserModelView(ModelView):
     }
 
     # Formateo de columnas
-    column_type_formatters = {
-        datetime: lambda view, value: value.strftime("%d/%m/%Y %H:%M") if value else ""
-    }
+    column_type_formatters = {datetime: lambda view, value: value.strftime("%d/%m/%Y %H:%M") if value else ""}
 
     # Configuración de paginación
     page_size = 25
@@ -317,9 +291,7 @@ class PeticionModelView(ModelView):
     }
 
     # Formateo de columnas
-    column_type_formatters = {
-        datetime: lambda view, value: value.strftime("%d/%m/%Y %H:%M") if value else ""
-    }
+    column_type_formatters = {datetime: lambda view, value: value.strftime("%d/%m/%Y %H:%M") if value else ""}
 
     # Configuración de formularios
     form_overrides = {"descripcion": TextAreaField}
@@ -364,9 +336,7 @@ class ComentarioModelView(ModelView):
 
     form_overrides = {"contenido": TextAreaField}
 
-    column_type_formatters = {
-        datetime: lambda view, value: value.strftime("%d/%m/%Y %H:%M") if value else ""
-    }
+    column_type_formatters = {datetime: lambda view, value: value.strftime("%d/%m/%Y %H:%M") if value else ""}
 
     page_size = 25
 
@@ -444,17 +414,21 @@ class ActiveSessionView(ModelView):
         return redirect(url_for("web_main.login", next=request.url))
 
 
+class GestionIntentosView(BaseView):
+    @expose("/")
+    def index(self):
+        return self.render("admin/gestion_intentos.html")
+
+    def is_accessible(self):
+        return session.get("logged_in") and session.get("user_role") == "admin"
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for("admin.login_view", next=request.url))
+
+
 def init_admin(app):
     """Inicializa Flask-Admin."""
-    from models import (
-        ActiveSession,
-        Comentario,
-        ConfiguracionSistema,
-        Log,
-        Peticion,
-        User,
-        db,
-    )
+    from models import ActiveSession, Comentario, ConfiguracionSistema, Log, Peticion, User, db
 
     admin = Admin(
         app,
@@ -467,17 +441,12 @@ def init_admin(app):
     admin.add_view(UserModelView(User, db.session, name="Usuarios"))
     admin.add_view(PeticionModelView(Peticion, db.session, name="Peticiones"))
     admin.add_view(ComentarioModelView(Comentario, db.session, name="Comentarios"))
-    admin.add_view(
-        ConfiguracionSistemaView(ConfiguracionSistema, db.session, name="Configuración")
-    )
+    admin.add_view(ConfiguracionSistemaView(ConfiguracionSistema, db.session, name="Configuración"))
     admin.add_view(ModelView(Log, db.session, name="Logs del Sistema"))
-    admin.add_view(
-        ActiveSessionView(ActiveSession, db.session, name="Sesiones Activas")
-    )
+    admin.add_view(ActiveSessionView(ActiveSession, db.session, name="Sesiones Activas"))
     admin.add_view(DatabaseAdminView(name="Gestión DB", endpoint="db_admin"))
-    admin.add_view(
-        ExamAvailabilityView(name="Gestión de Exámenes", endpoint="exam_availability")
-    )
+    admin.add_view(ExamAvailabilityView(name="Gestión de Exámenes", endpoint="exam_availability"))
+    admin.add_view(GestionIntentosView(name="Gestión de Intentos", endpoint="gestion_intentos"))
 
     # Añadir vista de gestión de archivos para la raíz del proyecto
     path = op.abspath(op.join(op.dirname(__file__), ".."))
@@ -514,9 +483,7 @@ class DatabaseAdminView(BaseView):
 
                         from flask import current_app
 
-                        file_path = os.path.join(
-                            current_app.instance_path, "sistema_gestion.db"
-                        )
+                        file_path = os.path.join(current_app.instance_path, "sistema_gestion.db")
                         file.save(file_path)
                         flash(
                             "Base de datos cargada y reemplazada exitosamente.",
@@ -613,11 +580,7 @@ class ExamAvailabilityView(BaseView):
         from models import Cuadernillo, ExamAvailability, db
 
         if request.method == "POST":
-            from models import (  # Re-import for clarity
-                Cuadernillo,
-                ExamAvailability,
-                db,
-            )
+            from models import Cuadernillo, ExamAvailability, db  # Re-import for clarity
 
             # Get all cuadernillos to iterate through all possible combinations
             # This is important because unchecked checkboxes are not sent in request.form
@@ -634,9 +597,7 @@ class ExamAvailabilityView(BaseView):
                 # If it's not present, it means it was unchecked.
                 is_enabled = f"cuadernillo-{cuadernillo_id}-{grado}" in request.form
 
-                availability = ExamAvailability.query.filter_by(
-                    cuadernillo_id=cuadernillo_id, grado=grado
-                ).first()
+                availability = ExamAvailability.query.filter_by(cuadernillo_id=cuadernillo_id, grado=grado).first()
 
                 if availability:
                     # Only update if the status has changed to avoid unnecessary DB writes
@@ -656,9 +617,7 @@ class ExamAvailabilityView(BaseView):
 
             try:
                 db.session.commit()
-                flash(
-                    "La disponibilidad de los exámenes ha sido actualizada.", "success"
-                )
+                flash("La disponibilidad de los exámenes ha sido actualizada.", "success")
             except Exception as e:
                 db.session.rollback()
                 flash(f"Error al actualizar la disponibilidad: {str(e)}", "danger")
@@ -684,9 +643,7 @@ class ExamAvailabilityView(BaseView):
                 availability_map={},
             )
 
-        cuadernillos = Cuadernillo.query.order_by(
-            Cuadernillo.grado, Cuadernillo.area
-        ).all()
+        cuadernillos = Cuadernillo.query.order_by(Cuadernillo.grado, Cuadernillo.area).all()
         grados = sorted(list(set([int(c.grado) for c in cuadernillos])))
 
         availability_map = {}
