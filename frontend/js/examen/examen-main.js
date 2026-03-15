@@ -4,7 +4,7 @@ import {
   renderizarImagen,
   mostrarPaginaFinal,
   mostrarAlertaPersonalizada,
-} from "./ui.js";
+} from './ui.js';
 import {
   setupQuiz,
   iniciarQuiz,
@@ -12,17 +12,17 @@ import {
   iniciarTemporizador,
   recargarImagen,
   saveUserAnswer,
-} from "./cuestionario.js";
-import { obtenerNumeroDeIntentos } from "./storage.js";
-import { state } from "./state.js";
-import { fetchUserData, getExamQuestions } from "../api/index.js";
-import { checkSession } from "../shared/auth.js";
-import { quizConfig } from "./constants.js"; // Import quizConfig
+} from './cuestionario.js';
+import { obtenerNumeroDeIntentos } from './storage.js';
+import { state } from './state.js';
+import { fetchUserData, getExamQuestions } from '../api/index.js';
+import { checkSession } from '../shared/auth.js';
+import { quizConfig } from './constants.js'; // Import quizConfig
 
 // Función para mostrar un error de carga y detener la ejecución
 function mostrarErrorCarga(mensaje) {
-  mostrarAlertaPersonalizada("Error de Carga", mensaje, 10000);
-  const appContainer = document.getElementById("app");
+  mostrarAlertaPersonalizada('Error de Carga', mensaje, 10000);
+  const appContainer = document.getElementById('app');
   if (appContainer) {
     appContainer.innerHTML = `<div style="text-align: center; padding: 2rem;">
             <h2 style="color: #d9534f;">Error</h2>
@@ -36,11 +36,11 @@ function mostrarErrorCarga(mensaje) {
 async function handleStartQuiz() {
   // Ya no necesitamos hacer fetch aquí, los datos ya están en state.examData
   if (!state.examData) {
-    mostrarErrorCarga("Error: Datos del examen no cargados previamente.");
+    mostrarErrorCarga('Error: Datos del examen no cargados previamente.');
     return;
   }
 
-  const appContainer = document.getElementById("app");
+  const appContainer = document.getElementById('app');
   appContainer.innerHTML = `<div style="text-align: center; padding: 2rem;">Cargando examen...</div>`;
 
   iniciarQuiz(state.examData); // <--- MODIFICADO: Usar datos ya cargados
@@ -48,10 +48,10 @@ async function handleStartQuiz() {
 
 // Función principal que se ejecuta al cargar la página
 async function main() {
-  const appElement = document.getElementById("app"); // Get the element here
+  const appElement = document.getElementById('app'); // Get the element here
   if (!appElement) {
     mostrarErrorCarga(
-      "Error: No se encontró el elemento principal de la aplicación ('app').",
+      "Error: No se encontró el elemento principal de la aplicación ('app')."
     );
     return;
   }
@@ -61,17 +61,17 @@ async function main() {
     iniciarTemporizador,
     appElement,
     recargarImagen,
-    saveUserAnswer,
+    saveUserAnswer
   ); // Pass it
   setupQuiz(renderizarImagen, mostrarPaginaFinal);
 
   const urlParams = new URLSearchParams(window.location.search);
-  const areaId = urlParams.get("area");
-  const sessionId = urlParams.get("id");
+  const areaId = urlParams.get('area');
+  const sessionId = urlParams.get('id');
 
   if (!areaId || !sessionId) {
     mostrarErrorCarga(
-      "La URL es inválida. No se especificó un área o sesión de examen.",
+      'La URL es inválida. No se especificó un área o sesión de examen.'
     );
     return;
   }
@@ -81,7 +81,7 @@ async function main() {
 
   if (!session.active || !userCode) {
     mostrarErrorCarga(
-      "No se pudo obtener el código de usuario de la sesión o la sesión no está activa.",
+      'No se pudo obtener el código de usuario de la sesión o la sesión no está activa.'
     );
     return;
   }
@@ -93,28 +93,36 @@ async function main() {
 
     const examData = await getExamQuestions(sessionId);
     state.examData = examData; // Guardar examData en el estado para usarlo en handleStartQuiz
-    console.log("Fetched examData:", state.examData); // ADDED LOG
+    console.log('Fetched examData:', state.examData); // ADDED LOG
+
+    // Format subject name for display
+    if (state.examData.config && state.examData.config.subject) {
+      let subject = state.examData.config.subject;
+      subject = subject.charAt(0).toUpperCase() + subject.slice(1);
+      subject = subject.replace(/_/g, ' ');
+      state.examData.config.subject = subject;
+    }
 
     // Fetch current attempts using cuadernilloId
     const attemptsData = await obtenerNumeroDeIntentos(state.examData.id); // Pass cuadernilloId
-    state.currentAttempt = attemptsData.current_attempts;
+    state.currentAttempt = attemptsData;
     state.totalAttemptsAllowed = quizConfig.numAttempts; // Use static config value
 
     mostrarPaginaInicio(
       examData.config,
       state.currentAttempt,
-      state.totalAttemptsAllowed,
+      state.totalAttemptsAllowed
     ); // Pass attempt data
   } catch (error) {
     console.error(
-      "Error al verificar los intentos o cargar datos de usuario:",
-      error,
+      'Error al verificar los intentos o cargar datos de usuario:',
+      error
     );
     mostrarErrorCarga(
-      `No se pudo verificar el número de intentos o cargar datos de usuario. ${error.message}`,
+      `No se pudo verificar el número de intentos o cargar datos de usuario. ${error.message}`
     );
   }
 }
 
 // Iniciar la aplicación cuando el DOM esté listo
-document.addEventListener("DOMContentLoaded", main);
+document.addEventListener('DOMContentLoaded', main);
