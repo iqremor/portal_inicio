@@ -1,26 +1,92 @@
 /* Estilos para la página de resultados */
 
 .results-card {
-    background: var(--bg-primary);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-xl);
-    padding: 2.5rem;
-    width: 100%;
-    max-width: 800px;
-    margin: 2rem auto;
-    text-align: center;
-    animation: fadeIn 0.5s ease-out;
+  background: rgba(27, 85, 27, 0.432);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius-lg, 1rem);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
 }
 
 .results-header h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .results-header p {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    margin-bottom: 2.5rem;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2.5rem;
+}
+
+/* Ajustes para elementos internos sobre fondo oscuro */
+.stat-card {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.stat-label {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.stat-value {
+  color: #ffffff !important;
+}
+
+.percentage {
+  fill: #ffffff !important;
+}
+
+.score-status {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilo del botón principal en Resultados */
+.results-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+#backToDashboard {
+  background: linear-gradient(135deg, #1d4d1d 0%, #2d5016 100%);
+  color: white;
+  padding: 1.25rem 3rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 50px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#backToDashboard i {
+  font-size: 1.4rem;
+}
+
+#backToDashboard:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #2d5016 0%, #1d4d1d 100%);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+#backToDashboard:active {
+  transform: translateY(0) scale(0.95);
 }
