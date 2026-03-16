@@ -3,10 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Resultados - Portal Estudiantil IEM</title>
+    <title>Portal Estudiantil IEM - Resultados</title>
 
     <link rel="stylesheet" href="../css/resultados.css" />
-    <link rel="stylesheet" href="../css/header.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -22,63 +21,91 @@
       <div id="header-placeholder"></div>
 
       <main class="dashboard-main">
-        <!-- Hero Section (Igual al Dashboard) -->
+        <!-- Hero Section (Sincronizado con Dashboard) -->
         <section class="hero-section">
           <div class="hero-card">
             <p class="hero-subtitle">
-              ¡Excelente trabajo, <span id="heroUserName"></span>! Aquí están
-              los resultados de tu prueba de <span id="heroUserGrade"></span>
+              ¡Excelente trabajo! <span id="heroUserName"></span>. Aquí están
+              los resultados de tu prueba <span id="heroUserGrade"></span>
             </p>
           </div>
         </section>
 
-        <!-- Contenedor de Resultados -->
-        <div class="results-content-card">
-          <h1 id="examAreaTitle" class="results-title"></h1>
+        <!-- Results Content Card -->
+        <div class="results-card">
+          <div class="results-header">
+            <h2 id="examAreaTitle">Matemáticas</h2>
+            <p>Resumen detallado de tu desempeño</p>
+          </div>
 
           <div class="score-summary">
             <div class="score-circle">
-              <svg viewBox="0 0 36 36">
-                <circle class="circle-bg" cx="18" cy="18" r="15.9155" />
-                <circle
+              <svg viewBox="0 0 36 36" class="circular-chart">
+                <path
+                  class="circle-bg"
+                  d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path
                   id="scoreRing"
                   class="circle"
-                  cx="18"
-                  cy="18"
-                  r="15.9155"
-                  stroke-dasharray="100, 100"
+                  stroke-dasharray="0, 100"
+                  d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
                 />
+                <text x="18" y="20.35" class="percentage" id="scorePercentage">
+                  0%
+                </text>
               </svg>
-              <span id="scorePercentage" class="score-percentage"></span>
             </div>
-            <p id="scoreStatus"></p>
+            <div class="score-status-container">
+              <p id="scoreStatus" class="score-status">Calculando...</p>
+            </div>
           </div>
 
           <div class="stats-grid">
             <div class="stat-card">
-              <h3>Respuestas Correctas</h3>
-              <p id="correctAnswers"></p>
+              <div class="stat-icon correct">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Correctas</span>
+                <span id="correctAnswers" class="stat-value">-</span>
+              </div>
             </div>
             <div class="stat-card">
-              <h3>Respuestas Incorrectas</h3>
-              <p id="incorrectAnswers"></p>
+              <div class="stat-icon incorrect">
+                <i class="fas fa-times-circle"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Incorrectas</span>
+                <span id="incorrectAnswers" class="stat-value">-</span>
+              </div>
             </div>
             <div class="stat-card">
-              <h3>Tiempo Utilizado</h3>
-              <p id="timeUsed"></p>
+              <div class="stat-icon time"><i class="fas fa-clock"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Tiempo</span>
+                <span id="timeUsed" class="stat-value">-</span>
+              </div>
             </div>
             <div class="stat-card">
-              <h3>Puntuación</h3>
-              <p id="score"></p>
+              <div class="stat-icon score"><i class="fas fa-star"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Puntaje</span>
+                <span id="score" class="stat-value">-</span>
+              </div>
             </div>
           </div>
 
           <div class="results-actions">
-            <button id="backToDashboard" class="btn-primary">
-              Volver al Inicio
+            <button id="backToDashboard" class="btn btn-primary">
+              <i class="fas fa-home"></i> Volver al Inicio
             </button>
-            <button id="backToExams" class="btn-secondary">
-              Ver otros exámenes
+            <button id="backToExams" class="btn btn-secondary">
+              <i class="fas fa-book"></i> Ver otros exámenes
             </button>
           </div>
         </div>
@@ -88,17 +115,29 @@
       <div id="footer-placeholder"></div>
     </div>
 
+    <!-- Scripts -->
     <script>
-      fetch('header.html')
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById('header-placeholder').innerHTML = data;
-        });
-      fetch('footer.html')
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById('footer-placeholder').innerHTML = data;
-        });
+      // Carga de fragmentos optimizada
+      async function loadFragments() {
+        try {
+          const [headerRes, footerRes] = await Promise.all([
+            fetch('header.html'),
+            fetch('footer.html'),
+          ]);
+
+          if (headerRes.ok) {
+            document.getElementById('header-placeholder').innerHTML =
+              await headerRes.text();
+          }
+          if (footerRes.ok) {
+            document.getElementById('footer-placeholder').innerHTML =
+              await footerRes.text();
+          }
+        } catch (error) {
+          console.error('Error cargando fragmentos:', error);
+        }
+      }
+      loadFragments();
     </script>
     <script src="../js/main.js" defer></script>
     <script type="module" src="../js/pages/results.js"></script>

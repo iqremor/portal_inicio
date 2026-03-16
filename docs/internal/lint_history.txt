@@ -1,0 +1,22 @@
+
+> frontend@1.0.0 lint
+> eslint .
+
+
+C:\Users\dqu_r\Documents\proyects\portal_inicio\frontend\js\examen\cuestionario.js
+   7:3   warning  'mostrarPaginaFinal' is defined but never used    no-unused-vars
+   8:3   warning  'mostrarConfirmacion' is defined but never used   no-unused-vars
+  14:5   warning  'showEndPage' is assigned a value but never used  no-unused-vars
+  82:10  warning  'shuffleArray' is defined but never used          no-unused-vars
+
+C:\Users\dqu_r\Documents\proyects\portal_inicio\frontend\js\examen\ui.js
+  7:5  warning  'doIniciarTemporizador' is assigned a value but never used  no-unused-vars
+
+C:\Users\dqu_r\Documents\proyects\portal_inicio\frontend\js\pages\dashboard.js
+  4:5   warning  'loadRecentResults' is defined but never used  no-unused-vars
+  8:23  warning  'formatDate' is defined but never used         no-unused-vars
+
+C:\Users\dqu_r\Documents\proyects\portal_inicio\frontend\js\pages\results.js
+  2:10  warning  'getInitials' is defined but never used  no-unused-vars
+
+Ô£û 8 problems (0 errors, 8 warnings)

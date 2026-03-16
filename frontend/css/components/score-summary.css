@@ -1,44 +1,82 @@
 .score-summary {
-    margin-bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
+  animation: fadeIn 0.8s ease-out;
 }
 
 .score-circle {
-    position: relative;
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 1rem;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 1.5rem;
 }
 
-.score-ring {
-    transform: rotate(-90deg);
+.circular-chart {
+  display: block;
+  margin: 10px auto;
+  max-width: 100%;
+  max-height: 250px;
 }
 
-.score-ring-bg {
-    fill: none;
-    stroke: #e5e7eb;
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
 }
 
-.score-ring-fg {
-    fill: none;
-    stroke: var(--accent-color);
-    stroke-linecap: round;
-    transition: stroke-dashoffset 1.5s ease-out;
-    stroke-dasharray: 465;
-    stroke-dashoffset: 465;
+.circle {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke: var(--primary-color);
+  transition: stroke-dasharray 1s ease-in-out;
 }
 
-.score-percentage {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
+.percentage {
+  fill: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.score-status-container {
+  text-align: center;
 }
 
 .score-status {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--accent-color);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+/* Colores dinámicos para el círculo según el desempeño */
+.score-circle.excellent .circle {
+  stroke: #10b981;
+}
+.score-circle.good .circle {
+  stroke: #3b82f6;
+}
+.score-circle.warning .circle {
+  stroke: #f59e0b;
+}
+.score-circle.danger .circle {
+  stroke: #ef4444;
+}
+
+.score-circle.excellent .percentage {
+  fill: #059669;
+}
+.score-circle.good .percentage {
+  fill: #2563eb;
+}
+.score-circle.warning .percentage {
+  fill: #d97706;
+}
+.score-circle.danger .percentage {
+  fill: #dc2626;
 }

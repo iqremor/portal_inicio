@@ -4,7 +4,6 @@ import { initZoom } from './zoom.js';
 
 let doIniciarQuiz;
 let doSiguienteImagen;
-let doIniciarTemporizador;
 let doRecargarImagen;
 let doSaveUserAnswer; // New variable
 
@@ -85,7 +84,6 @@ let contenedorApp; // Declare it here, but initialize in setup
 export function setup(
   iniciarQuiz,
   siguienteImagen,
-  iniciarTemporizador,
   appElement,
   recargarImagen,
   saveUserAnswer
@@ -93,7 +91,6 @@ export function setup(
   // Add saveUserAnswer argument
   doIniciarQuiz = iniciarQuiz;
   doSiguienteImagen = siguienteImagen;
-  doIniciarTemporizador = iniciarTemporizador;
   contenedorApp = appElement; // Initialize it here
   doRecargarImagen = recargarImagen;
   doSaveUserAnswer = saveUserAnswer; // Assign new function

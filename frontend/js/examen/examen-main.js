@@ -59,12 +59,11 @@ async function main() {
   setupUI(
     handleStartQuiz,
     siguienteImagen,
-    iniciarTemporizador,
     appElement,
     recargarImagen,
     saveUserAnswer
   ); // Pass it
-  setupQuiz(renderizarImagen, mostrarPaginaFinal);
+  setupQuiz(renderizarImagen);
 
   const urlParams = new URLSearchParams(window.location.search);
   const areaId = urlParams.get('area');

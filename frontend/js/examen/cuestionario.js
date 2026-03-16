@@ -4,18 +4,14 @@ import { handleZoomKeys } from './zoom.js';
 import {
   entrarEnModoInmersivo,
   mostrarAlertaPersonalizada,
-  mostrarPaginaFinal,
-  mostrarConfirmacion,
   mostrarAlertaPersonalizadaConBoton,
 } from './ui.js';
 import { submitExam } from '../api/index.js'; // Importar submitExam desde el API
 
 let renderImage;
-let showEndPage;
 
-export function setupQuiz(renderImageFn, showEndPageFn) {
+export function setupQuiz(renderImageFn) {
   renderImage = renderImageFn;
-  showEndPage = showEndPageFn;
 }
 
 export function recargarImagen() {
@@ -77,14 +73,6 @@ function handleFullscreenChange() {
 
 function handleGlobalKeys(event) {
   handleZoomKeys(event);
-}
-
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
 }
 
 export function saveUserAnswer(questionIndex, selectedOption) {
