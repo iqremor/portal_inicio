@@ -137,15 +137,13 @@ class Dashboard {
       examsContainer.innerHTML = ''; // Limpiar exámenes existentes si se recargan
     }
 
-    const enabledExams = exams.filter((exam) => exam.activo);
-
-    if (enabledExams.length === 0) {
+    if (exams.length === 0) {
       examsContainer.innerHTML =
         '<p class="no-exams-message">No hay exámenes disponibles para tu grado en este momento.</p>';
       return;
     }
 
-    enabledExams.forEach((exam) => {
+    exams.forEach((exam) => {
       const card = document.createElement('div');
       card.className = 'activity-card';
       const isActive = exam.activo; // Usar el flag 'activo' que viene del backend
@@ -165,6 +163,7 @@ class Dashboard {
                     class="start-exam-btn ${isActive ? '' : 'disabled'}"
                     data-area-id="${exam.area}"
                     data-active="${isActive}"
+                    ${isActive ? '' : 'disabled'}
                 >
                     ${isActive ? 'Iniciar Examen' : 'No Disponible'}
                 </button>

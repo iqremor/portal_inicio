@@ -241,8 +241,30 @@ export function renderizarImagen() {
   const nextButton = document.getElementById('btnSiguiente');
   if (nextButton) {
     nextButton.addEventListener('click', doSiguienteImagen);
-    // Deshabilita el botón "Siguiente" hasta que se seleccione una respuesta
-    // nextButton.disabled = state.userAnswers[state.indicePreguntaActual] === null;
+    // Deshabilita el botón "Siguiente" por el retraso configurado
+    nextButton.disabled = true;
+
+    let secondsLeft = Math.ceil(quizConfig.nextButtonDelay / 1000);
+    const originalText = nextButton.textContent;
+
+    if (secondsLeft > 0) {
+      nextButton.textContent = `${originalText} (${secondsLeft}s)`;
+
+      const countdownInterval = setInterval(() => {
+        secondsLeft--;
+        if (secondsLeft > 0) {
+          nextButton.textContent = `${originalText} (${secondsLeft}s)`;
+        } else {
+          clearInterval(countdownInterval);
+          nextButton.textContent = originalText;
+          nextButton.disabled = false;
+        }
+      }, 1000);
+
+      // Store interval on the button to clear if it's re-rendered quickly (though renderizarImagen replaces the whole app element)
+    } else {
+      nextButton.disabled = false;
+    }
   }
 
   // Attach event listeners for options
@@ -253,14 +275,9 @@ export function renderizarImagen() {
       .forEach((radio) => {
         radio.addEventListener('change', (event) => {
           doSaveUserAnswer(state.indicePreguntaActual, event.target.value);
-          // nextButton.disabled = false; // Enable next button when an answer is selected
         });
       });
   }
-
-  setTimeout(() => {
-    // nextButton.disabled = false; // This might override the above logic, consider if needed
-  }, quizConfig.nextButtonDelay);
 
   const imageElement = document.getElementById('zoomable-image');
   if (imageElement) {

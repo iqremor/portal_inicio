@@ -1,42 +1,49 @@
-# Configuración general para el manejo de proyectos 
- 
+# Configuración general para el manejo de proyectos
+
 ## 📊 Análisis del Repositorio: Portal de Evaluación Académica IEM
 
 ### Resumen Ejecutivo
+
 - **Puntuación General:** 60/100
 - **Tecnología Principal:** Python (Flask), HTML5, CSS3, JavaScript (Vanilla)
 - **Estado General:** NECESITA_MEJORAS
 
 ### Resultados por Sección
+
 1. Estructura del Repositorio: X/10
 2. Documentación: X/10
-[... continuar con todas las secciones]
+   [... continuar con todas las secciones]
 
 ### Top 3 Áreas Críticas
-1. **Funcionalidad de Exámenes Incompleta** - La funcionalidad del botón "Terminar Examen" y la carga real de preguntas no están implementadas.
-2. **Falta de Herramientas de Calidad y Testing** - No hay linters, formatters, Git hooks ni testing framework configurados.
-3. **Documentación Incompleta/Desorganizada** - Ausencia de `CODE_STYLE.md` y organización de la documentación diferente a la plantilla.
+
+1. **Carga Dinámica de Áreas en Dashboard** - La interfaz oculta exámenes inactivos en lugar de mostrarlos como deshabilitados, afectando la experiencia de usuario.
+2. **Falta de Testing Automatizado Completo** - Se requiere una suite de tests que cubra el flujo principal (login, examen, resultados).
+3. **Optimización de Dependencias** - Limpieza de librerías inactivas y actualización de versiones críticas (en proceso).
 
 ### Recomendaciones Prioritarias
-- [ ] Completar la funcionalidad del botón "Terminar Examen" y la integración backend-frontend para exámenes.
-- [ ] Configurar herramientas de calidad de código (linters, formatters) e implementar un testing framework.
-- [ ] Organizar la documentación según la plantilla y crear `CODE_STYLE.md`.
+
+- [x] Completar la funcionalidad del botón "Terminar Examen" y la integración backend-frontend para exámenes.
+- [x] Configurar herramientas de calidad de código (linters, formatters).
+- [ ] Implementar un testing framework con cobertura de flujos críticos.
+- [x] Organizar la documentación según la plantilla y crear `CODE_STYLE.md`.
 
 ### Validación de Configuración
+
 Despues de realizar el analisis puede validar esto antes de comenzar el desarrollo:
+
 - [x] Revise la estructura de carpetas.
-- [x] Confirme si el directorio `demo/` está creado, si no cree uno. (El directorio `prototype/` existe y cumple una función similar, pero está vacío).
-- [x] Revise las ramas del proyecto (La rama `develop` está un commit atrasada con respecto a `origin/develop`).
-- [x] Sugiera las 3 ramas principales configuradas (main, develop, debug).
-- [ ] Herramientas de calidad configuradas ej: (linters, formatters, analyzers).
+- [x] Confirme si el directorio `demo/` está creado, si no cree uno.
+- [x] Revise las ramas del proyecto (main, develop, debug).
+- [x] Sugiera las 3 ramas principales configuradas.
+- [x] Herramientas de calidad configuradas (ESLint, Prettier, Flake8, Black).
 - [ ] Git hooks instalados (pre-commit, pre-push).
-- [ ] Testing framework configurado.
-- [ ] Documentación base generada (incluyendo CODE_STYLE.md y CONTRIBUTING.md).
+- [ ] Testing framework configurado y con tests iniciales.
+- [x] Documentación base generada (incluyendo CODE_STYLE.md y CONTRIBUTING.md).
 - [x] Git inicializado y configurado.
-- [ ] Dependencias instaladas y auditadas (Dependencias de Python listadas, pero no se puede confirmar instalación/auditoría. No se encontró `package.json`).
-- [ ] Primera sesión documentada.
+- [x] Dependencias instaladas y auditadas (Sesión 24).
+- [x] Primera sesión documentada.
 - [ ] Plantillas específicas configuradas.
-- [ ] Prototipos iniciales creados en `prototype/` (El directorio `prototype/` está vacío).
+- [x] Prototipos iniciales creados en `prototype/`.
 - [ ] Métricas de calidad baseline establecidas.# Plantilla para Desarrollo de Proyectos con IA Assistant
 
 ## 1. Configuración Inicial del Proyecto
@@ -46,8 +53,10 @@ Despues de realizar el analisis puede validar esto antes de comenzar el desarrol
 Cuando el usuario inicie un nuevo proyecto, el asistente debe realizar las siguientes preguntas para configurar la plantilla:
 
 #### Información Básica
+
 1. **Nombre del proyecto:** Portal de Evaluación Académica IEM
-2. **Tipo de proyecto:** 
+2. **Tipo de proyecto:**
+
    - [ ] Aplicación Web Frontend
    - [x] API/Backend
    - [x] Aplicación Full-Stack
@@ -56,13 +65,15 @@ Cuando el usuario inicie un nuevo proyecto, el asistente debe realizar las sigui
    - [ ] Documentación/Presentación
    - [ ] Otro (especificar)
 
-3. **Tecnologías principales:** 
+3. **Tecnologías principales:**
+
    - Frontend: Vanilla JS, HTML5, CSS3
    - Backend: Python (Flask)
    - Base de datos: Archivos JSON
    - Herramientas: (Ninguna configurada explícitamente)
 
 4. **Nivel de complejidad:**
+
    - [ ] Básico (prototipo/demo)
    - [x] Intermedio (aplicación funcional)
    - [ ] Avanzado (aplicación de producción)
@@ -159,8 +170,6 @@ portal_inicio/
 └── .vscode/ # Configuración de VSCode
 ```
 
-
-
 ## 2. Flujos de Trabajo Automatizados
 
 ### 2.1. Flujo de Inicio de Sesión
@@ -168,20 +177,26 @@ portal_inicio/
 **Palabras clave:** "inicio de sesión", "hola", "comenzar", "iniciar proyecto"
 
 **Proceso:**
+
 1. **Análisis del contexto:** Revisar documentación existente en `docs`
-2. **Estado del proyecto:** Verificar últimos commits , archivos modificados y las sesiones anteriores en  `docs/project/changelog.md`
+2. **Estado del proyecto:** Verificar últimos commits , archivos modificados y las sesiones anteriores en `docs/project/changelog.md`
 3. **Revisión de calidad:** Ejecutar checks automáticos de código si existen
 4. **Resumen de la sesión anterior:** Mostrar progreso, deuda técnica y próximos pasos
 5. **Creación de nueva sesión:** Generar entrada en `docs/project/changelog.md`
 
 ```markdown
 ## Sesión [NÚMERO] - [FECHA] [HORA_INICIO]
+
 ### Objetivos de la sesión:
-- 
+
+-
+
 ### Estado inicial:
+
 - Calidad de código: [ANÁLISIS_AUTOMÁTICO]
 - Deuda técnica: [PENDIENTES_REFACTOR]
 - Tests: [COBERTURA_ACTUAL]
+
 ### Finalización: [PENDIENTE]
 ```
 
@@ -190,18 +205,20 @@ portal_inicio/
 **Palabras clave:** "guarde los cambios", "commit", "guardar versión"
 
 **Proceso:**
+
 1. **Análisis de cambios:** Detectar archivos modificados desde último commit
 2. **Verificación de rama:** Asegurar que se está en la rama correcta (develop para desarrollo, debug para correcciones)
 3. **Generación de propuestas:** Crear 3 mensajes de commit descriptivos
 4. **Autorización:** Presentar opciones al usuario para selección
 5. **Ejecución:** Realizar commit con mensaje seleccionado
-    - **Crear archivo temporal:** Crear un archivo `.txt` con el mensaje de commit.
-    - **Realizar commit:** Ejecutar `git commit -F <nombre_del_archivo_temporal.txt>`.
-    - **Eliminar archivo temporal:** Borrar el archivo `.txt` creado.
+   - **Crear archivo temporal:** Crear un archivo `.txt` con el mensaje de commit.
+   - **Realizar commit:** Ejecutar `git commit -F <nombre_del_archivo_temporal.txt>`.
+   - **Eliminar archivo temporal:** Borrar el archivo `.txt` creado.
 6. **Post-commit:** Actualizar métricas de calidad en `docs/project/changelog.md` .
 
 **Checks automáticos antes de commit:**
 (Estos checks no están automatizados actualmente. Se recomienda implementar las siguientes herramientas para automatizarlos en el futuro: `Flake8`, `Black` para Python; `ESLint`, `Prettier` para JavaScript/CSS; `Pytest`, `Jest`/`Vitest`, `Cypress`/`Playwright` para testing.)
+
 - Formateo de código consistente
 - Linting sin errores críticos
 - Tests unitarios pasando
@@ -209,8 +226,9 @@ portal_inicio/
 - Sin código comentado o debug statements
 
 **Tipos de commit sugeridos:**
+
 - `feat:` nueva funcionalidad
-- `fix:` corrección de errores  
+- `fix:` corrección de errores
 - `debug:` correcciones de debugging
 - `docs:` cambios en documentación
 - `style:` cambios de formato/estilo
@@ -225,11 +243,12 @@ portal_inicio/
 **Palabras clave:** "cerrar sesión", "finalizar", "terminar", "adiós"
 
 **Proceso:**
+
 1. **Revisión de calidad de la sesión:** Generar reporte de calidad del código trabajado (Actualmente no implementado de forma automática).
 2. **Consulta de guardado:** "¿Desea guardar en repositorio Git la sesión actual?"
 3. **Guardado condicional:** Ejecutar flujo 2.2 si es afirmativo
 4. **Documentación de sesión:** Completar entrada en `docs/project/changelog.md`
-5. **Actualización de métricas:** Actualizar `docs/internal/error_revisions.md` o `docs/development/testing.md` con métricas de la sesión 
+5. **Actualización de métricas:** Actualizar `docs/internal/error_revisions.md` o `docs/development/testing.md` con métricas de la sesión
 6. **Sugerencias de mejora:** Proponer refactorizaciones o mejoras para próximas sesiones
 7. **Generar commit de sugerencias**: Crear un commit que resuma las sugerencias de mejora propuestas.
 8. **Limpieza:** Borrar datos temporales de sesión
@@ -240,116 +259,139 @@ portal_inicio/
 ### 3.1. Documentos Obligatorios
 
 #### README.md
+
 ```markdown
 # {Nombre del Proyecto}
 
 ## Descripción
+
 {Descripción breve del proyecto}
 
 ## Tecnologías
+
 {Lista de tecnologías utilizadas}
 
 ## Instalación
+
 {Pasos para instalar el proyecto}
 
 ## Uso
+
 {Instrucciones de uso básico}
 
 ## Contribución
+
 {Guías para contribuir al proyecto}
 ```
 
 #### ARCHITECTURE.md
+
 ```markdown
 # Arquitectura del Proyecto
 
 ## Visión General
+
 {Descripción de la arquitectura general}
 
 ## Componentes Principales
+
 {Lista y descripción de componentes}
 
 ## Flujo de Datos
+
 {Descripción del flujo de información}
 
 ## Decisiones de Diseño
+
 {Justificación de decisiones arquitectónicas}
 
 ## Patrones Utilizados
+
 {Patrones de diseño implementados}
 
 ## Deuda Técnica
+
 {Identificación y plan para resolver deuda técnica}
 ```
 
 #### CONTRIBUTING.md
+
 ```markdown
 # Guía de Contribución
 
 ## Estándares de Código
 
 ### Formateo
+
 - Usar 2 espacios para indentación (4 para Python)
 - Líneas máximo 80-120 caracteres
 - Trailing spaces eliminados
 
 ### Naming Conventions
+
 - Variables: camelCase (JS) / snake_case (Python)
 - Funciones: verbo + sustantivo descriptivo
 - Clases: PascalCase
 - Constantes: UPPER_CASE
 
 ### Documentación
+
 - Todas las funciones públicas deben tener documentación
 - README actualizado con cada feature
 - Comentarios en código complejo solamente
 
 ## Testing
+
 - Cobertura mínima del 80%
 - Tests unitarios para lógica de negocio
 - Tests de integración para APIs
 - Naming: describe_what_it_should_do
 
 ## Code Review
+
 - Máximo 400 líneas por PR
 - Self-review antes de submit
 - Al menos un reviewer
 ```
 
 #### CODE_STYLE.md
+
 ```markdown
 # Guía de Estilo de Código
 
 ## Principios Generales
+
 1. **Claridad sobre cleverness**: Código claro y legible
 2. **DRY (Don't Repeat Yourself)**: Evitar duplicación
 3. **SOLID**: Principios de diseño orientado a objetos
 4. **KISS (Keep It Simple, Stupid)**: Simplicidad ante todo
 5. **Patrones de diseño**:
-   
+
 ## Estructura de Archivos
+
 - Un componente/clase por archivo
 - Imports organizados: externos → internos → relativos
 - Exports al final del archivo
 
 ## Manejo de Errores
+
 - Siempre manejar errores explícitamente
 - Logging apropiado para debugging
 - No silenciar excepciones
 
 ## Performance
+
 - Evitar optimizaciones prematuras
 - Medir antes de optimizar
 - Documentar decisiones de performance
 ```
-
-
 
 ## 4. Configuraciones por Tipo de Proyecto
 
 ### 4.1. Aplicación Web Frontend
 
 **Estructura específica:**
+
 ```
 src/
 ├── components/
@@ -362,6 +404,7 @@ src/
 ```
 
 **Herramientas recomendadas:**
+
 - Bundler: Vite, Webpack
 - Testing: Jest, Cypress, React Testing Library
 - Linting: ESLint, Prettier
@@ -372,6 +415,7 @@ src/
 ### 4.2. API/Backend
 
 **Estructura específica:**
+
 ```
 src/
 ├── controllers/
@@ -384,6 +428,7 @@ src/
 ```
 
 **Herramientas recomendadas:**
+
 - Testing: Jest, Supertest, Postman/Newman
 - Documentación: Swagger/OpenAPI, JSDoc
 - Validación: Joi, Yup, express-validator
@@ -394,6 +439,7 @@ src/
 ### 4.3. Aplicación Full-Stack
 
 **Estructura específica:**
+
 ```
 ├── client/ (frontend)
 ├── server/ (backend)
@@ -404,6 +450,7 @@ src/
 ### 4.4. Aplicación Desktop GUI
 
 **Estructura específica:**
+
 ```
 src/
 ├── gui/
@@ -420,6 +467,7 @@ src/
 ```
 
 **Herramientas recomendadas:**
+
 - Python: Tkinter, PyQt5/6, Kivy
 - JavaScript: Electron, Tauri
 - C#: WPF, Windows Forms
@@ -432,6 +480,7 @@ src/
 ### 4.5. Aplicación Desktop CLI
 
 **Estructura específica:**
+
 ```
 src/
 ├── commands/
@@ -442,6 +491,7 @@ src/
 ```
 
 **Herramientas recomendadas:**
+
 - Python: Click, argparse, Fire + Black, Pylint
 - Node.js: Commander.js, Yargs + ESLint, Prettier
 - Go: Cobra, urfave/cli + gofmt, golint
@@ -469,7 +519,7 @@ git commit -m "feat: configuración inicial del proyecto"
 
 # Push de todas las ramas
 git push -u origin main
-git push -u origin develop  
+git push -u origin develop
 git push -u origin debug
 
 # Políticas de commit
@@ -477,11 +527,13 @@ git config commit.template .gitmessage
 ```
 
 **Estrategia de ramas:**
+
 - `main`: Código estable de producción. Solo merge desde `develop` para releases
 - `develop`: Integración de nuevas funcionalidades. Base para features branches
 - `debug`: Rama específica para corrección de bugs y debugging. Merge a `develop` y `main` según urgencia
 
 **Flujo de trabajo:**
+
 1. **Desarrollo normal:** `develop` ← `feature/nombre`
 2. **Corrección de bugs:** `debug` ← `bugfix/nombre`
 3. **Emergencias:** `debug` → `main` (hotfix directo)
@@ -528,13 +580,12 @@ fi
 echo "✅ Todos los checks pasaron. Procediendo con commit..."
 ```
 
-
-
 ## 7. Personalización y Extensiones
 
 ### 7.1. Templates Personalizados
 
 El usuario puede crear templates específicos en:
+
 ```
 templates/
 ├── component.template
@@ -546,6 +597,7 @@ templates/
 ### 7.2. Hooks y Automatizaciones
 
 Definir hooks personalizados para:
+
 - Pre-commit validations
 - Post-commit actions
 - Deploy automático
@@ -558,6 +610,7 @@ Definir hooks personalizados para:
 **Palabra clave:** "iniciar proyecto", "nuevo proyecto", "inicializar proyecto", "setup inicial"
 
 **Proceso:**
+
 1. Ejecutar cuestionario de configuración (sección 1.1)
 2. Generar estructura de carpetas apropiada
 3. Crear documentación base personalizada
@@ -568,6 +621,7 @@ Definir hooks personalizados para:
 ### 8.2. Validación de Configuración
 
 Antes de comenzar el desarrollo:
+
 - [ ] Estructura de carpetas creada (incluyendo directorio `prototype/`)
 - [ ] Las 3 ramas principales configuradas (main, develop, debug)
 - [ ] Documentación base generada
@@ -582,13 +636,15 @@ Antes de comenzar el desarrollo:
 ### 10.1. Propósito del Directorio Prototype
 
 El directorio `prototype/` es un espacio dedicado exclusivamente para:
+
 - Scripts de demostración y proof of concept
 - Ejemplos de referencia para el desarrollo
 - Prototipos iniciales que sirven de guía
 - Experimentos y pruebas técnicas
 
 **Reglas importantes:**
-- Los archivos en `prototype/` NO se mueven a `src/` 
+
+- Los archivos en `prototype/` NO se mueven a `src/`
 - Pueden ser revisados, modificados y actualizados
 - Sirven como documentación viva del proyecto
 - Se mantienen versionados junto al proyecto principal
@@ -624,21 +680,25 @@ prototype/
 ## Índice de Contenido
 
 ### Demostraciones (demos/)
+
 - **basic_example/**: Implementación básica de la funcionalidad principal
 - **advanced_features/**: Características avanzadas y casos de uso complejos
 - **integration_test/**: Pruebas de integración entre componentes
 
 ### Ejemplos (examples/)
+
 - **api_usage**: Ejemplos de uso de APIs y servicios externos
 - **gui_components**: Componentes de interfaz gráfica reutilizables
 - **database_queries**: Consultas y operaciones de base de datos
 
 ### Proof of Concept (proof_of_concept/)
+
 - **performance_test/**: Análisis y optimización de rendimiento
 - **security_validation/**: Validaciones de seguridad implementadas
 - **scalability_analysis/**: Estudios de escalabilidad del sistema
 
 ### Scripts de Referencia (reference_scripts/)
+
 - **setup_environment**: Configuración automática del entorno de desarrollo
 - **data_migration**: Scripts para migración de datos
 - **deployment_test**: Pruebas de despliegue automatizado
@@ -660,14 +720,17 @@ prototype/
 ### 10.4. Integración en los Flujos de Trabajo
 
 #### Durante Inicio de Sesión:
+
 - Revisar prototipos relevantes para la tarea actual
 - Mencionar ejemplos aplicables al trabajo planificado
 
 #### Durante Desarrollo:
+
 - Referenciar prototipos como guía de implementación
 - Actualizar prototipos si se encuentran mejores soluciones
 
 #### Durante Guardado de Cambios:
+
 - Verificar si los cambios requieren actualización de prototipos
 - Proponer creación de nuevos ejemplos si es necesario
 
@@ -676,53 +739,69 @@ prototype/
 ### 11.1. Principios SOLID Aplicados
 
 **Single Responsibility Principle (SRP)**
+
 - Cada clase/función debe tener una única razón para cambiar
 - Separar lógica de presentación, negocio y datos
 
 **Open/Closed Principle (OCP)**
+
 - Abierto para extensión, cerrado para modificación
 - Usar interfaces y composición sobre herencia
 
 **Liskov Substitution Principle (LSP)**
+
 - Las subclases deben ser sustituibles por sus clases base
 - Mantener contratos consistentes
 
 **Interface Segregation Principle (ISP)**
+
 - Interfaces específicas mejor que interfaces generales
 - Los clientes no deben depender de métodos que no usan
 
 **Dependency Inversion Principle (DIP)**
+
 - Depender de abstracciones, no de implementaciones concretas
 - Inyección de dependencias para mayor testabilidad
 
 ### 11.2. Clean Code Practices
 
 **Nombres Significativos:**
+
 ```javascript
 // ❌ Malo
 const d = new Date();
-const u = users.filter(u => u.a > 18);
+const u = users.filter((u) => u.a > 18);
 
-// ✅ Bueno  
+// ✅ Bueno
 const currentDate = new Date();
-const adultUsers = users.filter(user => user.age > 18);
+const adultUsers = users.filter((user) => user.age > 18);
 ```
 
 **Funciones Pequeñas y Enfocadas:**
+
 ```javascript
 // ❌ Malo - función que hace demasiado
 function processUserData(users) {
-    // validación, transformación, guardado, notificación...
+  // validación, transformación, guardado, notificación...
 }
 
 // ✅ Bueno - funciones específicas
-function validateUsers(users) { /* ... */ }
-function transformUserData(users) { /* ... */ }
-function saveUsers(users) { /* ... */ }
-function notifyProcessingComplete() { /* ... */ }
+function validateUsers(users) {
+  /* ... */
+}
+function transformUserData(users) {
+  /* ... */
+}
+function saveUsers(users) {
+  /* ... */
+}
+function notifyProcessingComplete() {
+  /* ... */
+}
 ```
 
 **Evitar Comentarios Innecesarios:**
+
 ```javascript
 // ❌ Malo
 i++; // incrementa i
@@ -738,6 +817,7 @@ batchSize = 100;
 ### 11.3. Code Smells y Refactoring
 
 **Code Smells Comunes a Evitar:**
+
 - **Duplicated Code**: Usar funciones/módulos reutilizables
 - **Long Method**: Dividir en funciones más pequeñas
 - **Large Class**: Aplicar Single Responsibility Principle
@@ -746,6 +826,7 @@ batchSize = 100;
 - **Shotgun Surgery**: Un cambio requiere modificar múltiples clases
 
 **Estrategias de Refactoring:**
+
 1. **Extract Method**: Convertir código en función independiente
 2. **Extract Variable**: Explicar expresiones complejas
 3. **Inline Method**: Eliminar funciones triviales
@@ -755,85 +836,92 @@ batchSize = 100;
 ### 11.4. Testing como Práctica de Calidad
 
 **Pirámide de Testing:**
+
 ```
         /\
        /  \     E2E Tests (Pocos)
-      /____\    
+      /____\
      /      \   Integration Tests (Algunos)
-    /________\  
+    /________\
    /          \ Unit Tests (Muchos)
   /__________\
 ```
 
 **Principios de Testing:**
+
 - **FIRST**: Fast, Independent, Repeatable, Self-validating, Timely
 - **AAA Pattern**: Arrange, Act, Assert
 - **Given-When-Then**: Estructura para tests descriptivos
 
 **Ejemplo de Test Bien Estructurado:**
+
 ```javascript
 describe('UserService', () => {
-    describe('when creating a new user', () => {
-        it('should hash the password before saving', async () => {
-            // Given
-            const userData = { email: 'test@test.com', password: 'plaintext' };
-            const mockHashFunction = jest.fn().mockReturnValue('hashedPassword');
-            
-            // When
-            const result = await userService.createUser(userData, mockHashFunction);
-            
-            // Then
-            expect(mockHashFunction).toHaveBeenCalledWith('plaintext');
-            expect(result.password).toBe('hashedPassword');
-        });
+  describe('when creating a new user', () => {
+    it('should hash the password before saving', async () => {
+      // Given
+      const userData = { email: 'test@test.com', password: 'plaintext' };
+      const mockHashFunction = jest.fn().mockReturnValue('hashedPassword');
+
+      // When
+      const result = await userService.createUser(userData, mockHashFunction);
+
+      // Then
+      expect(mockHashFunction).toHaveBeenCalledWith('plaintext');
+      expect(result.password).toBe('hashedPassword');
     });
+  });
 });
 ```
 
 ### 11.5. Error Handling y Logging
 
 **Manejo de Errores Apropiado:**
+
 ```javascript
 // ❌ Malo - silenciar errores
 try {
-    riskyOperation();
+  riskyOperation();
 } catch (error) {
-    // ignorado
+  // ignorado
 }
 
 // ✅ Bueno - manejo explícito
 try {
-    const result = await riskyOperation();
-    return result;
+  const result = await riskyOperation();
+  return result;
 } catch (error) {
-    logger.error('Failed to perform risky operation', { error, context });
-    throw new OperationError('Unable to complete request', error);
+  logger.error('Failed to perform risky operation', { error, context });
+  throw new OperationError('Unable to complete request', error);
 }
 ```
 
 **Logging Estructurado:**
+
 ```javascript
 // ❌ Malo
 console.log('User login failed');
 
 // ✅ Bueno
 logger.warn('Authentication failed', {
-    userId: user.id,
-    timestamp: new Date().toISOString(),
-    ipAddress: request.ip,
-    reason: 'invalid_password'
+  userId: user.id,
+  timestamp: new Date().toISOString(),
+  ipAddress: request.ip,
+  reason: 'invalid_password',
 });
 ```
 
 ### 11.6. Performance y Optimización
 
 **Principios de Optimización:**
+
 1. **Medir primero**: Usar profilers y métricas reales
 2. **Optimizar cuellos de botella**: No micro-optimizar sin datos
 3. **Cachear apropiadamente**: Balance entre memoria y velocidad
 4. **Lazy loading**: Cargar recursos cuando se necesiten
 
 **Ejemplo de Optimización Medida:**
+
 ```javascript
 // Antes de optimizar - medir performance
 console.time('data-processing');
@@ -847,34 +935,37 @@ const optimizedResult = processLargeDatasetWithStreaming(data);
 ### 11.7. Security Best Practices
 
 **Principios de Seguridad:**
+
 - **Validación de Input**: Never trust user input
 - **Principio de Menor Privilegio**: Acceso mínimo necesario
 - **Defense in Depth**: Múltiples capas de seguridad
 - **Fail Secure**: Fallar de manera segura
 
 **Ejemplos de Implementación:**
+
 ```javascript
 // Validación de input
 function updateUser(userId, userData) {
-    if (!isValidUserId(userId)) {
-        throw new ValidationError('Invalid user ID format');
-    }
-    
-    const sanitizedData = sanitizeUserData(userData);
-    return userRepository.update(userId, sanitizedData);
+  if (!isValidUserId(userId)) {
+    throw new ValidationError('Invalid user ID format');
+  }
+
+  const sanitizedData = sanitizeUserData(userData);
+  return userRepository.update(userId, sanitizedData);
 }
 
 // Logging sin información sensible
 logger.info('User updated', {
-    userId: user.id,
-    fieldsUpdated: Object.keys(userData),
-    // NO: password: userData.password
+  userId: user.id,
+  fieldsUpdated: Object.keys(userData),
+  // NO: password: userData.password
 });
 ```
 
 ### 11.8. Code Review Guidelines
 
 **Checklist para Code Reviews:**
+
 - [ ] ¿El código es legible y autoexplicativo?
 - [ ] ¿Sigue los estándares de estilo del proyecto?
 - [ ] ¿Tiene tests apropiados?
@@ -885,6 +976,7 @@ logger.info('User updated', {
 - [ ] ¿No duplica código existente?
 
 **Cultura de Code Review:**
+
 - Reviews constructivos, no destructivos
 - Explicar el "por qué" en los comentarios
 - Sugerir alternativas, no solo señalar problemas
@@ -912,6 +1004,7 @@ logger.info('User updated', {
 ### 12.1. Comandos de Calidad de Código
 
 **Palabras clave para activar revisiones:**
+
 - **"revisar código"**: Ejecutar análisis completo de calidad
 - **"refactorizar"**: Sugerir mejoras en código existente
 - **"optimizar"**: Analizar performance y sugerir optimizaciones
@@ -921,6 +1014,7 @@ logger.info('User updated', {
 ### 12.2. Flujo de Revisión de Calidad
 
 **Proceso automático cuando se detectan issues:**
+
 1. **Identificar problema**: Code smell, complejidad alta, etc.
 2. **Sugerir solución**: Proponer refactoring específico
 3. **Mostrar ejemplo**: Antes y después del cambio
@@ -928,6 +1022,7 @@ logger.info('User updated', {
 5. **Documentar decisión**: Actualizar logs de calidad
 
 **Ejemplo de sugerencia:**
+
 ```markdown
 🚨 **Code Smell Detectado**: Long Method
 
@@ -937,6 +1032,7 @@ logger.info('User updated', {
 
 **Sugerencia de Refactoring**:
 Dividir en:
+
 - validateRegistrationData()
 - hashPassword()
 - saveUser()
@@ -949,6 +1045,7 @@ Dividir en:
 ### 12.3. Asistencia Proactiva
 
 **El asistente debe:**
+
 - Sugerir mejoras mientras el usuario escribe código
 - Detectar patrones repetitivos y proponer abstracciones
 - Recordar aplicar principios SOLID
@@ -965,18 +1062,21 @@ Palabras clave adicionales para nuevos flujos de trabajo, las cuales deben ser s
 ## 🔄 **Flujos de Calidad y Revisión:**
 
 ### **"revisar código"** / **"code review"**
+
 - Ejecutar análisis completo de calidad del código actual
 - Detectar code smells, complejidad alta, duplicación
 - Sugerir refactorizaciones específicas
 - Generar reporte detallado de issues encontrados
 
 ### **"refactorizar"** / **"refactor"**
+
 - Identificar código que necesita refactorización
 - Proponer mejoras siguiendo principios SOLID
 - Mostrar antes/después del cambio propuesto
 - Validar que tests siguen pasando
 
 ### **"optimizar rendimiento"** / **"performance"**
+
 - Analizar bottlenecks de performance
 - Sugerir mejoras de eficiencia
 - Revisar uso de memoria y CPU
@@ -985,12 +1085,14 @@ Palabras clave adicionales para nuevos flujos de trabajo, las cuales deben ser s
 ## 🧪 **Flujos de Testing:**
 
 ### **"ejecutar tests"** / **"run tests"**
+
 - Correr suite completa de tests
 - Generar reporte de cobertura
 - Identificar tests faltantes
 - Sugerir casos de prueba adicionales
 
 ### **"crear tests"** / **"generate tests"**
+
 - Generar tests unitarios para código nuevo
 - Crear tests de integración
 - Proponer casos edge y de error
@@ -999,12 +1101,14 @@ Palabras clave adicionales para nuevos flujos de trabajo, las cuales deben ser s
 ## 📚 **Flujos de Documentación:**
 
 ### **"documentar"** / **"docs"**
+
 - Generar/actualizar documentación del código
 - Crear JSDoc o docstrings
 - Actualizar README si es necesario
 - Documentar decisiones arquitectónicas
 
 ### **"generar changelog"** / **"changelog"**
+
 - Crear entrada en CHANGELOG.md
 - Resumir cambios desde último release
 - Categorizar cambios (feat, fix, breaking)
@@ -1012,12 +1116,14 @@ Palabras clave adicionales para nuevos flujos de trabajo, las cuales deben ser s
 ## 🔍 **Flujos de Debugging:**
 
 ### **"debug"** / **"depurar"**
+
 - Cambiar a rama debug
 - Activar modo debugging
 - Sugerir puntos de breakpoint
 - Ayudar a traced de problemas
 
 ### **"analizar error"** / **"analyze error"**
+
 - Analizar logs de error
 - Sugerir posibles causas
 - Proponer soluciones
@@ -1026,12 +1132,14 @@ Palabras clave adicionales para nuevos flujos de trabajo, las cuales deben ser s
 ## 🚀 **Flujos de Deploy y Release:**
 
 ### **"preparar release"** / **"release"**
+
 - Revisar checklist de release
 - Actualizar versiones
 - Generar notas de release
 - Verificar que tests pasan
 
 ### **"deploy"** / **"desplegar"**
+
 - Ejecutar checklist de deployment
 - Verificar configuración de producción
 - Crear backup si es necesario
@@ -1040,12 +1148,14 @@ Palabras clave adicionales para nuevos flujos de trabajo, las cuales deben ser s
 ## 🔐 **Flujos de Seguridad:**
 
 ### **"audit seguridad"** / **"security audit"**
+
 - Revisar vulnerabilidades conocidas
 - Analizar dependencias
 - Verificar manejo de datos sensibles
 - Sugerir mejoras de seguridad
 
 ### **"actualizar dependencias"** / **"update deps"**
+
 - Revisar dependencias desactualizadas
 - Verificar vulnerabilidades
 - Proponer actualizaciones seguras
@@ -1054,12 +1164,14 @@ Palabras clave adicionales para nuevos flujos de trabajo, las cuales deben ser s
 ## 📊 **Flujos de Métricas y Análisis:**
 
 ### **"reporte calidad"** / **"quality report"**
+
 - Generar reporte completo de métricas
 - Mostrar tendencias de calidad
 - Identificar áreas de mejora
 - Comparar con sesiones anteriores
 
 ### **"análisis complejidad"** / **"complexity analysis"**
+
 - Medir complejidad ciclomática
 - Identificar funciones complejas
 - Sugerir simplificaciones
@@ -1068,12 +1180,14 @@ Palabras clave adicionales para nuevos flujos de trabajo, las cuales deben ser s
 ## 🎯 **Flujos de Planificación:**
 
 ### **"planificar sesión"** / **"plan session"**
+
 - Revisar backlog de tareas
 - Priorizar issues de calidad
 - Establecer objetivos de sesión
 - Estimar tiempo necesario
 
 ### **"retrospectiva"** / **"retro"**
+
 - Analizar sesiones anteriores
 - Identificar patrones de problemas
 - Proponer mejoras de proceso
@@ -1082,12 +1196,14 @@ Palabras clave adicionales para nuevos flujos de trabajo, las cuales deben ser s
 ## 🛠️ **Flujos de Configuración:**
 
 ### **"setup proyecto"** / **"project setup"**
+
 - Ejecutar configuración inicial completa
 - Instalar herramientas de calidad
 - Configurar Git hooks
 - Crear estructura base
 
 ### **"configurar herramientas"** / **"setup tools"**
+
 - Configurar linters y formatters
 - Setup de testing framework
 - Configurar CI/CD básico

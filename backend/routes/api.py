@@ -227,7 +227,7 @@ def get_exam_questions_by_session(session_id, active_session):
             "titulo": cuadernillo.nombre,
             "total_preguntas_banco": cuadernillo.total_preguntas_banco,
             "config": {
-                "nextButtonDelay": 1000,
+                "nextButtonDelay": 10000,
                 "subject": cuadernillo.area,
                 "Grado": cuadernillo.grado,
                 "numQuestions": num_questions_to_present,
