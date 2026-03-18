@@ -77,9 +77,11 @@ class ServerManager:
             requests.post(f"http://{self._host}:{self._port}/_shutdown", timeout=2)
         except requests.exceptions.ConnectionError:
             if self._debug:
-                log.warning(
-                    "Connection refused during shutdown request (server likely already stopped)."
-                )
+                log.warning("Connection refused during shutdown request (server likely already stopped).")
+        except requests.exceptions.ReadTimeout:
+            # Esto es normal cuando el servidor se apaga inmediatamente y no llega a responder el POST
+            if self._debug:
+                log.info("ReadTimeout during shutdown - normal behavior as server stops fast.")
         except Exception as e:
             log.error(f"Error sending shutdown request: {e}")
 

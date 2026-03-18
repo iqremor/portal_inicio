@@ -138,6 +138,18 @@ export function iniciarQuiz(examData) {
   state.intentoAnulado = false;
   state.examData = examData; // Store full examData
 
+  // Sincronizar quizConfig con la configuración dinámica del backend
+  if (examData.config) {
+    if (examData.config.timerDuration)
+      quizConfig.timerDuration = examData.config.timerDuration;
+    if (examData.config.warningTime)
+      quizConfig.warningTime = examData.config.warningTime;
+    if (examData.config.nextButtonDelay)
+      quizConfig.nextButtonDelay = examData.config.nextButtonDelay;
+    if (examData.config.numAttempts)
+      quizConfig.numAttempts = examData.config.numAttempts;
+  }
+
   // Las preguntas ya vienen seleccionadas y con la URL de la imagen desde el backend
   state.presentedQuestions = examData.questions;
   state.imageList = state.presentedQuestions.map((q) => q.image_url);

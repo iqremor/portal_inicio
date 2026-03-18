@@ -11,23 +11,37 @@ from flask_admin.contrib.sqla import ModelView
 from sqlalchemy.exc import OperationalError
 from wtforms import PasswordField, TextAreaField
 
-from models import ConfiguracionSistema, Peticion, PeticionEstado, User, UserRole, db
+from models import (
+    ActiveSession,
+    Comentario,
+    ConfiguracionSistema,
+    Cuadernillo,
+    ExamAnswer,
+    ExamAvailability,
+    ExamResult,
+    Log,
+    Peticion,
+    PeticionEstado,
+    User,
+    UserRole,
+    db,
+)
 
-# Se crea la instancia de Admin sin asociarla a la app todavía
-admin = Admin(name="Mi Panel de Admin", template_mode="bootstrap4")
+# Se crea la instancia de SQLAlchemy sin asociarla a la app todavía
+# (La instancia de Admin se crea y configura dentro de init_admin)
 
 
 # Vista personalizada para el panel principal
 class MyAdminIndexView(AdminIndexView):
     def is_accessible(self):
         if self.admin.app.debug:
-            print(f"is_accessible called. session['logged_in']: {session.get('logged_in')}")
+            print(f"is_accessible called. logged_in: {session.get('logged_in')}")
         return session.get("logged_in")
 
     def inaccessible_callback(self, name, **kwargs):
         if self.admin.app.debug:
             print(
-                f"inaccessible_callback called. request.endpoint: {request.endpoint}, request.url: {request.url}, request.path: {request.path}"
+                f"inaccessible_callback called. endpoint: {request.endpoint}, url: {request.url}, path: {request.path}"
             )
 
             login_path = url_for("admin.login_view")
@@ -144,9 +158,7 @@ class UserModelView(ModelView):
 
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
-        from flask import redirect, url_for
-
-        return redirect(url_for("web_main.login", next=request.url))
+        return redirect(url_for("admin.login_view", next=request.url))
 
     # Configuración de formularios
     form_excluded_columns = [
@@ -273,9 +285,7 @@ class PeticionModelView(ModelView):
 
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
-        from flask import redirect, url_for
-
-        return redirect(url_for("web_main.login", next=request.url))
+        return redirect(url_for("admin.login_view", next=request.url))
 
     # Etiquetas personalizadas
     column_labels = {
@@ -330,9 +340,7 @@ class ComentarioModelView(ModelView):
 
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
-        from flask import redirect, url_for
-
-        return redirect(url_for("web_main.login", next=request.url))
+        return redirect(url_for("admin.login_view", next=request.url))
 
     form_overrides = {"contenido": TextAreaField}
 
@@ -362,9 +370,7 @@ class ConfiguracionSistemaView(ModelView):
 
     def inaccessible_callback(self, name, **kwargs):
         """Redirige a la página de login cuando no hay acceso"""
-        from flask import redirect, url_for
-
-        return redirect(url_for("web_main.login", next=request.url))
+        return redirect(url_for("admin.login_view", next=request.url))
 
 
 # Vista para Sesiones Activas
@@ -426,10 +432,75 @@ class GestionIntentosView(BaseView):
         return redirect(url_for("admin.login_view", next=request.url))
 
 
+class ConfigExamenesView(BaseView):
+    @expose("/", methods=("GET", "POST"))
+    def index(self):
+        if request.method == "POST":
+            print(f"DEBUG: Recibiendo POST en ConfigExamenesView. Datos: {request.form}")
+            configs = {
+                "EXAM_TIMER_DURATION": request.form.get("timer_duration"),
+                "EXAM_WARNING_TIME": request.form.get("warning_time"),
+                "EXAM_NEXT_BUTTON_DELAY": request.form.get("next_button_delay"),
+                "EXAM_NUM_ATTEMPTS": request.form.get("num_attempts"),
+            }
+
+            try:
+                for clave, valor in configs.items():
+                    if valor is not None:
+                        config = ConfiguracionSistema.query.filter_by(clave=clave).first()
+                        if config:
+                            print(f"DEBUG: Actualizando {clave} de {config.valor} a {valor}")
+                            config.valor = str(valor)
+                            db.session.add(config)  # Forzar re-añadir para marcar como dirty
+                        else:
+                            print(f"DEBUG: Creando nueva clave {clave} con valor {valor}")
+                            config = ConfiguracionSistema(
+                                clave=clave, valor=str(valor), descripcion=f"Configuración de {clave}"
+                            )
+                            db.session.add(config)
+
+                db.session.commit()
+                print("DEBUG: Commit realizado con éxito")
+                flash("Configuración del examen actualizada correctamente.", "success")
+            except Exception as e:
+                db.session.rollback()
+                print(f"DEBUG: ERROR al guardar: {str(e)}")
+                flash(f"Error al guardar la configuración: {str(e)}", "danger")
+
+            return redirect(url_for("config_examenes.index"))
+
+        # Cargar valores actuales
+        db.session.expire_all()
+
+        def get_v(clave, default):
+            c = ConfiguracionSistema.query.filter_by(clave=clave).first()
+            return c.valor if c else default
+
+        val_timer = get_v("EXAM_TIMER_DURATION", "240")
+        val_warning = get_v("EXAM_WARNING_TIME", "30")
+        val_delay = get_v("EXAM_NEXT_BUTTON_DELAY", "10000")
+        val_attempts = get_v("EXAM_NUM_ATTEMPTS", "3")
+
+        print(f"DEBUG: Enviando a plantilla -> Delay: {val_delay}")
+
+        current_config = {
+            "timer_duration": val_timer,
+            "warning_time": val_warning,
+            "next_button_delay": val_delay,
+            "num_attempts": val_attempts,
+        }
+
+        return self.render("admin/config_examenes.html", exam_settings=current_config)
+
+    def is_accessible(self):
+        return session.get("logged_in") and session.get("user_role") == "admin"
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for("admin.login_view", next=request.url))
+
+
 def init_admin(app):
     """Inicializa Flask-Admin."""
-    from models import ActiveSession, Comentario, ConfiguracionSistema, Log, Peticion, User, db
-
     admin = Admin(
         app,
         name="Panel de Administración",
@@ -441,7 +512,8 @@ def init_admin(app):
     admin.add_view(UserModelView(User, db.session, name="Usuarios"))
     admin.add_view(PeticionModelView(Peticion, db.session, name="Peticiones"))
     admin.add_view(ComentarioModelView(Comentario, db.session, name="Comentarios"))
-    admin.add_view(ConfiguracionSistemaView(ConfiguracionSistema, db.session, name="Configuración"))
+    admin.add_view(ConfiguracionSistemaView(ConfiguracionSistema, db.session, name="Configuración Sistema"))
+    admin.add_view(ConfigExamenesView(name="Configuración de Exámenes", endpoint="config_examenes"))
     admin.add_view(ModelView(Log, db.session, name="Logs del Sistema"))
     admin.add_view(ActiveSessionView(ActiveSession, db.session, name="Sesiones Activas"))
     admin.add_view(DatabaseAdminView(name="Gestión DB", endpoint="db_admin"))
@@ -456,7 +528,6 @@ def init_admin(app):
 
 
 # Agregar en la función init_admin o donde configures las vistas
-from flask import jsonify, request
 
 
 class AdminDashboardView(BaseView):
@@ -502,9 +573,8 @@ class DatabaseAdminView(BaseView):
                     if not prefix:
                         flash("No se proporcionó ningún prefijo.", "warning")
                     else:
-                        from models import Cuadernillo, db
-
                         cuadernillos = Cuadernillo.query.all()
+
                         actualizados = 0
                         for c in cuadernillos:
                             if not c.dir_banco.startswith(prefix):
@@ -577,11 +647,7 @@ class DatabaseAdminView(BaseView):
 class ExamAvailabilityView(BaseView):
     @expose("/", methods=("GET", "POST"))
     def index(self):
-        from models import Cuadernillo, ExamAvailability, db
-
         if request.method == "POST":
-            from models import Cuadernillo, ExamAvailability, db  # Re-import for clarity
-
             # Get all cuadernillos to iterate through all possible combinations
             # This is important because unchecked checkboxes are not sent in request.form
             all_cuadernillos = Cuadernillo.query.all()
@@ -662,9 +728,3 @@ class ExamAvailabilityView(BaseView):
 
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for("admin.login_view", next=request.url))
-
-    @expose("/download-db/")
-    def download_db(self):
-        from flask import current_app, send_from_directory
-
-        db_path = current_app.instance_path

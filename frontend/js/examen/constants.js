@@ -6,7 +6,7 @@
 // };
 
 // Configuración para pruebas estándar
-export const quizConfig = {
+export let quizConfig = {
   timerDuration: 240, // Duración del temporizador en segundos (4 minutos)
   warningTime: 30, // Mostrar advertencia cuando queden 30 segundos.
   nextButtonDelay: 10000, // 10 segundos

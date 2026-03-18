@@ -5,6 +5,7 @@ import os
 import secrets
 import shutil
 import time
+from datetime import datetime, timedelta
 from functools import wraps
 
 from flask import (
@@ -22,15 +23,7 @@ from flask import (
     url_for,
 )
 
-from models import (
-    ActiveSession,
-    ConfiguracionSistema,
-    Cuadernillo,
-    User,
-    UserCuadernilloActivation,
-    UserRole,
-    db,
-)
+from models import ActiveSession, ConfiguracionSistema, Cuadernillo, User, UserCuadernilloActivation, UserRole, db
 
 
 # Función para cargar los usuarios desde el archivo JSON
@@ -125,9 +118,7 @@ def validar_usuario():
 
     if not codigo:
         return (
-            jsonify(
-                {"permitido": False, "mensaje": "Código de usuario no proporcionado"}
-            ),
+            jsonify({"permitido": False, "mensaje": "Código de usuario no proporcionado"}),
             400,
         )
 
@@ -139,16 +130,27 @@ def validar_usuario():
         # 1. Verificar si ya existe una sesión activa para este usuario.
         existing_session = ActiveSession.query.filter_by(user_id=user.id).first()
         if existing_session:
-            # Si ya existe, no permitir el nuevo login.
-            return (
-                jsonify(
-                    {
-                        "permitido": False,
-                        "mensaje": "Este usuario ya tiene una sesión activa en otro dispositivo.",
-                    }
-                ),
-                409,
-            )  # 409 Conflict
+            # --- MEJORA: Verificar si la sesión está inactiva (ej. 5 minutos) ---
+            # Si last_seen es más antiguo que 5 minutos, borramos la vieja y permitimos la nueva.
+            inactivity_limit = datetime.utcnow() - timedelta(minutes=5)
+
+            # Aseguramos que last_seen no sea None
+            last_activity = existing_session.last_seen or existing_session.login_time
+
+            if last_activity < inactivity_limit:
+                db.session.delete(existing_session)
+                db.session.commit()
+            else:
+                # Si está activa y es reciente, no permitir el nuevo login.
+                return (
+                    jsonify(
+                        {
+                            "permitido": False,
+                            "mensaje": "Este usuario ya tiene una sesión activa reciente en otro dispositivo.",
+                        }
+                    ),
+                    409,
+                )  # 409 Conflict
 
         # 2. Si no hay sesión, crear el nuevo registro.
         new_session = ActiveSession(
@@ -211,9 +213,7 @@ def promote_to_main():
 
         if not os.path.exists(test_dir):
             return (
-                jsonify(
-                    {"success": False, "message": "Directorio de prueba no encontrado"}
-                ),
+                jsonify({"success": False, "message": "Directorio de prueba no encontrado"}),
                 404,
             )
 

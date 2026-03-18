@@ -126,7 +126,12 @@ async function main() {
     // Fetch current attempts using cuadernilloId
     const attemptsData = await obtenerNumeroDeIntentos(state.examData.id); // Pass cuadernilloId
     state.currentAttempt = attemptsData;
-    state.totalAttemptsAllowed = quizConfig.numAttempts; // Use static config value
+
+    // Priorizar el valor que viene de la API del backend
+    state.totalAttemptsAllowed =
+      state.examData.config && state.examData.config.numAttempts
+        ? state.examData.config.numAttempts
+        : quizConfig.numAttempts;
 
     mostrarPaginaInicio(
       examData.config,

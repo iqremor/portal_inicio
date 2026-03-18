@@ -1,7 +1,6 @@
 import os
 
 import click
-from flask import current_app
 
 from app import create_app  # Importar create_app para crear un contexto
 from models import db  # Importar db para verificar tablas
@@ -13,9 +12,7 @@ def get_db_path(app_instance):
     if db_uri and db_uri.startswith("sqlite:///"):
         db_file = db_uri.replace("sqlite:///", "")
         if not os.path.isabs(db_file):
-            project_root = os.path.abspath(
-                os.path.join(os.path.dirname(__file__), "..", "..")
-            )
+            project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
             db_file = os.path.join(project_root, db_file)
         return db_file
     return None

@@ -36,6 +36,14 @@ def api_login_required(f):
 api_bp = Blueprint("api_bp", __name__)
 
 
+def get_config_value(clave, default=None):
+    """Obtiene un valor de configuración de la base de datos."""
+    from models import ConfiguracionSistema
+
+    config = ConfiguracionSistema.query.filter_by(clave=clave).first()
+    return config.valor if config else default
+
+
 @api_bp.route("/examenes/<string:area_id>/iniciar", methods=["POST"])
 @api_login_required
 def start_examen(area_id, active_session):
@@ -144,7 +152,7 @@ def get_exam_questions_by_session(session_id, active_session):
     if not os.path.isdir(questions_dir_path):
         current_app.logger.error(f"Error: Directorio de preguntas '{questions_dir_path}' no encontrado.")
         return (
-            jsonify({"error": f"Directorio de preguntas no encontrado en el servidor."}),
+            jsonify({"error": "Directorio de preguntas no encontrado en el servidor."}),
             500,
         )
 
@@ -221,13 +229,22 @@ def get_exam_questions_by_session(session_id, active_session):
     active_session.presented_questions = presented_questions
     db.session.commit()
 
+    # Obtener configuraciones dinámicas
+    next_button_delay = int(get_config_value("EXAM_NEXT_BUTTON_DELAY", 10000))
+    timer_duration = int(get_config_value("EXAM_TIMER_DURATION", 240))
+    warning_time = int(get_config_value("EXAM_WARNING_TIME", 30))
+    num_attempts = int(get_config_value("EXAM_NUM_ATTEMPTS", 3))
+
     return jsonify(
         {
             "id": cuadernillo.id,
             "titulo": cuadernillo.nombre,
             "total_preguntas_banco": cuadernillo.total_preguntas_banco,
             "config": {
-                "nextButtonDelay": 10000,
+                "nextButtonDelay": next_button_delay,
+                "timerDuration": timer_duration,
+                "warningTime": warning_time,
+                "numAttempts": num_attempts,
                 "subject": cuadernillo.area,
                 "Grado": cuadernillo.grado,
                 "numQuestions": num_questions_to_present,
@@ -405,9 +422,9 @@ def finalizar_examen(session_id, active_session):
         active_session.presented_questions = None
         db.session.commit()
 
-    except Exception as e:
+    except Exception:
         db.session.rollback()
-        return jsonify({"error": f"Error al guardar: {str(e)}"}), 500
+        return jsonify({"error": "Error interno al guardar los resultados."}), 500
 
     return (
         jsonify(

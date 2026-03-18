@@ -370,6 +370,10 @@ def seed_data():
         ("max_peticiones_por_usuario", "10", "Máximo número de peticiones por usuario"),
         ("tiempo_limite_peticion", "30", "Días límite para completar una petición"),
         ("email_notificaciones", "true", "Activar notificaciones por email"),
+        ("EXAM_TIMER_DURATION", "240", "Duración del temporizador en segundos"),
+        ("EXAM_WARNING_TIME", "30", "Tiempo de advertencia en segundos"),
+        ("EXAM_NEXT_BUTTON_DELAY", "10000", "Retraso del botón siguiente en ms"),
+        ("EXAM_NUM_ATTEMPTS", "3", "Número de intentos permitidos"),
     ]
 
     for clave, valor, desc in configs:

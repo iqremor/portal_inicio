@@ -241,29 +241,24 @@ export function renderizarImagen() {
   const nextButton = document.getElementById('btnSiguiente');
   if (nextButton) {
     nextButton.addEventListener('click', doSiguienteImagen);
-    // Deshabilita el botón "Siguiente" por el retraso configurado
+
+    // Deshabilitar el botón inicialmente
     nextButton.disabled = true;
+    nextButton.classList.remove('btn-primary');
+    nextButton.classList.add('btn-secondary');
 
-    let secondsLeft = Math.ceil(quizConfig.nextButtonDelay / 1000);
-    const originalText = nextButton.textContent;
+    const delay = quizConfig.nextButtonDelay || 0;
 
-    if (secondsLeft > 0) {
-      nextButton.textContent = `${originalText} (${secondsLeft}s)`;
-
-      const countdownInterval = setInterval(() => {
-        secondsLeft--;
-        if (secondsLeft > 0) {
-          nextButton.textContent = `${originalText} (${secondsLeft}s)`;
-        } else {
-          clearInterval(countdownInterval);
-          nextButton.textContent = originalText;
-          nextButton.disabled = false;
-        }
-      }, 1000);
-
-      // Store interval on the button to clear if it's re-rendered quickly (though renderizarImagen replaces the whole app element)
+    if (delay > 0) {
+      setTimeout(() => {
+        nextButton.disabled = false;
+        nextButton.classList.remove('btn-secondary');
+        nextButton.classList.add('btn-primary');
+      }, delay);
     } else {
       nextButton.disabled = false;
+      nextButton.classList.remove('btn-secondary');
+      nextButton.classList.add('btn-primary');
     }
   }
 
