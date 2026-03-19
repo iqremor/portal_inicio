@@ -15,7 +15,7 @@ export function setupQuiz(renderImageFn) {
 }
 
 export function recargarImagen() {
-  renderImage();
+  renderImage(true);
 }
 
 function cleanup() {
@@ -170,6 +170,10 @@ export function iniciarQuiz(examData) {
   document.addEventListener('fullscreenchange', handleFullscreenChange);
   document.addEventListener('keydown', handleGlobalKeys);
 
+  // Inicializar el tiempo ANTES de renderizar la primera imagen
+  state.tiempoRestanteActual =
+    quizConfig.timerDuration + (state.sobrantePreguntaAnterior || 0);
+
   renderImage();
   iniciarTemporizador();
 }
@@ -179,9 +183,11 @@ export function iniciarTemporizador() {
     clearInterval(state.temporizadorIntervalo);
   }
 
-  // TIEMPO ACUMULATIVO: Tiempo base + lo que sobró de la anterior
-  state.tiempoRestanteActual =
-    quizConfig.timerDuration + state.sobrantePreguntaAnterior;
+  // El tiempo ya debe estar inicializado en iniciarQuiz o siguienteImagen
+  if (state.tiempoRestanteActual === undefined) {
+    state.tiempoRestanteActual =
+      quizConfig.timerDuration + (state.sobrantePreguntaAnterior || 0);
+  }
 
   const temporizadorElemento = document.getElementById('temporizador-display');
 
@@ -255,6 +261,9 @@ export async function siguienteImagen() {
 
   if (state.indicePreguntaActual < state.imageList.length - 1) {
     state.indicePreguntaActual++;
+    // Inicializar el tiempo de la nueva pregunta ANTES de renderizar (base + sobrante)
+    state.tiempoRestanteActual =
+      quizConfig.timerDuration + state.sobrantePreguntaAnterior;
     renderImage();
     iniciarTemporizador();
   } else {

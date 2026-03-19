@@ -1,5 +1,7 @@
 import { checkSession, handleLogout } from '../shared/auth.js';
 import { formatDuration, getInitials } from '../shared/utils.js';
+import { obtenerNumeroDeIntentos } from '../examen/storage.js';
+import { startExam } from '../api/index.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const session = checkSession();
@@ -23,6 +25,7 @@ class Results {
     this.displayUserInfo();
     this.displayResults();
     this.setupEventListeners();
+    this.checkRetryButton();
 
     // Re-intentar cargar info del header después de un delay (por carga asíncrona de fragmentos)
     setTimeout(() => this.displayUserInfo(), 500);
@@ -77,22 +80,50 @@ class Results {
       total_preguntas,
       tiempo_usado,
       puntuacion,
-      puntuacion_maxima,
     } = this.examResult;
 
-    document.getElementById('examAreaTitle').textContent = area;
+    // Formatear el nombre del área para mostrar (ej: ciencias_naturales -> Ciencias Naturales)
+    let displayArea = area;
+    if (displayArea) {
+      displayArea = displayArea.charAt(0).toUpperCase() + displayArea.slice(1);
+      displayArea = displayArea.replace(/_/g, ' ');
+    }
+
+    document.getElementById('examAreaTitle').textContent = displayArea;
     document.getElementById('scorePercentage').textContent = `${porcentaje}%`;
     document.getElementById('correctAnswers').textContent =
-      `${preguntas_correctas} / ${total_preguntas}`;
+      `${preguntas_correctas}`;
     document.getElementById('incorrectAnswers').textContent = `${
       total_preguntas - preguntas_correctas
-    } / ${total_preguntas}`;
+    }`;
     document.getElementById('timeUsed').textContent =
       formatDuration(tiempo_usado);
-    document.getElementById('score').textContent =
-      `${puntuacion} / ${puntuacion_maxima}`;
+    document.getElementById('score').textContent = `${puntuacion.toFixed(1)}`;
 
     this.updateScoreCircle(porcentaje);
+  }
+
+  async checkRetryButton() {
+    try {
+      const retryBtn = document.getElementById('retryExam');
+      if (!retryBtn) return;
+
+      if (this.examResult.id) {
+        const currentAttempts = await obtenerNumeroDeIntentos(
+          this.examResult.id
+        );
+        // Obtenemos el máximo de intentos de la configuración o usamos 3 por defecto
+        const maxAttempts = this.examResult.numAttempts || 3;
+        if (currentAttempts < maxAttempts) {
+          retryBtn.style.display = 'inline-block';
+        }
+      } else {
+        // Si no tenemos el ID por alguna razón, mostramos el botón y dejamos que el flujo normal valide
+        retryBtn.style.display = 'inline-block';
+      }
+    } catch (error) {
+      console.error('Error checking retry availability:', error);
+    }
   }
 
   updateScoreCircle(percentage) {
@@ -112,10 +143,10 @@ class Results {
     if (percentage >= 90) {
       statusText = '¡Excelente!';
       statusClass = 'excellent';
-    } else if (percentage >= 70) {
+    } else if (percentage >= 80) {
       statusText = '¡Buen Trabajo!';
       statusClass = 'good';
-    } else if (percentage >= 50) {
+    } else if (percentage >= 60) {
       statusText = 'Aprobado';
       statusClass = 'warning';
     } else {
@@ -132,7 +163,7 @@ class Results {
 
   setupEventListeners() {
     const btnBackDashboard = document.getElementById('backToDashboard');
-    const btnBackExams = document.getElementById('backToExams');
+    const btnRetryExam = document.getElementById('retryExam');
 
     if (btnBackDashboard) {
       btnBackDashboard.addEventListener('click', () => {
@@ -140,9 +171,36 @@ class Results {
       });
     }
 
-    if (btnBackExams) {
-      btnBackExams.addEventListener('click', () => {
-        window.location.href = `/frontend/pages/dashboard.html#exams`;
+    if (btnRetryExam) {
+      btnRetryExam.addEventListener('click', async () => {
+        try {
+          // Deshabilitar botón para evitar múltiples clics
+          btnRetryExam.disabled = true;
+          btnRetryExam.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Iniciando...';
+
+          const areaId = this.examResult.area;
+          const userCodigo = this.session.codigo;
+          const grado = this.session.grado;
+
+          if (!areaId || !userCodigo || !grado) {
+            throw new Error(
+              'Información insuficiente para reintentar el examen.'
+            );
+          }
+
+          const examData = await startExam(areaId, userCodigo, grado);
+          window.location.href = `/frontend/pages/examen.html?id=${examData.sesion_id}&area=${areaId}`;
+        } catch (error) {
+          console.error('Error al reintentar el examen:', error);
+          alert(
+            error.message ||
+              'No se pudo iniciar el examen. Por favor, intenta desde el inicio.'
+          );
+          btnRetryExam.disabled = false;
+          btnRetryExam.innerHTML =
+            '<i class="fas fa-redo"></i> Volver a Intentar';
+        }
       });
     }
 

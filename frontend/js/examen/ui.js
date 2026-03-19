@@ -153,16 +153,38 @@ export function mostrarPaginaInicio(
   }
 }
 
-export function renderizarImagen() {
+export function renderizarImagen(isReload = false) {
   const imagePath = state.imageList[state.indicePreguntaActual];
+  // Añadir un cache-buster si es una recarga forzada
+  const finalImagePath = isReload
+    ? imagePath.includes('?')
+      ? `${imagePath}&t=${Date.now()}`
+      : `${imagePath}?t=${Date.now()}`
+    : imagePath;
+
+  // Si es solo una recarga de imagen, actualizar el elemento existente
+  if (isReload) {
+    const imgElement = document.getElementById('zoomable-image');
+    if (imgElement) {
+      imgElement.src = finalImagePath;
+      // Re-inicializar el zoom si es necesario
+      initZoom(imgElement);
+      return;
+    }
+  }
+
   const currentQuestion = state.presentedQuestions[state.indicePreguntaActual];
   const currentAnswer = state.userAnswers[state.indicePreguntaActual];
 
-  const initialMinutes = Math.floor(quizConfig.timerDuration / 60);
-  const initialSeconds = quizConfig.timerDuration % 60;
-  const tiempoFormateado = `${initialMinutes}:${initialSeconds
-    .toString()
-    .padStart(2, '0')}`;
+  // Usar el tiempo restante actual si existe, de lo contrario usar la duración por defecto
+  const tiempoAMostrar =
+    state.tiempoRestanteActual !== undefined
+      ? state.tiempoRestanteActual
+      : quizConfig.timerDuration;
+
+  const minutes = Math.floor(tiempoAMostrar / 60);
+  const seconds = tiempoAMostrar % 60;
+  const tiempoFormateado = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
   contenedorApp.innerHTML = `
         <div class="quiz-header-view">
@@ -221,7 +243,7 @@ export function renderizarImagen() {
                 }</p>
             </div>
             <div class="mb-8">
-                <img id="zoomable-image" src="${imagePath}" alt="Imagen del cuadernillo" class="imagen-quiz">
+                <img id="zoomable-image" src="${finalImagePath}" alt="Imagen del cuadernillo" class="imagen-quiz">
             </div>
         </div>
     `;

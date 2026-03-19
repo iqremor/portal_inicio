@@ -481,8 +481,6 @@ class ConfigExamenesView(BaseView):
         val_delay = get_v("EXAM_NEXT_BUTTON_DELAY", "10000")
         val_attempts = get_v("EXAM_NUM_ATTEMPTS", "3")
 
-        print(f"DEBUG: Enviando a plantilla -> Delay: {val_delay}")
-
         current_config = {
             "timer_duration": val_timer,
             "warning_time": val_warning,

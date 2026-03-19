@@ -296,7 +296,8 @@ def get_examenes_por_grado(grado, active_session):
         exam_availability = ExamAvailability.query.filter_by(cuadernillo_id=examen.id, grado=examen.grado).first()
         is_general_available = exam_availability.is_enabled if exam_availability else True
 
-        examen_data["activo"] = is_user_active and is_general_available
+        # Considerar también el campo 'activo' del modelo Cuadernillo
+        examen_data["activo"] = is_user_active and is_general_available and examen.activo
         examenes_dict.append(examen_data)
 
     return jsonify(examenes_dict)
@@ -430,6 +431,7 @@ def finalizar_examen(session_id, active_session):
         jsonify(
             {
                 "message": "Examen finalizado con éxito.",
+                "id": cuadernillo.id,
                 "area": cuadernillo.area,
                 "grado": cuadernillo.grado,
                 "porcentaje": round((correct_answers_count / len(answers)) * 100, 2) if answers else 0,
