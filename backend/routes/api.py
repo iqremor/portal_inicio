@@ -4,7 +4,7 @@ import os
 import random
 from functools import wraps
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, jsonify, request, session
 
 from models import ActiveSession, Cuadernillo, ExamAnswer, ExamResult, User, UserCuadernilloActivation, db
 
@@ -546,3 +546,54 @@ def upload_exam_answers():
         return jsonify({"error": str(e)}), 500
 
     return jsonify({"success": True, "grade": grade, "correct": correct_count}), 200
+
+
+@api_bp.route("/admin/resultados/grado/<string:grado>/examen/<int:cuadernillo_id>", methods=["GET"])
+def get_resultados_grupales(grado, cuadernillo_id):
+    """
+    Obtiene los resultados consolidados de todos los estudiantes de un grado para un cuadernillo específico.
+    Accesible para administradores (vía sesión de Flask o X-Session-ID).
+    """
+    is_admin = False
+
+    # 1. Verificar sesión de Flask (Panel Admin)
+    if session.get("logged_in") and session.get("user_role") == "admin":
+        is_admin = True
+
+    # 2. Verificar X-Session-ID (API/App)
+    if not is_admin:
+        session_id = request.headers.get("X-Session-ID")
+        if session_id:
+            active_session = ActiveSession.query.filter_by(session_id=session_id).first()
+            if active_session and active_session.user.role.name == "ADMIN":
+                is_admin = True
+
+    if not is_admin:
+        return jsonify({"error": "No tienes permisos para acceder a esta información"}), 403
+
+    # Obtener todos los usuarios del grado
+    usuarios = User.query.filter_by(grado=grado).all()
+
+    resultados_data = []
+    for usuario in usuarios:
+        # Obtener el último resultado para este cuadernillo
+        ultimo_result = (
+            ExamResult.query.filter_by(user_id=usuario.id, cuadernillo_id=cuadernillo_id)
+            .order_by(ExamResult.attempt_number.desc())
+            .first()
+        )
+
+        intentos_count = ExamResult.query.filter_by(user_id=usuario.id, cuadernillo_id=cuadernillo_id).count()
+
+        resultados_data.append(
+            {
+                "id": usuario.id,
+                "nombre": usuario.nombre_completo,
+                "codigo": usuario.codigo,
+                "nota": round(ultimo_result.final_score, 1) if ultimo_result else None,
+                "intentos": intentos_count,
+                "fecha": ultimo_result.completion_date.strftime("%Y-%m-%d %H:%M") if ultimo_result else None,
+            }
+        )
+
+    return jsonify({"grado": grado, "cuadernillo_id": cuadernillo_id, "resultados": resultados_data})

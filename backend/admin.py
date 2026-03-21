@@ -497,6 +497,26 @@ class ConfigExamenesView(BaseView):
         return redirect(url_for("admin.login_view", next=request.url))
 
 
+class ReporteGradoView(BaseView):
+    @expose("/")
+    def index(self):
+        # Obtener todos los grados únicos de la tabla User
+        grados_query = db.session.query(User.grado).filter(User.grado != None).distinct().all()
+        grados = sorted([g[0] for g in grados_query if g[0]])
+
+        # Obtener todos los cuadernillos y convertirlos a dicts AQUÍ para evitar errores en Jinja
+        cuadernillos_objs = Cuadernillo.query.order_by(Cuadernillo.grado, Cuadernillo.area).all()
+        cuadernillos_list = [c.to_dict() for c in cuadernillos_objs]
+
+        return self.render("admin/reporte_grado.html", grados=grados, cuadernillos=cuadernillos_list)
+
+    def is_accessible(self):
+        return session.get("logged_in") and session.get("user_role") == "admin"
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for("admin.login_view", next=request.url))
+
+
 def init_admin(app):
     """Inicializa Flask-Admin."""
     admin = Admin(
@@ -512,6 +532,7 @@ def init_admin(app):
     admin.add_view(ComentarioModelView(Comentario, db.session, name="Comentarios"))
     admin.add_view(ConfiguracionSistemaView(ConfiguracionSistema, db.session, name="Configuración Sistema"))
     admin.add_view(ConfigExamenesView(name="Configuración de Exámenes", endpoint="config_examenes"))
+    admin.add_view(ReporteGradoView(name="Reporte por Grado", endpoint="reporte_grado"))
     admin.add_view(ModelView(Log, db.session, name="Logs del Sistema"))
     admin.add_view(ActiveSessionView(ActiveSession, db.session, name="Sesiones Activas"))
     admin.add_view(DatabaseAdminView(name="Gestión DB", endpoint="db_admin"))

@@ -1,0 +1,224 @@
+{% extends 'admin/master.html' %} {% block body %}
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col">
+      <h1 class="h3 mb-2 text-gray-800">Reporte de Resultados por Grado</h1>
+      <p class="mb-4">
+        Visualización grupal del rendimiento de los estudiantes en exámenes
+        específicos.
+      </p>
+    </div>
+  </div>
+
+  <!-- Selectores de Filtro -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Filtros de Búsqueda</h6>
+    </div>
+    <div class="card-body">
+      <div class="row align-items-end">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="select-grado">Seleccionar Grado:</label>
+            <select class="form-control" id="select-grado">
+              <option value="">-- Seleccionar Grado --</option>
+              {% for grado in grados %}
+              <option value="{{ grado }}">Grado {{ grado }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="form-group">
+            <label for="select-cuadernillo">Seleccionar Examen (Área):</label>
+            <select class="form-control" id="select-cuadernillo" disabled>
+              <option value="">-- Primero seleccione un grado --</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <button id="btn-buscar" class="btn btn-primary btn-block" disabled>
+              <i class="fas fa-search"></i> Generar Reporte
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Resultados -->
+  <div class="card shadow mb-4" id="resultados-card" style="display: none">
+    <div
+      class="card-header py-3 d-flex justify-content-between align-items-center"
+    >
+      <h6 class="m-0 font-weight-bold text-primary" id="reporte-titulo">
+        Resultados del Examen
+      </h6>
+      <div>
+        <button class="btn btn-success btn-sm" onclick="exportToCSV()">
+          <i class="fas fa-file-csv"></i> Exportar CSV
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table
+          class="table table-bordered table-hover"
+          id="reporte-table"
+          width="100%"
+          cellspacing="0"
+        >
+          <thead class="thead-light">
+            <tr>
+              <th>Código</th>
+              <th>Nombre Completo</th>
+              <th class="text-center">Nota Final</th>
+              <th class="text-center">Intentos</th>
+              <th class="text-center">Última Fecha</th>
+              <th class="text-center">Estado</th>
+            </tr>
+          </thead>
+          <tbody id="reporte-body">
+            <!-- Los datos se cargarán dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript para interactividad -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const selectGrado = document.getElementById('select-grado');
+      const selectCuadernillo = document.getElementById('select-cuadernillo');
+      const btnBuscar = document.getElementById('btn-buscar');
+      const resultadosCard = document.getElementById('resultados-card');
+      const reporteBody = document.getElementById('reporte-body');
+      const reporteTitulo = document.getElementById('reporte-titulo');
+
+      // Lista de cuadernillos pasada desde el backend ya como lista de dicts
+      const cuadernillos = {{ cuadernillos|tojson }};
+
+      // Al cambiar el grado, filtrar los cuadernillos disponibles
+      selectGrado.addEventListener('change', function() {
+          const gradoSelected = this.value;
+
+          // Resetear select de cuadernillo
+          selectCuadernillo.innerHTML = '<option value="">-- Seleccionar Examen --</option>';
+
+          if (gradoSelected) {
+              const filtrados = cuadernillos.filter(c => c.grado === gradoSelected);
+
+              if (filtrados.length > 0) {
+                  filtrados.forEach(c => {
+                      const option = document.createElement('option');
+                      option.value = c.id;
+                      option.textContent = `${c.area.toUpperCase()} - ${c.nombre}`;
+                      selectCuadernillo.appendChild(option);
+                  });
+                  selectCuadernillo.disabled = false;
+              } else {
+                  selectCuadernillo.innerHTML = '<option value="">No hay exámenes para este grado</option>';
+                  selectCuadernillo.disabled = true;
+              }
+          } else {
+              selectCuadernillo.disabled = true;
+              btnBuscar.disabled = true;
+          }
+      });
+
+      // Al seleccionar un cuadernillo, habilitar el botón de búsqueda
+      selectCuadernillo.addEventListener('change', function() {
+          btnBuscar.disabled = !this.value;
+      });
+
+      // Acción de búsqueda
+      btnBuscar.addEventListener('click', function() {
+          const grado = selectGrado.value;
+          const cuadernilloId = selectCuadernillo.value;
+          const cuadernilloNombre = selectCuadernillo.options[selectCuadernillo.selectedIndex].text;
+
+          // Obtener session_id de la sesión de administrador (si fuera necesario para la API)
+          // Pero el endpoint /api/admin/resultados está protegido por @api_login_required
+          // que busca en cabecera X-Session-ID. El admin debe tener uno o podemos
+          // adaptar el endpoint para que use la sesión de Flask-Admin.
+
+          // NOTA: Para este reporte administrativo, es mejor usar un endpoint
+          // que use session['logged_in'] en lugar de un session_id de API móvil/web user.
+          // O pasar el session_id si el admin también tiene uno.
+
+          fetch(`/api/admin/resultados/grado/${grado}/examen/${cuadernilloId}`, {
+              headers: {
+                  'X-Session-ID': '{{ session.get("api_session_id", "") }}' // Ver nota abajo
+              }
+          })
+          .then(response => {
+              if (response.status === 401 || response.status === 403) {
+                  throw new Error('No autorizado o sesión expirada');
+              }
+              return response.json();
+          })
+          .then(data => {
+              renderTable(data.resultados, cuadernilloNombre);
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('Error al cargar resultados: ' + error.message);
+          });
+      });
+
+      function renderTable(resultados, titulo) {
+          reporteBody.innerHTML = '';
+          reporteTitulo.textContent = `Resultados: ${titulo}`;
+
+          if (resultados.length === 0) {
+              reporteBody.innerHTML = '<tr><td colspan="6" class="text-center">No se encontraron estudiantes en este grado.</td></tr>';
+          } else {
+              resultados.forEach(row => {
+                  const tr = document.createElement('tr');
+                  const notaStr = row.nota !== null ? row.nota.toFixed(1) : 'N/A';
+                  const colorNota = row.nota >= 3.0 ? 'text-success' : (row.nota !== null ? 'text-danger' : 'text-muted');
+
+                  tr.innerHTML = `
+                      <td>${row.codigo}</td>
+                      <td>${row.nombre || 'Sin nombre'}</td>
+                      <td class="text-center font-weight-bold ${colorNota}">${notaStr}</td>
+                      <td class="text-center">${row.intentos}</td>
+                      <td class="text-center">${row.fecha || '-'}</td>
+                      <td class="text-center">
+                          ${row.nota !== null ? '<span class="badge badge-success">Completado</span>' : '<span class="badge badge-warning">Pendiente</span>'}
+                      </td>
+                  `;
+                  reporteBody.appendChild(tr);
+              });
+          }
+
+          resultadosCard.style.display = 'block';
+      }
+  });
+
+  function exportToCSV() {
+      const table = document.getElementById('reporte-table');
+      let csv = [];
+      const rows = table.querySelectorAll('tr');
+
+      for (let i = 0; i < rows.length; i++) {
+          const row = [], cols = rows[i].querySelectorAll('td, th');
+          for (let j = 0; j < cols.length; j++) {
+              row.push('"' + cols[j].innerText + '"');
+          }
+          csv.push(row.join(','));
+      }
+
+      const csvFile = new Blob([csv.join('\n')], {type: 'text/csv'});
+      const downloadLink = document.createElement('a');
+      downloadLink.download = 'reporte_resultados.csv';
+      downloadLink.href = window.URL.createObjectURL(csvFile);
+      downloadLink.style.display = 'none';
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+  }
+</script>
+{% endblock %}

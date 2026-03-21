@@ -6,7 +6,7 @@ from flask import Flask
 from flask_migrate import Migrate
 
 from admin import init_admin
-from models import create_tables, db, init_db
+from models import db, init_db
 
 load_dotenv()  # <-- Esta llamada ya está correctamente posicionada
 
