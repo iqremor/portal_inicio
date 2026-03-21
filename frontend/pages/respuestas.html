@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Revisión de Respuestas - IEM</title>
+    <link rel="stylesheet" href="../css/resultados.css" />
+    <link rel="stylesheet" href="../css/respuestas.css" />
+    <!-- Nuevo CSS para la tabla -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-container">
+      <div id="header-placeholder"></div>
+
+      <main class="dashboard-main">
+        <section class="hero-section">
+          <div class="hero-card">
+            <p class="hero-subtitle">
+              Revisión de respuestas: <span id="examTitle"></span>
+            </p>
+          </div>
+        </section>
+
+        <div class="results-card review-card">
+          <div class="results-header">
+            <h2>Detalle de la Prueba</h2>
+            <p>Solo se muestran las preguntas que respondiste.</p>
+          </div>
+
+          <div class="table-responsive">
+            <table class="review-table">
+              <thead>
+                <tr>
+                  <th>Pregunta</th>
+                  <th>Respuesta Correcta</th>
+                  <th>Tu Respuesta (Equivocada)</th>
+                </tr>
+              </thead>
+              <tbody id="answersTableBody">
+                <!-- Se cargará dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="results-actions">
+            <button id="backToResults" class="btn btn-secondary">
+              <i class="fas fa-arrow-left"></i> Volver a Resultados
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <div id="footer-placeholder"></div>
+    </div>
+
+    <script>
+      async function loadFragments() {
+        try {
+          const [headerRes, footerRes] = await Promise.all([
+            fetch('header.html'),
+            fetch('footer.html'),
+          ]);
+          if (headerRes.ok)
+            document.getElementById('header-placeholder').innerHTML =
+              await headerRes.text();
+          if (footerRes.ok)
+            document.getElementById('footer-placeholder').innerHTML =
+              await footerRes.text();
+        } catch (error) {
+          console.error('Error cargando fragmentos:', error);
+        }
+      }
+      loadFragments();
+    </script>
+    <script src="../js/main.js" defer></script>
+    <script type="module" src="../js/pages/respuestas.js"></script>
+  </body>
+</html>

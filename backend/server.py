@@ -353,25 +353,17 @@ def run(host, port, debug, reload, open_browser):
 
             elif command == "production":
                 if server_manager.is_running():
-                    click.echo(click.style("Detén el servidor de desarrollo antes.", fg="red"))
-                    continue
-
-                try:
-                    from waitress import serve
-
-                    app = create_app()
+                    click.echo(click.style("El servidor ya está en ejecución. Deténgalo primero.", fg="yellow"))
+                else:
                     local_ip = get_local_ip()
-                    port = 5000
-
-                    click.echo(click.style("🚀 Servidor en modo PRODUCCIÓN (Waitress)...", bold=True, fg="green"))
+                    click.echo(
+                        click.style("🚀 Iniciando servidor en modo PRODUCCIÓN (Waitress)...", bold=True, fg="green")
+                    )
                     click.echo(f"   - Localmente: http://localhost:{port}")
                     click.echo(f"   - En tu red:  http://{local_ip}:{port}")
 
-                    serve(app, host="0.0.0.0", port=port)
-                except ImportError:
-                    click.echo(click.style("❌ Instala waitress: pip install waitress", fg="red"))
-                except Exception as e:
-                    click.echo(click.style(f"Error: {e}", fg="red"))
+                    server_manager.start_server(host, port, debug, mode="production")
+                    click.echo(click.style("Estado: Activo (Producción)", fg="green"))
 
             elif command.strip() == "":
                 continue

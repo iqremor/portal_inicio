@@ -359,7 +359,9 @@ def finalizar_examen(session_id, active_session):
     detailed_answers = []
     for user_ans in answers:
         q_num = user_ans.get("question_number")
-        selected_opt_letter = str(user_ans.get("selected_option")).upper()
+        # Asegurarnos de que el valor sea una cadena y no None
+        raw_val = user_ans.get("selected_option")
+        selected_opt_letter = str(raw_val).upper() if raw_val is not None else "NONE"
 
         if q_num not in presented_questions_map:
             continue
@@ -370,7 +372,8 @@ def finalizar_examen(session_id, active_session):
         score_points = 0
         selected_opt_index = reverse_option_map.get(selected_opt_letter, -1)
 
-        if selected_opt_letter == "NONE":
+        # Consideramos 'NONE' o valores no válidos en el mapa como preguntas sin responder
+        if selected_opt_letter == "NONE" or selected_opt_letter == "NULL":
             unanswered_questions_count += 1
         elif selected_opt_letter == correct_opt:
             correct_answers_count += 1
@@ -391,6 +394,9 @@ def finalizar_examen(session_id, active_session):
 
     grade = (correct_answers_count / len(answers)) * 5.0 if answers else 0.0
     tiempo_usado = data.get("tiempo_usado", 0)
+
+    # Obtener el mapa de opciones para convertir de índice a letra si es necesario
+    option_map = {0: "A", 1: "B", 2: "C", 3: "D", -1: "NONE"}
 
     try:
         for ans_detail in detailed_answers:
@@ -418,28 +424,50 @@ def finalizar_examen(session_id, active_session):
             attempt_number=previous_attempts + 1,
         )
         db.session.add(exam_result)
+        db.session.flush()  # Para obtener el ID del resultado antes del commit final
+
+        # Preparar detalle para la revisión pedagógica
+        review_details = []
+        for ans_detail in detailed_answers:
+            q_num = ans_detail["question_number"]
+            presented_q = presented_questions_map.get(q_num, {})
+
+            review_details.append(
+                {
+                    "question_number": q_num,
+                    "image_url": presented_q.get("image_url"),
+                    "user_answer": option_map.get(ans_detail["user_answer"]),
+                    "correct_answer": ans_detail["correct_answer"],
+                    "is_correct": ans_detail["is_correct"],
+                }
+            )
 
         active_session.cuadernillo_id = None
         active_session.presented_questions = None
         db.session.commit()
 
-    except Exception:
+    except Exception as e:
         db.session.rollback()
+        current_app.logger.error(f"Error al finalizar examen: {str(e)}")
         return jsonify({"error": "Error interno al guardar los resultados."}), 500
 
     return (
         jsonify(
             {
                 "message": "Examen finalizado con éxito.",
+                "result_id": exam_result.id,
                 "id": cuadernillo.id,
                 "area": cuadernillo.area,
                 "grado": cuadernillo.grado,
                 "porcentaje": round((correct_answers_count / len(answers)) * 100, 2) if answers else 0,
                 "preguntas_correctas": correct_answers_count,
+                "preguntas_incorrectas": incorrect_answers_count,
+                "preguntas_sin_responder": unanswered_questions_count,
                 "total_preguntas": len(answers),
                 "tiempo_usado": tiempo_usado,
                 "puntuacion": round(grade, 2),
                 "puntuacion_maxima": 5.0,
+                "revision": review_details,
             }
         ),
         200,

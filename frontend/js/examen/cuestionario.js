@@ -95,13 +95,17 @@ async function submitQuizResults(shouldRedirect = true) {
 
     // Prepare answers for submission in the expected format by the backend
     const answersToSubmit = state.userAnswers.map((answer, index) => {
-      // Assuming presentedQuestions[index] has a 'question_number' property
       const questionNumber = state.presentedQuestions[index]
         ? state.presentedQuestions[index].question_number
         : index + 1;
+
+      // Asegurarnos de enviar 'NONE' si no hay respuesta
+      const selectedOption =
+        answer === null || answer === undefined ? 'NONE' : answer;
+
       return {
         question_number: questionNumber,
-        selected_option: answer, // 'A', 'B', 'C', 'D'
+        selected_option: selectedOption,
       };
     });
 

@@ -20,6 +20,10 @@ class ServerManager:
     _port = 5000
     _debug = False
 
+    _mode = "development"
+
+    _waitress_server = None
+
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             cls._instance = super(ServerManager, cls).__new__(cls, *args, **kwargs)
@@ -28,30 +32,56 @@ class ServerManager:
     def _run_server(self):
         # Create a new app instance for each thread to avoid state conflicts
         self._app_instance = create_app()
+
+        # Añadir el endpoint de apagado a la aplicación en ambos modos
+        with self._app_instance.app_context():
+
+            @self._app_instance.route("/_shutdown", methods=["POST"])
+            def shutdown():
+                if not self._server_stop_event.is_set():
+                    return "Server not stopping", 403
+
+                if self._mode == "production" and self._waitress_server:
+                    # Diferimos el cierre medio segundo para dejar que la petición responda
+                    threading.Timer(0.5, self._waitress_server.close).start()
+                elif hasattr(threading.current_thread(), "srv"):
+                    # Modo desarrollo (Werkzeug)
+                    threading.current_thread().srv.shutdown()
+
+                return "Server shutting down..."
+
         try:
-            log.info("[ServerManager] Server thread starting.")
-            wrapped_app = ShutdownMiddleware(
-                self._app_instance, self._server_stop_event, debug=self._debug
-            )  # Assuming debug for now
-            srv = make_server(host=self._host, port=self._port, app=wrapped_app)
+            log.info(f"[ServerManager] Server thread starting in {self._mode} mode.")
 
-            with self._app_instance.app_context():
+            if self._mode == "production":
+                from waitress.server import create_server
 
-                @self._app_instance.route("/_shutdown", methods=["POST"])
-                def shutdown():
-                    if not self._server_stop_event.is_set():
-                        return "Server not stopping", 403
-                    srv.shutdown()
-                    return "Server shutting down..."
+                # Usamos create_server para tener control sobre la instancia
+                self._waitress_server = create_server(
+                    self._app_instance, host=self._host, port=self._port, threads=12, channel_timeout=30
+                )
+                log.info(f"[ServerManager] Starting Waitress server on {self._host}:{self._port}")
+                self._waitress_server.run()
+            else:
+                wrapped_app = ShutdownMiddleware(self._app_instance, self._server_stop_event, debug=self._debug)
+                srv = make_server(host=self._host, port=self._port, app=wrapped_app)
+                # Guardamos la referencia al servidor en el hilo actual para el endpoint de apagado
+                threading.current_thread().srv = srv
 
-            log.info(f"[ServerManager] Starting server on {self._host}:{self._port}")
-            srv.serve_forever()
+                log.info(f"[ServerManager] Starting development server on {self._host}:{self._port}")
+                srv.serve_forever()
+
         except Exception as e:
-            log.error(f"[ServerManager] Error during server run: {e}")
+            # Si el servidor se cierra por .close(), esto puede lanzar una excepción limpia
+            if "socket" in str(e).lower() or "closed" in str(e).lower():
+                log.info("[ServerManager] Server socket closed (normal shutdown).")
+            else:
+                log.error(f"[ServerManager] Error during server run: {e}")
         finally:
+            self._waitress_server = None
             log.info("[ServerManager] Server thread exiting.")
 
-    def start_server(self, host="0.0.0.0", port=5000, debug=False):
+    def start_server(self, host="0.0.0.0", port=5000, debug=False, mode="development"):
         if self.is_running():
             log.warning("Server is already running.")
             return False
@@ -59,10 +89,11 @@ class ServerManager:
         self._host = host
         self._port = port
         self._debug = debug
+        self._mode = mode
         self._server_stop_event.clear()
         self._server_thread = threading.Thread(target=self._run_server, daemon=True)
         self._server_thread.start()
-        log.info("Server started.")
+        log.info(f"Server started in {mode} mode.")
         time.sleep(1.5)  # Give server a moment to start
         return True
 

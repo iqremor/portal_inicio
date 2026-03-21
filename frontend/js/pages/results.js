@@ -27,7 +27,7 @@ class Results {
     this.setupEventListeners();
     this.checkRetryButton();
 
-    // Re-intentar cargar info del header después de un delay (por carga asíncrona de fragmentos)
+    // Re-intentar cargar info del header después de un delay
     setTimeout(() => this.displayUserInfo(), 500);
     setTimeout(() => this.displayUserInfo(), 1500);
   }
@@ -37,11 +37,12 @@ class Results {
     if (resultData) {
       this.examResult = JSON.parse(resultData);
     } else {
-      // Fallback si no hay resultados
       this.examResult = {
         area: 'Área Desconocida',
         porcentaje: 0,
         preguntas_correctas: 0,
+        preguntas_incorrectas: 0,
+        preguntas_sin_responder: 0,
         total_preguntas: 0,
         tiempo_usado: 0,
         puntuacion: 0,
@@ -51,20 +52,13 @@ class Results {
   }
 
   displayUserInfo() {
-    // 1. Hero Section
     const heroUserName = document.getElementById('heroUserName');
-    const heroUserGrade = document.getElementById('heroUserGrade');
-
     if (heroUserName) heroUserName.textContent = this.session.nombre_completo;
 
-    const grado = this.session.grado || this.examResult.grado || '';
-    if (heroUserGrade)
-      heroUserGrade.textContent = grado ? `Grado ${grado}` : '';
-
-    // 2. Header (Avatar e Info)
     const userAvatar = document.getElementById('userAvatar');
     const userName = document.getElementById('userName');
     const userGrade = document.getElementById('userGrade');
+    const grado = this.session.grado || this.examResult.grado || '';
 
     if (userAvatar)
       userAvatar.textContent = getInitials(this.session.nombre_completo);
@@ -77,28 +71,31 @@ class Results {
       area,
       porcentaje,
       preguntas_correctas,
-      total_preguntas,
+      preguntas_incorrectas,
+      preguntas_sin_responder,
       tiempo_usado,
       puntuacion,
     } = this.examResult;
 
-    // Formatear el nombre del área para mostrar (ej: ciencias_naturales -> Ciencias Naturales)
-    let displayArea = area;
-    if (displayArea) {
-      displayArea = displayArea.charAt(0).toUpperCase() + displayArea.slice(1);
-      displayArea = displayArea.replace(/_/g, ' ');
-    }
+    let displayArea = area || 'Área';
+    displayArea = displayArea.charAt(0).toUpperCase() + displayArea.slice(1);
+    displayArea = displayArea.replace(/_/g, ' ');
 
     document.getElementById('examAreaTitle').textContent = displayArea;
     document.getElementById('scorePercentage').textContent = `${porcentaje}%`;
     document.getElementById('correctAnswers').textContent =
       `${preguntas_correctas}`;
     document.getElementById('incorrectAnswers').textContent = `${
-      total_preguntas - preguntas_correctas
+      preguntas_incorrectas ?? 0
+    }`;
+    document.getElementById('unselectedAnswers').textContent = `${
+      preguntas_sin_responder ?? 0
     }`;
     document.getElementById('timeUsed').textContent =
       formatDuration(tiempo_usado);
-    document.getElementById('score').textContent = `${puntuacion.toFixed(1)}`;
+
+    const bigScoreEl = document.getElementById('bigScore');
+    if (bigScoreEl) bigScoreEl.textContent = (puntuacion || 0).toFixed(1);
 
     this.updateScoreCircle(porcentaje);
   }
@@ -106,20 +103,12 @@ class Results {
   async checkRetryButton() {
     try {
       const retryBtn = document.getElementById('retryExam');
-      if (!retryBtn) return;
+      if (!retryBtn || !this.examResult.id) return;
 
-      if (this.examResult.id) {
-        const currentAttempts = await obtenerNumeroDeIntentos(
-          this.examResult.id
-        );
-        // Obtenemos el máximo de intentos de la configuración o usamos 3 por defecto
-        const maxAttempts = this.examResult.numAttempts || 3;
-        if (currentAttempts < maxAttempts) {
-          retryBtn.style.display = 'inline-block';
-        }
-      } else {
-        // Si no tenemos el ID por alguna razón, mostramos el botón y dejamos que el flujo normal valide
-        retryBtn.style.display = 'inline-block';
+      const currentAttempts = await obtenerNumeroDeIntentos(this.examResult.id);
+      const maxAttempts = this.examResult.numAttempts || 3;
+      if (currentAttempts < maxAttempts) {
+        retryBtn.style.display = 'inline-flex';
       }
     } catch (error) {
       console.error('Error checking retry availability:', error);
@@ -164,6 +153,7 @@ class Results {
   setupEventListeners() {
     const btnBackDashboard = document.getElementById('backToDashboard');
     const btnRetryExam = document.getElementById('retryExam');
+    const btnViewAnswers = document.getElementById('viewAnswers');
 
     if (btnBackDashboard) {
       btnBackDashboard.addEventListener('click', () => {
@@ -171,32 +161,27 @@ class Results {
       });
     }
 
+    if (btnViewAnswers) {
+      btnViewAnswers.addEventListener('click', () => {
+        window.location.href = 'respuestas.html';
+      });
+    }
+
     if (btnRetryExam) {
       btnRetryExam.addEventListener('click', async () => {
         try {
-          // Deshabilitar botón para evitar múltiples clics
           btnRetryExam.disabled = true;
           btnRetryExam.innerHTML =
             '<i class="fas fa-spinner fa-spin"></i> Iniciando...';
-
           const areaId = this.examResult.area;
-          const userCodigo = this.session.codigo;
-          const grado = this.session.grado;
-
-          if (!areaId || !userCodigo || !grado) {
-            throw new Error(
-              'Información insuficiente para reintentar el examen.'
-            );
-          }
-
-          const examData = await startExam(areaId, userCodigo, grado);
+          const examData = await startExam(
+            areaId,
+            this.session.codigo,
+            this.session.grado
+          );
           window.location.href = `/frontend/pages/examen.html?id=${examData.sesion_id}&area=${areaId}`;
         } catch (error) {
-          console.error('Error al reintentar el examen:', error);
-          alert(
-            error.message ||
-              'No se pudo iniciar el examen. Por favor, intenta desde el inicio.'
-          );
+          console.error('Error al reintentar:', error);
           btnRetryExam.disabled = false;
           btnRetryExam.innerHTML =
             '<i class="fas fa-redo"></i> Volver a Intentar';
@@ -204,7 +189,7 @@ class Results {
       });
     }
 
-    // Configurar logout tras carga de fragmentos
+    // Logout
     setTimeout(() => {
       const btnLogout = document.querySelector('.main-header__logout-btn');
       if (btnLogout) {

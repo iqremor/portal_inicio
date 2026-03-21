@@ -1,49 +1,43 @@
 # Plan PRISMA: Transparencia y Análisis de Resultados
 
-**Estado:** [BORRADOR]
-**Fecha de Creación:** 19 de marzo de 2026
-**Objetivo Principal:** Implementar la visualización grupal de resultados, la revisión detallada para estudiantes y la exportación masiva de datos.
+**Estado:** [EN_PROGRESO]
+**Fecha de Actualización:** 21 de marzo de 2026
+**Objetivo Principal:** Implementar la visualización grupal de resultados, la revisión detallada para estudiantes y la exportación masiva de datos en formatos profesionales.
 
 ---
 
-## 📋 Fase 1: Visualización Grupal (Panel Admin/Docente) - ¡PRIORIDAD!
+## ✅ Fase 1: Visualización Grupal (Panel Admin/Docente) - COMPLETADA
 
 _Objetivo: Permitir al docente ver el panorama general del rendimiento por curso y materia._
 
-**Paso a paso para lograrlo:**
-
-1.  **Backend (API)**: Crear un endpoint `/api/admin/resultados/grado/<grado>/examen/<cuadernillo_id>` que devuelva la lista de estudiantes inscritos y sus resultados asociados.
-2.  **Lógica de Consulta**: Realizar un JOIN entre `User`, `ExamResult` y `Cuadernillo` para consolidar:
-    - Nombre completo del estudiante.
-    - Nota del último intento (o promedio).
-    - Cantidad total de intentos realizados por ese estudiante en ese examen específico.
-3.  **Interfaz Admin (UI)**:
-    - Crear una nueva vista en el Panel Administrativo llamada "Reporte por Grado".
-    - Implementar selectores dinámicos: Primero seleccionar **Grado** (6°-11°), luego filtrar **Examen** disponible para ese grado.
-    - Renderizar una tabla con las columnas: `Estudiante`, `Nota Final`, `Intentos`.
+- **Backend (API)**: Endpoint `/api/admin/resultados/grado/<grado>/examen/<cuadernillo_id>` implementado.
+- **Interfaz Admin (UI)**: Vista "Reporte por Grado" con selectores dinámicos y tabla de resultados activa.
 
 ---
 
-## 🛠️ Fase 2: Revisión de Respuestas (UX/UI Estudiante)
+## 🛠️ Fase 2: Revisión de Respuestas (UX/UI Estudiante) - PRÓXIMA
 
-_Objetivo: Que el estudiante aprenda de sus errores._
+_Objetivo: Que el estudiante aprenda de sus errores visualizando el detalle de su prueba._
 
-1.  **Backend**: Modificar el endpoint de resultados para incluir el mapa de respuestas correctas vs marcadas.
-2.  **Frontend (UI)**: Crear componente "Acordeón de Revisión" en `resultados.html`.
+1.  **Backend**: Modificar el endpoint de resultados para incluir el mapa de respuestas correctas vs marcadas y las URLs de las imágenes correspondientes.
+2.  **Frontend (UI)**: Crear componente "Panel de Revisión" en `resultados.html`.
 3.  **Lógica**: Implementar visualización de la imagen original con resaltado de la opción correcta y la opción elegida por el usuario.
 
 ---
 
-## 📊 Fase 3: Exportación de Datos (Admin)
+## 📊 Fase 3: Exportación de Datos Profesional (Admin) - PLANIFICADA
 
-_Objetivo: Facilitar la gestión de reportes masivos._
+_Objetivo: Facilitar la gestión de reportes masivos para planillas de notas._
 
-1.  **Backend**: Crear endpoint para generar archivo Excel/CSV en memoria basado en la vista de la Fase 1.
-2.  **Utilidad**: Desarrollar `backend/utils/export_utils.py`.
-3.  **Admin UI**: Añadir botón "Descargar Excel" en la tabla de Visualización Grupal.
+1.  **Tecnología**: Uso de `openpyxl` para generar archivos **Excel (.xlsx)** nativos.
+2.  **Funcionalidad**:
+    - Exportación con formato: Celdas con colores según la nota (rojo para < 3.0, verde para >= 3.0).
+    - Cálculo automático de promedios grupales en el archivo.
+3.  **Admin UI**: Añadir botón "Descargar Excel (.xlsx)" en la tabla de Visualización Grupal.
 
 ---
 
 ## 📝 Notas de Seguimiento
 
-- _Sesión 26_: Re-priorización del plan. Se establece la Visualización Grupal como el primer objetivo técnico.
+- _Sesión 27_: Implementación exitosa de la Fase 1. Se detectaron y corrigieron errores de serialización.
+- _Sesión 28_: Prioridad en Fase 2 para mejorar el feedback pedagógico al estudiante.

@@ -1,1 +1,0 @@
-feat: implementar Fase 1 del Plan PRISMA (Reporte de resultados grupales)
