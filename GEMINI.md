@@ -1055,9 +1055,18 @@ Dividir en:
 
 ---
 
-## 13. Futuros Flujos de Trabajo
+## 14. Gestión de Planes Estratégicos
 
-Palabras clave adicionales para nuevos flujos de trabajo, las cuales deben ser sometidas a revisión del usuario:
+### 14.1. Directorio de Planes
+
+Todos los planes complejos, hojas de ruta técnicas y diseños de nuevas funcionalidades se almacenarán en archivos Markdown individuales dentro de:
+`docs/plans/`
+
+### 14.2. Seguimiento y Vinculación
+
+- Al inicio de cada sesión, el asistente debe revisar los archivos en `docs/plans/` para identificar tareas pausadas o planes activos.
+- Se debe mencionar el progreso de estos planes en el `docs/project/changelog.md` al finalizar la sesión.
+- Los planes deben tener estados claros: `[BORRADOR]`, `[APROBADO]`, `[EN_PROGRESO]`, `[COMPLETADO]`, `[PAUSADO]`.
 
 ## 🔄 **Flujos de Calidad y Revisión:**
 
