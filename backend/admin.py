@@ -510,6 +510,131 @@ class ReporteGradoView(BaseView):
 
         return self.render("admin/reporte_grado.html", grados=grados, cuadernillos=cuadernillos_list)
 
+    @expose("/exportar_excel/<string:grado>/<int:cuadernillo_id>")
+    def exportar_excel(self, grado, cuadernillo_id):
+        from datetime import datetime
+        from io import BytesIO
+
+        from flask import send_file
+        from openpyxl import Workbook
+        from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+
+        # 1. Obtener datos (mismo lógica que la API)
+        usuarios = User.query.filter_by(grado=grado).all()
+        cuadernillo = Cuadernillo.query.get(cuadernillo_id)
+
+        if not cuadernillo:
+            return "Cuadernillo no encontrado", 404
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = f"Reporte {grado}"
+
+        # Estilos
+        header_fill = PatternFill(start_color="1F4E78", end_color="1F4E78", fill_type="solid")
+        header_font = Font(color="FFFFFF", bold=True)
+        center_align = Alignment(horizontal="center")
+        border = Border(
+            left=Side(style="thin"), right=Side(style="thin"), top=Side(style="thin"), bottom=Side(style="thin")
+        )
+
+        green_fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+        red_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
+
+        # Encabezados de información general
+        ws.merge_cells("A1:E1")
+        ws["A1"] = f"REPORTE DE RESULTADOS - GRADO {grado}"
+        ws["A1"].font = Font(size=14, bold=True)
+        ws["A1"].alignment = center_align
+
+        ws.merge_cells("A2:E2")
+        ws["A2"] = f"Examen: {cuadernillo.area.upper()} - {cuadernillo.nombre}"
+        ws["A2"].font = Font(size=12)
+        ws["A2"].alignment = center_align
+
+        ws.merge_cells("A3:E3")
+        ws["A3"] = f"Fecha de generación: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+        ws["A3"].alignment = center_align
+
+        # Encabezados de tabla
+        headers = ["Código", "Nombre Completo", "Nota Final", "Intentos", "Fecha de Finalización"]
+        for col_num, header in enumerate(headers, 1):
+            cell = ws.cell(row=5, column=col_num)
+            cell.value = header
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = center_align
+            cell.border = border
+
+        # Datos
+        row_num = 6
+        notas = []
+        for usuario in usuarios:
+            ultimo_result = (
+                ExamResult.query.filter_by(user_id=usuario.id, cuadernillo_id=cuadernillo_id)
+                .order_by(ExamResult.attempt_number.desc())
+                .first()
+            )
+
+            intentos_count = ExamResult.query.filter_by(user_id=usuario.id, cuadernillo_id=cuadernillo_id).count()
+
+            nota = ultimo_result.final_score if ultimo_result else None
+            if nota is not None:
+                notas.append(nota)
+
+            ws.cell(row=row_num, column=1, value=usuario.codigo).border = border
+            ws.cell(row=row_num, column=2, value=usuario.nombre_completo).border = border
+
+            nota_cell = ws.cell(row=row_num, column=3, value=round(nota, 1) if nota is not None else "N/A")
+            nota_cell.border = border
+            nota_cell.alignment = center_align
+
+            if nota is not None:
+                if nota >= 3.0:
+                    nota_cell.fill = green_fill
+                else:
+                    nota_cell.fill = red_fill
+
+            ws.cell(row=row_num, column=4, value=intentos_count).border = border
+            ws.cell(row=row_num, column=4).alignment = center_align
+
+            fecha_str = ultimo_result.completion_date.strftime("%Y-%m-%d %H:%M") if ultimo_result else "-"
+            ws.cell(row=row_num, column=5, value=fecha_str).border = border
+            ws.cell(row=row_num, column=5).alignment = center_align
+
+            row_num += 1
+
+        # Resumen / Promedio
+        row_num += 1
+        ws.cell(row=row_num, column=2, value="PROMEDIO GRUPAL").font = Font(bold=True)
+        promedio = sum(notas) / len(notas) if notas else 0
+        promedio_cell = ws.cell(row=row_num, column=3, value=round(promedio, 2))
+        promedio_cell.font = Font(bold=True)
+        promedio_cell.alignment = center_align
+        if promedio >= 3.0:
+            promedio_cell.fill = green_fill
+        else:
+            promedio_cell.fill = red_fill
+
+        # Ajustar ancho de columnas
+        column_widths = [15, 40, 15, 10, 25]
+        for i, width in enumerate(column_widths, 1):
+            ws.column_dimensions[ws.cell(row=5, column=i).column_letter].width = width
+
+        # Guardar en memoria
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+
+        filename = f"Reporte_Grado_{grado}_{cuadernillo.area}_{datetime.now().strftime('%Y%m%d')}.xlsx"
+
+        return send_file(
+            output,
+            mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            as_attachment=True,
+            download_name=filename,
+        )
+
     def is_accessible(self):
         return session.get("logged_in") and session.get("user_role") == "admin"
 

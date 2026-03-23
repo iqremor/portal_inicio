@@ -59,6 +59,9 @@
         <button class="btn btn-success btn-sm" onclick="exportToCSV()">
           <i class="fas fa-file-csv"></i> Exportar CSV
         </button>
+        <button class="btn btn-primary btn-sm ml-2" onclick="exportToExcel()">
+          <i class="fas fa-file-excel"></i> Exportar Excel
+        </button>
       </div>
     </div>
     <div class="card-body">
@@ -219,6 +222,21 @@
       downloadLink.style.display = 'none';
       document.body.appendChild(downloadLink);
       downloadLink.click();
+  }
+
+  function exportToExcel() {
+      const selectGrado = document.getElementById('select-grado');
+      const selectCuadernillo = document.getElementById('select-cuadernillo');
+
+      const grado = selectGrado.value;
+      const cuadernilloId = selectCuadernillo.value;
+
+      if (!grado || !cuadernilloId) {
+          alert('Por favor, seleccione grado y examen primero.');
+          return;
+      }
+
+      window.location.href = `/admin/reporte_grado/exportar_excel/${grado}/${cuadernilloId}`;
   }
 </script>
 {% endblock %}
