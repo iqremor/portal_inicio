@@ -1,9 +1,7 @@
 # routes/web_test.py
 import os
 
-from flask import Blueprint, abort, send_from_directory
-
-from models import ConfiguracionSistema
+from flask import Blueprint, send_from_directory
 
 # Construir rutas absolutas para evitar ambigüedades
 bp_dir = os.path.dirname(os.path.abspath(__file__))

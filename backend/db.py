@@ -1,7 +1,7 @@
 import click
 
 from app import create_app  # Importar create_app
-from models import create_tables, db, seed_data
+from models import create_tables, seed_data
 
 
 @click.command("init-db")

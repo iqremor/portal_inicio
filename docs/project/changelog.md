@@ -1,5 +1,22 @@
 # Historial de Cambios
 
+## Sesión 32 - 23 de marzo de 2026 (12:00 PM)
+
+### Objetivos de la sesión:
+
+- Actualizar el estado del **Plan NATURA** (Fase 1 completada, Plan en progreso).
+- Resolver deuda técnica de calidad (Flake8 en Backend).
+- Iniciar la **Fase 2 del Plan NATURA**: Navegación por Componentes (Lobby de Simulacro).
+- Implementar la visualización de notas por componente en el Lobby.
+
+### Estado inicial:
+
+- **Calidad de código:** Pendiente resolver 16 advertencias de Flake8.
+- **Deuda técnica:** El Plan NATURA figura como borrador a pesar de tener la Fase 1 completada.
+- **Tests:** Verificación de integridad tras cambios en el dashboard.
+
+---
+
 ## Sesión 31 - 23 de marzo de 2026 (11:00 AM)
 
 ### Objetivos de la sesión:
@@ -13,6 +30,12 @@
 - **Calidad de código:** 100% validado en sesión 30.
 - **Deuda técnica:** Validar la visualización del progreso del examen con el nuevo límite dinámico.
 - **Tests:** Pendiente validación manual del ciclo completo con configuración variable.
+
+### Finalización: lunes, 23 de marzo de 2026
+
+- **Calidad de código:** Validada con Flake8 y ESLint.
+- **Funcionalidad:** Fase 1 del Plan NATURA completada (Dashboard dinámico y modular). Plan FOCUS marcado como COMPLETADO.
+- **Métricas:** Control de visibilidad por grado habilitado para 3 módulos.
 
 ---
 

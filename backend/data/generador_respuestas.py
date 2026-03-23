@@ -7,11 +7,7 @@ def seleccionar_directorio(directorio_base):
     """Muestra los directorios disponibles y pide al usuario que seleccione uno."""
     print(f"\nBuscando directorios en: {directorio_base}")
     try:
-        directorios = [
-            d
-            for d in os.listdir(directorio_base)
-            if os.path.isdir(os.path.join(directorio_base, d))
-        ]
+        directorios = [d for d in os.listdir(directorio_base) if os.path.isdir(os.path.join(directorio_base, d))]
         if not directorios:
             print("No se encontraron directorios.")
             return None
@@ -19,17 +15,13 @@ def seleccionar_directorio(directorio_base):
         print(f"Error: El directorio base '{directorio_base}' no existe.")
         return None
 
-    print(
-        "Por favor, seleccione el directorio que contiene los archivos de respuestas .txt:"
-    )
+    print("Por favor, seleccione el directorio que contiene los archivos de respuestas .txt:")
     for i, dirname in enumerate(directorios):
         print(f"  {i + 1}. {dirname}")
 
     while True:
         try:
-            seleccion = int(
-                input(f"Ingrese el número del directorio (1-{len(directorios)}): ")
-            )
+            seleccion = int(input(f"Ingrese el número del directorio (1-{len(directorios)}): "))
             if 1 <= seleccion <= len(directorios):
                 return os.path.join(directorio_base, directorios[seleccion - 1])
             else:
@@ -56,9 +48,7 @@ def generar_archivos_respuestas():
     print(f"Directorio de origen seleccionado: '{directorio_origen}'")
 
     project_root = os.path.abspath(os.path.join(script_dir, "..", ".."))
-    directorio_base_destino = os.path.join(
-        project_root, "backend", "data"
-    )  # Cambiado para guardar en backend/data
+    directorio_base_destino = os.path.join(project_root, "backend", "data")  # Cambiado para guardar en backend/data
 
     mapa_materias = {
         "ingles": "ingles",
@@ -96,9 +86,7 @@ def generar_archivos_respuestas():
         print(f"Error: No se pudo acceder al directorio '{directorio_origen}'.")
         return
 
-    print(
-        f"\nSe encontraron {len(archivos_txt)} archivos de respuestas para procesar.\n"
-    )
+    print(f"\nSe encontraron {len(archivos_txt)} archivos de respuestas para procesar.\n")
 
     all_exam_answers_data = {}  # Diccionario para almacenar todas las respuestas
 
@@ -124,7 +112,8 @@ def generar_archivos_respuestas():
 
             if not materia_encontrada or not grado_encontrado:
                 print(
-                    f"  [ADVERTENCIA] No se pudo determinar la materia o el grado para '{nombre_archivo}'. Archivo omitido."
+                    f"  [ADVERTENCIA] No se pudo determinar la materia o el grado para "
+                    f"'{nombre_archivo}'. Archivo omitido."
                 )
                 continue
 
@@ -141,36 +130,24 @@ def generar_archivos_respuestas():
                 print(f"  [ERROR] No se encontraron respuestas en '{nombre_archivo}'.")
                 continue
 
-            indices_respuestas = [
-                mapa_letras_a_indices[letra.upper()] for letra in letras_respuestas
-            ]
+            indices_respuestas = [mapa_letras_a_indices[letra.upper()] for letra in letras_respuestas]
 
             all_exam_answers_data[exam_identifier] = indices_respuestas
 
-            print(
-                f"  [ÉXITO] Respuestas para '{exam_identifier}' extraídas ({len(indices_respuestas)} preguntas)."
-            )
+            print(f"  [ÉXITO] Respuestas para '{exam_identifier}' extraídas ({len(indices_respuestas)} preguntas).")
 
         except Exception as e:
-            print(
-                f"  [ERROR] Ocurrió un error inesperado al procesar '{nombre_archivo}': {e}"
-            )
+            print(f"  [ERROR] Ocurrió un error inesperado al procesar '{nombre_archivo}': {e}")
 
     # Escribir el archivo JSON consolidado
     if all_exam_answers_data:
-        os.makedirs(
-            directorio_base_destino, exist_ok=True
-        )  # Asegura que la carpeta backend/data exista
+        os.makedirs(directorio_base_destino, exist_ok=True)  # Asegura que la carpeta backend/data exista
         ruta_json_consolidado = os.path.join(directorio_base_destino, "respuestas.json")
         with open(ruta_json_consolidado, "w", encoding="utf-8") as f:
             json.dump(all_exam_answers_data, f, indent=2)
-        print(
-            f"\n[FINALIZADO] Archivo consolidado '{ruta_json_consolidado}' generado exitosamente."
-        )
+        print(f"\n[FINALIZADO] Archivo consolidado '{ruta_json_consolidado}' generado exitosamente.")
     else:
-        print(
-            "\n[FINALIZADO] No se generó ningún archivo consolidado ya que no se extrajeron respuestas."
-        )
+        print("\n[FINALIZADO] No se generó ningún archivo consolidado ya que no se extrajeron respuestas.")
 
 
 if __name__ == "__main__":

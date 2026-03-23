@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prueba Saber - Lobby IEM</title>
+
+    <!-- Estilos Globales y de Página -->
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/simulacro.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-container">
+      <!-- Header Placeholder -->
+      <div id="header-placeholder"></div>
+
+      <main class="simulacro-main">
+        <!-- Navegación -->
+        <a href="dashboard.html" class="btn-back">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Volver al Inicio
+        </a>
+
+        <h2 class="page-title">Prueba Saber (Preicfes)</h2>
+
+        <!-- Mensaje de Bienvenida Dinámico -->
+        <div class="description-card">
+          Hola <strong id="student-name-welcome">Estudiante</strong>, bienvenido
+          a la <strong>Prueba Saber (Preicfes)</strong>.<br /><br />
+          A continuación encontrarás los componentes de la prueba de ingreso.
+          Cada área cuenta con un tiempo límite y un número específico de
+          preguntas. Tus resultados se verán reflejados en el panel de puntajes
+          una vez finalices cada examen.
+        </div>
+
+        <div class="simulacro-grid">
+          <!-- Panel de Selección de Áreas -->
+          <div class="lobby-panel">
+            <h3>Componentes</h3>
+            <div id="areas-container">
+              <!-- Se carga dinámicamente -->
+              <div class="loading-spinner">Cargando componentes...</div>
+            </div>
+          </div>
+
+          <!-- Panel de Desempeño -->
+          <div class="lobby-panel">
+            <h3>Nota por Componente</h3>
+            <div class="scores-container" id="scores-container">
+              <!-- Se carga dinámicamente -->
+              <div class="score-item">
+                <span class="area-name">Matemáticas</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+              <div class="score-item">
+                <span class="area-name">Lectura Crítica</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+              <div class="score-item">
+                <span class="area-name">Sociales</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+              <div class="score-item">
+                <span class="area-name">Ciencias Naturales</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+              <div class="score-item">
+                <span class="area-name">Inglés</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+            </div>
+
+            <button class="btn-action-main" id="btn-save-session">
+              Finalizar Sesión
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer Placeholder -->
+      <div id="footer-placeholder"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+      // Carga de componentes comunes (Header/Footer)
+      fetch('header.html')
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById('header-placeholder').innerHTML = data;
+        });
+      fetch('footer.html')
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById('footer-placeholder').innerHTML = data;
+        });
+    </script>
+    <script src="../js/main.js" defer></script>
+    <script type="module" src="../js/pages/simulacro.js"></script>
+  </body>
+</html>

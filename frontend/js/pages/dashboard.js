@@ -67,14 +67,14 @@ class Dashboard {
     const btnPreicfes = document.getElementById('btn-preicfes');
     if (btnPreicfes) {
       btnPreicfes.addEventListener('click', () => {
-        window.location.href = `/frontend/pages/simulacro.html?tipo=preicfes`;
+        window.location.href = '/frontend/pages/simulacro.html'; // Redirige a la página específica de Preicfes
       });
     }
 
     const btnPreunal = document.getElementById('btn-preunal');
     if (btnPreunal) {
       btnPreunal.addEventListener('click', () => {
-        window.location.href = `/frontend/pages/simulacro.html?tipo=preunal`;
+        window.location.href = '/frontend/pages/simulacro_unal.html'; // Redirige a la nueva página de Preunal
       });
     }
 

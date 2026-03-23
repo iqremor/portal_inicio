@@ -1,22 +1,22 @@
 # Plan NATURA: Ecosistema de Aprendizaje Interactivo
 
-**Estado:** [BORRADOR]
+**Estado:** [EN_PROGRESO]
 **Fecha de Creación:** 23 de marzo de 2026
 **Objetivo Principal:** Transformar la experiencia del estudiante mediante una interfaz orgánica y un flujo de navegación por componentes, permitiendo la gestión dinámica de módulos (Preicfes, Preunal) desde el panel administrativo.
 
 ---
 
-## 🌿 Fase 1: Identidad Visual y Dashboard Orgánico
+## 🌿 Fase 1: Identidad Visual y Dashboard Orgánico [COMPLETADA]
 
 _Objetivo: Implementar la estética de `portal_estudiantil.html` en el núcleo de la aplicación._
 
-- **Estilos Globales**: Migrar el fondo vegetal, tipografías (Merriweather/Open Sans) y paleta de verdes a `frontend/css/global.css`.
-- **Refactor de Dashboard**: Actualizar `dashboard.html` para usar la estructura de tarjetas del prototipo.
-- **Tarjetas Dinámicas**: Implementar lógica para mostrar/ocultar paneles (Preicfes, Preunal, Laboratorios) basándose en la configuración del servidor.
+- [x] **Estilos Globales**: Migrar el fondo vegetal, tipografías (Merriweather/Open Sans) y paleta de verdes a `frontend/css/global.css`.
+- [x] **Refactor de Dashboard**: Actualizar `dashboard.html` para usar la estructura de tarjetas del prototipo.
+- [x] **Tarjetas Dinámicas**: Implementar lógica para mostrar/ocultar paneles (Preicfes, Preunal, Laboratorios) basándose en la configuración del servidor.
 
 ---
 
-## 🧩 Fase 2: Navegación por Componentes (Lobby de Simulacro)
+## 🧩 Fase 2: Navegación por Componentes (Lobby de Simulacro) [EN_PROGRESO]
 
 _Objetivo: Crear una estación intermedia entre el Dashboard y el Examen basada en `simulacro_interactivo.html`._
 
