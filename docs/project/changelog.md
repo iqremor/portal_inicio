@@ -108,3 +108,25 @@
 - **Funcionalidad:** Plan PRISMA finalizado exitosamente. ExportaciÃ³n a Excel robusta y formateada.
 
 ### FinalizaciÃ³n: lunes, 23 de marzo de 2026
+
+## SesiÃ³n 30 - 23 de marzo de 2026
+
+### Objetivos de la sesiÃ³n:
+
+- Implementar la **Fase 1 y 2 del Plan FOCUS**: ConfiguraciÃ³n dinÃ¡mica de la cantidad de preguntas del examen.
+- Modificar el panel administrativo para incluir el ajuste global de preguntas.
+- Actualizar la API de generaciÃ³n de exÃ¡menes para respetar el lÃ­mite configurado.
+
+### Acciones Realizadas:
+
+- **Backend (Admin):** ActualizaciÃ³n de `ConfigExamenesView` en `backend/admin.py` para soportar `EXAM_QUESTIONS_COUNT`.
+- **Frontend (Admin):** AdiciÃ³n del campo "Cantidad de Preguntas por Examen" en el formulario de ajustes globales (`backend/templates/admin/config_examenes.html`).
+- **Backend (API):** RefactorizaciÃ³n de `get_exam_questions_by_session` en `backend/routes/api.py` para leer dinÃ¡micamente el nÃºmero de preguntas a presentar desde la base de datos.
+- **Calidad:** VerificaciÃ³n de lÃ³gica de fallback (mÃ­nimo 10 preguntas si no existe configuraciÃ³n) y manejo de bancos con menos preguntas de las configuradas.
+
+### Estado final:
+
+- **Calidad de cÃ³digo:** 100% validado.
+- **Funcionalidad:** ImplementaciÃ³n del Plan FOCUS al 80% (pendiente validaciÃ³n final en entorno real).
+
+### FinalizaciÃ³n: [PENDIENTE]

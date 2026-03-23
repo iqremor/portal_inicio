@@ -136,7 +136,13 @@ def get_exam_questions_by_session(session_id, active_session):
             404,
         )
 
-    num_questions_to_present = 10
+    # Obtener configuraciones dinámicas
+    next_button_delay = int(get_config_value("EXAM_NEXT_BUTTON_DELAY", 10000))
+    timer_duration = int(get_config_value("EXAM_TIMER_DURATION", 240))
+    warning_time = int(get_config_value("EXAM_WARNING_TIME", 30))
+    num_attempts = int(get_config_value("EXAM_NUM_ATTEMPTS", 3))
+    num_questions_to_present = int(get_config_value("EXAM_QUESTIONS_COUNT", 10))
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, "..", ".."))
 

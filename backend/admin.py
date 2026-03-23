@@ -442,6 +442,7 @@ class ConfigExamenesView(BaseView):
                 "EXAM_WARNING_TIME": request.form.get("warning_time"),
                 "EXAM_NEXT_BUTTON_DELAY": request.form.get("next_button_delay"),
                 "EXAM_NUM_ATTEMPTS": request.form.get("num_attempts"),
+                "EXAM_QUESTIONS_COUNT": request.form.get("questions_count"),
             }
 
             try:
@@ -480,12 +481,14 @@ class ConfigExamenesView(BaseView):
         val_warning = get_v("EXAM_WARNING_TIME", "30")
         val_delay = get_v("EXAM_NEXT_BUTTON_DELAY", "10000")
         val_attempts = get_v("EXAM_NUM_ATTEMPTS", "3")
+        val_questions = get_v("EXAM_QUESTIONS_COUNT", "10")
 
         current_config = {
             "timer_duration": val_timer,
             "warning_time": val_warning,
             "next_button_delay": val_delay,
             "num_attempts": val_attempts,
+            "questions_count": val_questions,
         }
 
         return self.render("admin/config_examenes.html", exam_settings=current_config)
