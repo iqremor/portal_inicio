@@ -149,6 +149,46 @@
             </p>
           </div>
 
+          <hr class="my-4" />
+          <h4>Gestión de Módulos (Portal Estudiantil)</h4>
+          <p class="mb-4">
+            Especifique qué grados tienen acceso a cada módulo del Dashboard
+            (separados por comas).
+          </p>
+
+          <div class="form-group">
+            <label for="preicfes_grades">Grados para Módulo PREICFES</label>
+            <input
+              type="text"
+              name="preicfes_grades"
+              id="preicfes_grades"
+              class="form-control"
+              value="{{ exam_settings.preicfes_grades }}"
+              placeholder="Ej: 10,11"
+              required
+            />
+            <p class="help-text">
+              Grados habilitados para ver el simulacro de pruebas saber.
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label for="preunal_grades">Grados para Módulo PREUNAL</label>
+            <input
+              type="text"
+              name="preunal_grades"
+              id="preunal_grades"
+              class="form-control"
+              value="{{ exam_settings.preunal_grades }}"
+              placeholder="Ej: 11"
+              required
+            />
+            <p class="help-text">
+              Grados habilitados para ver el simulacro de la Universidad
+              Nacional.
+            </p>
+          </div>
+
           <div class="text-right mt-4">
             <button type="submit" class="btn btn-primary btn-save">
               <i class="fas fa-save"></i> Guardar Cambios

@@ -62,10 +62,89 @@ class Dashboard {
     if (btnLogout) {
       btnLogout.addEventListener('click', () => handleLogout(this.currentUser));
     }
+
+    // Listeners para los nuevos módulos
+    const btnPreicfes = document.getElementById('btn-preicfes');
+    if (btnPreicfes) {
+      btnPreicfes.addEventListener('click', () => {
+        window.location.href = `/frontend/pages/simulacro.html?tipo=preicfes`;
+      });
+    }
+
+    const btnPreunal = document.getElementById('btn-preunal');
+    if (btnPreunal) {
+      btnPreunal.addEventListener('click', () => {
+        window.location.href = `/frontend/pages/simulacro.html?tipo=preunal`;
+      });
+    }
+
+    const btnLaboratorios = document.getElementById('btn-laboratorios');
+    if (btnLaboratorios) {
+      btnLaboratorios.addEventListener('click', () => {
+        showNotification('Módulo de Laboratorios en desarrollo.', 'info');
+      });
+    }
   }
 
   async loadDashboardData() {
-    await this.loadExamsForGrade(this.currentUser.grado);
+    this.checkModulesAvailability();
+    // await this.loadExamsForGrade(this.currentUser.grado); // Comentado temporalmente mientras migramos a módulos
+  }
+
+  checkModulesAvailability() {
+    if (!this.currentUser.modules) {
+      console.warn('Modules data not found in user object.');
+      return;
+    }
+
+    const { preicfes, preunal, laboratorios } = this.currentUser.modules;
+
+    const preicfesVisible = this.updateModuleStatus('btn-preicfes', preicfes);
+    const preunalVisible = this.updateModuleStatus('btn-preunal', preunal);
+    const laboratoriosVisible = this.updateModuleStatus(
+      'btn-laboratorios',
+      laboratorios
+    );
+
+    // Si todos los módulos están ocultos, mostrar mensaje
+    if (!preicfesVisible && !preunalVisible && !laboratoriosVisible) {
+      this.showNoActivitiesMessage();
+    }
+  }
+
+  updateModuleStatus(btnId, isEnabled) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return false;
+
+    const card = btn.closest('.activity-card-new');
+
+    if (isEnabled) {
+      if (card) card.style.display = 'flex';
+      btn.disabled = false;
+      btn.classList.remove('btn-secondary');
+      btn.classList.add('btn-primary');
+      btn.textContent = 'Comenzar';
+      btn.style.opacity = '1';
+      return true;
+    } else {
+      if (card) card.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'No disponible';
+      btn.style.opacity = '0.5';
+      return false;
+    }
+  }
+
+  showNoActivitiesMessage() {
+    const activitiesGrid = document.querySelector('.activities-grid');
+    if (activitiesGrid) {
+      activitiesGrid.innerHTML = `
+        <div class="no-activities-container">
+          <i class="fas fa-calendar-times"></i>
+          <p>Sin actividades disponibles por el momento.</p>
+        </div>
+      `;
+    }
   }
 
   showExamConfirmation(area) {

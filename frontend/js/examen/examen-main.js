@@ -2,14 +2,12 @@ import {
   setup as setupUI,
   mostrarPaginaInicio,
   renderizarImagen,
-  mostrarPaginaFinal,
   mostrarAlertaPersonalizada,
 } from './ui.js';
 import {
   setupQuiz,
   iniciarQuiz,
   siguienteImagen,
-  iniciarTemporizador,
   recargarImagen,
   saveUserAnswer,
 } from './cuestionario.js';

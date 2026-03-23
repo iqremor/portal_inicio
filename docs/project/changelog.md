@@ -1,5 +1,21 @@
 # Historial de Cambios
 
+## Sesión 31 - 23 de marzo de 2026 (11:00 AM)
+
+### Objetivos de la sesión:
+
+- Finalizar la **Fase 3 del Plan FOCUS**: Validación del frontend y UX dinámico.
+- Verificar el comportamiento de la API frente a límites de preguntas y bancos reducidos.
+- Ejecutar controles de calidad (ESLint, Flake8) sobre los cambios de la sesión anterior.
+
+### Estado inicial:
+
+- **Calidad de código:** 100% validado en sesión 30.
+- **Deuda técnica:** Validar la visualización del progreso del examen con el nuevo límite dinámico.
+- **Tests:** Pendiente validación manual del ciclo completo con configuración variable.
+
+---
+
 ## Sesión 26 - 19 de marzo de 2026
 
 ### Objetivos de la sesión:

@@ -490,7 +490,6 @@ class ConfigExamenesView(BaseView):
             "num_attempts": val_attempts,
             "questions_count": val_questions,
         }
-
         return self.render("admin/config_examenes.html", exam_settings=current_config)
 
     def is_accessible(self):
@@ -795,42 +794,49 @@ class ExamAvailabilityView(BaseView):
     @expose("/", methods=("GET", "POST"))
     def index(self):
         if request.method == "POST":
-            # Get all cuadernillos to iterate through all possible combinations
-            # This is important because unchecked checkboxes are not sent in request.form
+            # 1. Manejar Cuadernillos Normales
             all_cuadernillos = Cuadernillo.query.all()
-
-            # Iterate through all cuadernillos and their associated grades
-            # (assuming each cuadernillo has a single 'grado' it applies to)
             for c in all_cuadernillos:
                 cuadernillo_id = c.id
-                grado = c.grado  # Get the grade associated with this cuadernillo
-
-                # Check if the checkbox for this cuadernillo-grado combination was checked
-                # If the checkbox is present in request.form, it means it was checked ('on')
-                # If it's not present, it means it was unchecked.
+                grado = c.grado
                 is_enabled = f"cuadernillo-{cuadernillo_id}-{grado}" in request.form
-
                 availability = ExamAvailability.query.filter_by(cuadernillo_id=cuadernillo_id, grado=grado).first()
-
                 if availability:
-                    # Only update if the status has changed to avoid unnecessary DB writes
                     if availability.is_enabled != is_enabled:
                         availability.is_enabled = is_enabled
-                        db.session.add(availability)  # Add to session for update
+                        db.session.add(availability)
                 else:
-                    # If no record exists, create one only if it's enabled
-                    # If it's disabled and no record exists, we don't need to create a 'False' record
                     if is_enabled:
                         availability = ExamAvailability(
-                            cuadernillo_id=cuadernillo_id,
-                            grado=grado,
-                            is_enabled=is_enabled,
+                            cuadernillo_id=cuadernillo_id, grado=grado, is_enabled=is_enabled
                         )
                         db.session.add(availability)
 
+            # 2. Manejar Módulos Globales (Preicfes, Preunal, Laboratorios)
+            grados_query = db.session.query(User.grado).filter(User.grado != None).distinct().all()
+            unique_grados = sorted([g[0] for g in grados_query if g[0]])
+
+            modulos = ["PREICFES", "PREUNAL", "LABORATORIOS"]
+            for mod in modulos:
+                enabled_grades = []
+                for g in unique_grados:
+                    if f"module-{mod}-{g}" in request.form:
+                        enabled_grades.append(str(g))
+
+                clave = f"MODULE_{mod}_GRADES"
+                valor = ",".join(enabled_grades)
+                config = ConfiguracionSistema.query.filter_by(clave=clave).first()
+                if config:
+                    config.valor = valor
+                else:
+                    config = ConfiguracionSistema(
+                        clave=clave, valor=valor, descripcion=f"Grados habilitados para el módulo {mod}"
+                    )
+                db.session.add(config)
+
             try:
                 db.session.commit()
-                flash("La disponibilidad de los exámenes ha sido actualizada.", "success")
+                flash("La disponibilidad de exámenes y módulos ha sido actualizada.", "success")
             except Exception as e:
                 db.session.rollback()
                 flash(f"Error al actualizar la disponibilidad: {str(e)}", "danger")
@@ -838,36 +844,40 @@ class ExamAvailabilityView(BaseView):
             active_filter = request.form.get("active_grade_filter", "all")
             return redirect(url_for(".index", filter_grade=active_filter))
 
-        # Lógica para mostrar la tabla
+        # Lógica GET
         try:
-            # Try to query the table to check if it exists
             availability_data = ExamAvailability.query.all()
         except OperationalError:
-            # If table does not exist, flash a message and return an empty view
-            flash(
-                'La tabla "exam_availability" no existe. Por favor, ve a "Gestión DB" y haz clic en "Crear Tablas" para inicializarla.',
-                "warning",
-            )
-            # Return an empty list for cuadernillos and grados to prevent further errors
-            return self.render(
-                "admin/exam_availability.html",
-                cuadernillos=[],
-                grados=[],
-                availability_map={},
-            )
+            flash("Error al acceder a la tabla de disponibilidad.", "warning")
+            return self.render("admin/exam_availability.html", cuadernillos=[], grados=[], availability_map={})
 
         cuadernillos = Cuadernillo.query.order_by(Cuadernillo.grado, Cuadernillo.area).all()
-        grados = sorted(list(set([int(c.grado) for c in cuadernillos])))
+
+        # Obtener todos los grados posibles
+        grados_query = db.session.query(User.grado).filter(User.grado != None).distinct().all()
+        grados = sorted([g[0] for g in grados_query if g[0]])
 
         availability_map = {}
         for avail in availability_data:
             availability_map[(avail.cuadernillo_id, avail.grado)] = avail.is_enabled
+
+        # Cargar configuración de módulos
+        def get_mod_grades(mod):
+            c = ConfiguracionSistema.query.filter_by(clave=f"MODULE_{mod}_GRADES").first()
+            return [g.strip() for g in c.valor.split(",")] if c and c.valor else []
+
+        modules_config = {
+            "PREICFES": get_mod_grades("PREICFES"),
+            "PREUNAL": get_mod_grades("PREUNAL"),
+            "LABORATORIOS": get_mod_grades("LABORATORIOS"),
+        }
 
         return self.render(
             "admin/exam_availability.html",
             cuadernillos=cuadernillos,
             grados=grados,
             availability_map=availability_map,
+            modules_config=modules_config,
         )
 
     def is_accessible(self):

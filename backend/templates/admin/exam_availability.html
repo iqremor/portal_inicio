@@ -13,6 +13,46 @@
   </div>
 
   <form method="POST" action="{{ url_for('.index') }}">
+
+    <!-- Módulos Globales -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Módulos del Portal Estudiantil</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Módulo</th>
+                            {% for grado in grados %}
+                                <th class="text-center">Grado {{ grado }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set modulos = [('PREICFES', 'Preicfes (Saber 11)'), ('PREUNAL', 'Preunal (Univ. Nacional)'), ('LABORATORIOS', 'Laboratorios')] %}
+                        {% for mod_key, mod_label in modulos %}
+                        <tr>
+                            <td class="font-weight-bold">{{ mod_label }}</td>
+                            {% for grado in grados %}
+                                <td class="text-center">
+                                    <div class="custom-control custom-checkbox">
+                                        {% set enabled_grades = modules_config.get(mod_key, []) %}
+                                        <input type="checkbox" class="custom-control-input" id="module-{{ mod_key }}-{{ grado }}" name="module-{{ mod_key }}-{{ grado }}" {{ 'checked' if (grado|string) in enabled_grades else '' }}>
+                                        <label class="custom-control-label" for="module-{{ mod_key }}-{{ grado }}"></label>
+                                    </div>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <h5 class="mb-3">Disponibilidad de Cuadernillos por Examen</h5>
     <div class="table-responsive">
       <table id="exam-availability-table" class="table table-bordered table-striped">
         <thead class="thead-dark">
@@ -30,10 +70,10 @@
               <td class="text-center">
                 <div class="custom-control custom-switch">
                   {% set is_enabled = availability_map.get((c.id, c.grado), True) %}
-                  <input type="checkbox" 
-                         class="custom-control-input" 
-                         id="switch-{{ c.id }}" 
-                         name="cuadernillo-{{ c.id }}-{{ c.grado }}" 
+                  <input type="checkbox"
+                         class="custom-control-input"
+                         id="switch-{{ c.id }}"
+                         name="cuadernillo-{{ c.id }}-{{ c.grado }}"
                          {{ 'checked' if is_enabled else '' }}>
                   <label class="custom-control-label" for="switch-{{ c.id }}"></label>
                 </div>

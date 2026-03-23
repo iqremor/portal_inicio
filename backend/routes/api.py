@@ -271,6 +271,18 @@ def get_user_data(codigo, active_session):
             403,
         )
 
+    # Lógica de visibilidad de módulos dinámica
+    def is_module_enabled(clave, user_grade):
+        config_val = get_config_value(clave, "")
+        if not config_val:
+            return False
+        enabled_grades = [g.strip() for g in config_val.split(",")]
+        return str(user_grade) in enabled_grades
+
+    preicfes_enabled = is_module_enabled("MODULE_PREICFES_GRADES", user.grado)
+    preunal_enabled = is_module_enabled("MODULE_PREUNAL_GRADES", user.grado)
+    laboratorios_enabled = is_module_enabled("MODULE_LABORATORIOS_GRADES", user.grado)
+
     return (
         jsonify(
             {
@@ -278,6 +290,11 @@ def get_user_data(codigo, active_session):
                 "nombre_completo": user.nombre_completo,
                 "grado": user.grado,
                 "role": user.role.value,
+                "modules": {
+                    "preicfes": preicfes_enabled,
+                    "preunal": preunal_enabled,
+                    "laboratorios": laboratorios_enabled,
+                },
             }
         ),
         200,
