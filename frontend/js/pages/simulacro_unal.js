@@ -1,4 +1,5 @@
 import { getSession } from '../shared/auth.js';
+import { getInitials } from '../shared/utils.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const session = getSession();
@@ -7,13 +8,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // 1. Mostrar nombre de bienvenida
-  const welcomeName = document.getElementById('student-name-welcome');
-  if (welcomeName && session.nombre_completo) {
-    welcomeName.textContent = session.nombre_completo.toUpperCase();
-  }
+  // 1. Mostrar datos de usuario (Header y Bienvenida)
+  updateUI(session);
 
-  // 2. Cargar Áreas y Puntajes específicos para Preunal
+  // 2. Cargar Áreas y Puntajes
   await loadLobbyData(session);
 
   // 3. Manejo de Finalizar Sesión
@@ -158,4 +156,27 @@ async function startExam(cuadernilloId, areaId, session) {
     console.error('Error al iniciar examen:', error);
     alert('Hubo un problema al conectar con el servidor.');
   }
+}
+
+function updateUI(session) {
+  const welcomeName = document.getElementById('student-name-welcome');
+  if (welcomeName && session.nombre_completo) {
+    welcomeName.textContent = session.nombre_completo.toUpperCase();
+  }
+
+  setTimeout(() => {
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const userGrade = document.getElementById('userGrade');
+
+    if (userAvatar && session.nombre_completo) {
+      userAvatar.textContent = getInitials(session.nombre_completo);
+    }
+    if (userName && session.nombre_completo) {
+      userName.textContent = session.nombre_completo;
+    }
+    if (userGrade && session.grado) {
+      userGrade.textContent = session.grado;
+    }
+  }, 300);
 }

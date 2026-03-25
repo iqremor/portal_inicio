@@ -1,5 +1,22 @@
 # Historial de Cambios
 
+## Sesión 33 - 24 de marzo de 2026
+
+### Objetivos de la sesión:
+
+- Iniciar la **Fase 3 del Plan NATURA**: Control Administrativo Dinámico.
+- Implementar flags de visibilidad para módulos (`PREICFES_ENABLED`, `PREUNAL_ENABLED`) en la configuración global.
+- Crear la interfaz de control (toggles) en el panel de Ajustes Globales para el administrador.
+- Validar la visibilidad condicional de módulos en el Dashboard del estudiante.
+
+### Estado inicial:
+
+- **Calidad de código:** 100% validado (Flake8, ESLint).
+- **Deuda técnica:** Fase 2 del Plan NATURA finalizada, iniciando Fase 3.
+- **Tests:** Sistema de lobbies verificado manualmente en sesión anterior.
+
+---
+
 ## Sesión 32 - 23 de marzo de 2026 (12:00 PM)
 
 ### Objetivos de la sesión:
@@ -9,11 +26,22 @@
 - Iniciar la **Fase 2 del Plan NATURA**: Navegación por Componentes (Lobby de Simulacro).
 - Implementar la visualización de notas por componente en el Lobby.
 
-### Estado inicial:
+### Acciones Realizadas:
 
-- **Calidad de código:** Pendiente resolver 16 advertencias de Flake8.
-- **Deuda técnica:** El Plan NATURA figura como borrador a pesar de tener la Fase 1 completada.
-- **Tests:** Verificación de integridad tras cambios en el dashboard.
+- **Calidad:** Limpieza total de advertencias Flake8 en el backend (0 advertencias).
+- **Plan NATURA (Fase 2):** Implementación de los Lobbies para Preicfes y Preunal.
+  - Creación de `simulacro.html` y `simulacro_unal.html` con integración de headers/footers dinámicos.
+  - Desarrollo de `simulacro.js` y `simulacro_unal.js` para carga dinámica de áreas y puntajes.
+  - Sincronización de estilos orgánicos en `simulacro.css`.
+- **Frontend:** Ajuste de redirección en `dashboard.js` para conectar las tarjetas del dashboard con los nuevos lobbies.
+- **Backend (Web Test):** Actualización de rutas para servir los nuevos archivos de simulacro.
+
+### Estado final:
+
+- **Calidad de código:** 100% validado (Flake8 limpio).
+- **Funcionalidad:** Fase 2 del Plan NATURA completada. Sistema de lobbies operativo y navegable.
+
+### Finalización: lunes, 23 de marzo de 2026
 
 ---
 
