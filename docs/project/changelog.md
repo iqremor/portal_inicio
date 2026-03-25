@@ -9,11 +9,24 @@
 - Crear la interfaz de control (toggles) en el panel de Ajustes Globales para el administrador.
 - Validar la visibilidad condicional de módulos en el Dashboard del estudiante.
 
-### Estado inicial:
+### Acciones Realizadas:
 
-- **Calidad de código:** 100% validado (Flake8, ESLint).
-- **Deuda técnica:** Fase 2 del Plan NATURA finalizada, iniciando Fase 3.
-- **Tests:** Sistema de lobbies verificado manualmente en sesión anterior.
+- **Estilos:** Rediseño total de `simulacro.css` eliminando tonos amarillos y aplicando la paleta verde orgánica (`--accent-color`).
+- **Componentes:** Sincronización de Header y Footer en los Lobbies mediante carga asíncrona optimizada (`loadFragments`).
+- **UI/UX:** Integración de FontAwesome 6, eliminación de botones redundantes y mejora de tarjetas de descripción.
+- **Lógica:** Implementación inicial de `updateUI` en `simulacro.js` y `simulacro_unal.js` para mostrar datos de usuario (con delay de sincronización).
+- **Calidad:** Estandarización de clases de footer (`.dashboard-footer`) y limpieza de selectores CSS.
+
+### Estado final:
+
+- **Calidad de código:** 100% validado por hooks (Prettier, ESLint, Flake8).
+- **Funcionalidad:** Lobbies visualmente integrados al ecosistema NATURA.
+- **Pendiente (Crítico):**
+  - Corregir inconsistencia en la carga de nombre/grado en el header (race condition).
+  - Validar redirección de botones de inicio de examen (Fase 2 Plan NATURA).
+  - Resolver bug visual de "caja verde" en el contenedor del footer.
+
+### Finalización: martes, 24 de marzo de 2026
 
 ---
 
