@@ -272,16 +272,22 @@ def get_user_data(codigo, active_session):
         )
 
     # Lógica de visibilidad de módulos dinámica
-    def is_module_enabled(clave, user_grade):
-        config_val = get_config_value(clave, "")
+    def is_module_enabled(global_flag, grades_flag, user_grade):
+        # 1. Verificar Flag Global (Interruptor Maestro)
+        global_enabled = get_config_value(global_flag, "0") == "1"
+        if not global_enabled:
+            return False
+
+        # 2. Verificar Grados Habilitados
+        config_val = get_config_value(grades_flag, "")
         if not config_val:
             return False
         enabled_grades = [g.strip() for g in config_val.split(",")]
         return str(user_grade) in enabled_grades
 
-    preicfes_enabled = is_module_enabled("MODULE_PREICFES_GRADES", user.grado)
-    preunal_enabled = is_module_enabled("MODULE_PREUNAL_GRADES", user.grado)
-    laboratorios_enabled = is_module_enabled("MODULE_LABORATORIOS_GRADES", user.grado)
+    preicfes_enabled = is_module_enabled("PREICFES_ENABLED", "MODULE_PREICFES_GRADES", user.grado)
+    preunal_enabled = is_module_enabled("PREUNAL_ENABLED", "MODULE_PREUNAL_GRADES", user.grado)
+    laboratorios_enabled = is_module_enabled("LABORATORIOS_ENABLED", "MODULE_LABORATORIOS_GRADES", user.grado)
 
     return (
         jsonify(

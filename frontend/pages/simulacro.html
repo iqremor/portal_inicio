@@ -104,6 +104,9 @@
             document.getElementById('footer-placeholder').innerHTML =
               await footerRes.text();
           }
+
+          // Emitir evento para notificar que los fragmentos están listos
+          window.dispatchEvent(new CustomEvent('fragmentsLoaded'));
         } catch (error) {
           console.error('Error cargando fragmentos:', error);
         }

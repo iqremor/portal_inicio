@@ -156,14 +156,14 @@ async function startExam(areaId, session) {
 }
 
 function updateUI(session) {
-  // Datos de Bienvenida
+  // Datos de Bienvenida (Siempre disponibles en el DOM principal)
   const welcomeName = document.getElementById('student-name-welcome');
   if (welcomeName && session.nombre_completo) {
     welcomeName.textContent = session.nombre_completo.toUpperCase();
   }
 
-  // Como el header se carga por fragmento (fetch), puede que no esté listo de inmediato
-  setTimeout(() => {
+  // Función interna para poblar el header
+  const populateHeader = () => {
     const userAvatar = document.getElementById('userAvatar');
     const userName = document.getElementById('userName');
     const userGrade = document.getElementById('userGrade');
@@ -177,5 +177,13 @@ function updateUI(session) {
     if (userGrade && session.grado) {
       userGrade.textContent = session.grado;
     }
-  }, 300);
+  };
+
+  // Si el header ya está cargado, lo poblamos de inmediato
+  if (document.getElementById('userAvatar')) {
+    populateHeader();
+  } else {
+    // Si no, esperamos al evento de carga de fragmentos
+    window.addEventListener('fragmentsLoaded', populateHeader);
+  }
 }

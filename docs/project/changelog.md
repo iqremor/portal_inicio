@@ -1,5 +1,30 @@
 # Historial de Cambios
 
+## Sesión 34 - 25 de marzo de 2026
+
+### Objetivos de la sesión:
+
+- Resolver la **deuda técnica crítica** de la Sesión 33: Race condition en el header y bug visual del footer.
+- Validar y corregir la redirección de los botones de "Empezar Simulacro" en los lobbies Preicfes/Preunal.
+- Continuar con la **Fase 3 del Plan NATURA**: Control Administrativo Dinámico (Flags de visibilidad).
+
+### Acciones Realizadas:
+
+- **Frontend:** Sincronización robusta del header en los lobbies mediante el evento personalizado `fragmentsLoaded`, eliminando la dependencia de `setTimeout` y resolviendo la race condition.
+- **Backend (API):** Refactorización del endpoint `/api/usuario/<codigo>` para integrar interruptores maestros globales (`PREICFES_ENABLED`, `PREUNAL_ENABLED`) con la lógica de visibilidad por grado.
+- **Backend (Server):** Optimización de `routes/frontend.py` para servir assets estáticos (CSS/JS) de forma genérica desde cualquier subcarpeta de `frontend/`, corrigiendo errores de carga por rutas relativas.
+- **Base de Datos:** Actualización de `seed_data` e inserción manual de configuraciones faltantes para habilitar los módulos Preicfes/Preunal para los grados 10 y 11.
+
+### Estado final:
+
+- **Calidad de código:** Validada tras refactorización de rutas y lógica de sincronización.
+- **Funcionalidad:** Módulos de simulacro visibles y funcionales en el Dashboard según configuración dinámica. Race condition en el header resuelta.
+- **Pendiente:** Validar el flujo completo de inicio de examen desde los nuevos lobbies.
+
+### Finalización: miércoles, 25 de marzo de 2026
+
+---
+
 ## Sesión 33 - 24 de marzo de 2026
 
 ### Objetivos de la sesión:

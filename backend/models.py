@@ -374,6 +374,16 @@ def seed_data():
         ("EXAM_WARNING_TIME", "30", "Tiempo de advertencia en segundos"),
         ("EXAM_NEXT_BUTTON_DELAY", "10000", "Retraso del botón siguiente en ms"),
         ("EXAM_NUM_ATTEMPTS", "3", "Número de intentos permitidos"),
+        ("PREICFES_ENABLED", "1", "Activa o desactiva el módulo Preicfes (1=Activo, 0=Inactivo)"),
+        ("PREUNAL_ENABLED", "1", "Activa o desactiva el módulo Preunal (1=Activo, 0=Inactivo)"),
+        ("LABORATORIOS_ENABLED", "1", "Activa o desactiva el módulo Laboratorios (1=Activo, 0=Inactivo)"),
+        ("MODULE_PREICFES_GRADES", "10,11", "Grados habilitados para el módulo Preicfes (separados por coma)"),
+        ("MODULE_PREUNAL_GRADES", "10,11", "Grados habilitados para el módulo Preunal (separados por coma)"),
+        (
+            "MODULE_LABORATORIOS_GRADES",
+            "6,7,8,9,10,11",
+            "Grados habilitados para el módulo Laboratorios (separados por coma)",
+        ),
     ]
 
     for clave, valor, desc in configs:
