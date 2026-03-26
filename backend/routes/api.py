@@ -260,24 +260,36 @@ def finalizar_examen(session_id, active_session):
     presented_map = {q["question_number"]: q for q in presented}
     rev_map = {"A": 0, "B": 1, "C": 2, "D": 3}
 
-    # Conteo robusto de respuestas
+    # Conteo robusto de respuestas y preparación de revisión pedagógica
     answered_q_nums = set()
     correct_count = 0
+    revision = []
 
-    for ans in data.get("answers", []):
-        try:
-            q_num = int(ans.get("question_number"))
-            sel = ans.get("selected_option")
+    # Mapear respuestas del usuario por número de pregunta para facilitar revisión
+    user_answers_map = {int(ans.get("question_number")): ans.get("selected_option") for ans in data.get("answers", [])}
 
-            # REGLA: Solo se cuenta como respondida si el usuario seleccionó una opción válida.
-            # Si la casilla quedó vacía (null, empty), se ignorará aquí y contará como 'Sin marcar'.
-            if q_num in presented_map and q_num not in answered_q_nums:
-                if sel and str(sel).upper() in ["A", "B", "C", "D"]:
-                    answered_q_nums.add(q_num)
-                    if str(sel).upper() == presented_map[q_num]["correct_answer"]:
-                        correct_count += 1
-        except (ValueError, TypeError):
-            continue
+    for q in presented:
+        q_num = int(q["question_number"])
+        sel = user_answers_map.get(q_num)
+        is_correct = False
+
+        user_choice = "NONE"
+        if sel and str(sel).upper() in ["A", "B", "C", "D"]:
+            user_choice = str(sel).upper()
+            answered_q_nums.add(q_num)
+            if user_choice == q["correct_answer"]:
+                correct_count += 1
+                is_correct = True
+
+        revision.append(
+            {
+                "question_number": q_num,
+                "image_url": q.get("image_url", ""),
+                "correct_answer": q["correct_answer"],
+                "user_answer": user_choice,
+                "is_correct": is_correct,
+            }
+        )
 
     total_questions = len(presented)
     unanswered = total_questions - len(answered_q_nums)
@@ -311,6 +323,7 @@ def finalizar_examen(session_id, active_session):
             "porcentaje": round((correct_count / total_questions) * 100, 1),
             "tiempo_usado": data.get("tiempo_usado", 0),
             "area": active_session.cuadernillo.area if active_session.cuadernillo else "General",
+            "revision": revision,
         }
 
         active_session.cuadernillo_id = None

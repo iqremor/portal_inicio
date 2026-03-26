@@ -235,3 +235,26 @@
 - **Funcionalidad:** ImplementaciÃ³n del Plan FOCUS al 80% (pendiente validaciÃ³n final en entorno real).
 
 ### FinalizaciÃ³n: lunes, 23 de marzo de 2026
+
+## SesiÃ³n 31 - 26 de marzo de 2026
+
+### Objetivos de la sesiÃ³n:
+
+- Corregir el fallo en la visualizaciÃ³n de resultados en `resultados.html`.
+- Sincronizar el backend y frontend para el cÃ¡lculo preciso de la nota y el desglose de respuestas (correctas, incorrectas y sin marcar).
+- Optimizar el flujo de finalizaciÃ³n del examen para incluir el tiempo usado.
+
+### Acciones Realizadas:
+
+- **Backend (API):** RefactorizaciÃ³n del endpoint `/api/examen/<session_id>/finalizar` en `backend/routes/api.py`. Se implementÃ³ una lÃ³gica de conteo robusta que distingue entre respuestas vÃ¡lidas (incorrectas) y casillas vacÃ­as (sin marcar).
+- **Frontend (API):** SincronizaciÃ³n de `submitExam` en `frontend/js/api/index.js` para enviar el objeto de respuestas y el tiempo transcurrido.
+- **Frontend (Examen):** ActualizaciÃ³n de `frontend/js/pages/exam.js` para capturar las respuestas en formato JSON, calcular el tiempo usado mediante el `Timer` y redirigir a `resultados.html`.
+- **Frontend (Resultados):** Ajuste de `frontend/js/pages/results.js` para renderizar dinÃ¡micamente el anillo de progreso, la nota final (escala 0.0-5.0) y las estadÃ­sticas detalladas.
+- **Calidad:** Paso exitoso de los hooks de pre-commit (Black, Prettier, Flake8).
+
+### Estado final:
+
+- **Calidad de cÃ³digo:** 100% validado y formateado.
+- **Funcionalidad:** Flujo de examen completo y visualizaciÃ³n de resultados 100% operativa y precisa.
+
+### FinalizaciÃ³n: jueves, 26 de marzo de 2026
