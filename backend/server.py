@@ -362,7 +362,8 @@ def run(host, port, debug, reload, open_browser):
                     click.echo(f"   - Localmente: http://localhost:{port}")
                     click.echo(f"   - En tu red:  http://{local_ip}:{port}")
 
-                    server_manager.start_server(host, port, debug, mode="production")
+                    # Forzamos 0.0.0.0 en producción para que sea accesible en la red
+                    server_manager.start_server("0.0.0.0", port, debug, mode="production")
                     click.echo(click.style("Estado: Activo (Producción)", fg="green"))
 
             elif command.strip() == "":
