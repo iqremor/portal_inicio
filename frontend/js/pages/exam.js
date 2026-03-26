@@ -217,18 +217,36 @@ class Exam {
         return;
       }
 
-      const attemptsCount = this.answers.filter(
-        (answer) => answer !== null
-      ).length;
+      // Preparar respuestas en el formato que espera el backend
+      const formattedAnswers = this.answers
+        .map((answerIndex, index) => {
+          if (answerIndex === null) return null;
+          return {
+            question_number: this.examData.preguntas[index].question_number,
+            selected_option: ['A', 'B', 'C', 'D'][answerIndex],
+          };
+        })
+        .filter((a) => a !== null);
+
+      // Calcular tiempo usado (tiempo total - tiempo restante)
+      const totalTimeSeconds = this.examData.tiempo_limite * 60;
+      const timeRemaining = this.timer ? this.timer.getTimeRemaining() : 0;
+      const tiempoUsado = totalTimeSeconds - timeRemaining;
+
       const result = await submitExam(
         this.sessionId,
-        attemptsCount,
-        userCodigo
+        formattedAnswers,
+        userCodigo,
+        tiempoUsado
       );
+
+      // Guardar resultado detallado para la página de resultados
       localStorage.setItem('ultimoResultado', JSON.stringify(result));
-      // Redirigir al lobby de simulacro, pasando el session_id
-      window.location.href = `/frontend/pages/simulacro.html?session_id=${this.sessionId}`;
+
+      // Redirigir a la página de resultados
+      window.location.href = `/frontend/pages/resultados.html`;
     } catch (error) {
+      console.error('Error al finalizar el examen:', error);
       showNotification('Error al finalizar el examen', 'error');
     }
   }

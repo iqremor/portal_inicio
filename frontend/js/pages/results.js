@@ -157,7 +157,7 @@ class Results {
 
     if (btnBackDashboard) {
       btnBackDashboard.addEventListener('click', () => {
-        window.location.href = `/frontend/pages/dashboard.html`;
+        window.location.href = `/frontend/pages/simulacro.html`;
       });
     }
 

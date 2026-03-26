@@ -260,13 +260,30 @@ def finalizar_examen(session_id, active_session):
     presented_map = {q["question_number"]: q for q in presented}
     rev_map = {"A": 0, "B": 1, "C": 2, "D": 3}
 
-    for ans in data.get("answers", []):
-        q_num = ans.get("question_number")
-        sel = str(ans.get("selected_option")).upper()
-        if q_num in presented_map and sel == presented_map[q_num]["correct_answer"]:
-            correct_count += 1
+    # Conteo robusto de respuestas
+    answered_q_nums = set()
+    correct_count = 0
 
-    grade = (correct_count / len(presented)) * 5.0
+    for ans in data.get("answers", []):
+        try:
+            q_num = int(ans.get("question_number"))
+            sel = ans.get("selected_option")
+
+            # REGLA: Solo se cuenta como respondida si el usuario seleccionó una opción válida.
+            # Si la casilla quedó vacía (null, empty), se ignorará aquí y contará como 'Sin marcar'.
+            if q_num in presented_map and q_num not in answered_q_nums:
+                if sel and str(sel).upper() in ["A", "B", "C", "D"]:
+                    answered_q_nums.add(q_num)
+                    if str(sel).upper() == presented_map[q_num]["correct_answer"]:
+                        correct_count += 1
+        except (ValueError, TypeError):
+            continue
+
+    total_questions = len(presented)
+    unanswered = total_questions - len(answered_q_nums)
+    incorrect = len(answered_q_nums) - correct_count
+
+    grade = (correct_count / total_questions) * 5.0
 
     try:
         new_result = ExamResult(
@@ -274,8 +291,8 @@ def finalizar_examen(session_id, active_session):
             cuadernillo_id=active_session.cuadernillo_id,
             final_score=grade,
             correct_answers=correct_count,
-            incorrect_answers=len(presented) - correct_count,
-            unanswered_questions=0,
+            incorrect_answers=incorrect,
+            unanswered_questions=unanswered,
             time_used=data.get("tiempo_usado", 0),
             attempt_number=ExamResult.query.filter_by(
                 user_id=active_session.user_id, cuadernillo_id=active_session.cuadernillo_id
@@ -283,10 +300,24 @@ def finalizar_examen(session_id, active_session):
             + 1,
         )
         db.session.add(new_result)
+
+        # Guardar datos necesarios antes de limpiar la sesión
+        resultado_detalle = {
+            "puntuacion": round(grade, 2),
+            "preguntas_correctas": correct_count,
+            "preguntas_incorrectas": incorrect,
+            "preguntas_sin_responder": unanswered,
+            "total_preguntas": total_questions,
+            "porcentaje": round((correct_count / total_questions) * 100, 1),
+            "tiempo_usado": data.get("tiempo_usado", 0),
+            "area": active_session.cuadernillo.area if active_session.cuadernillo else "General",
+        }
+
         active_session.cuadernillo_id = None
         active_session.presented_questions = None
         db.session.commit()
-        return jsonify({"message": "OK", "puntuacion": round(grade, 2)})
+
+        return jsonify({"message": "OK", **resultado_detalle})
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
