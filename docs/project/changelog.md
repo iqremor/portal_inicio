@@ -247,6 +247,7 @@
 ### Acciones Realizadas:
 
 - **Backend (API):** RefactorizaciÃ³n del endpoint `/api/examen/<session_id>/finalizar` en `backend/routes/api.py`. Se implementÃ³ una lÃ³gica de conteo robusta que distingue entre respuestas vÃ¡lidas (incorrectas) y casillas vacÃ­as (sin marcar).
+- **Servidor:** Corregido el comando `production` en el menÃº interactivo de `backend/server.py` para vincularse a todas las interfaces (`0.0.0.0`), permitiendo el acceso desde cualquier dispositivo en la red local.
 - **Frontend (API):** SincronizaciÃ³n de `submitExam` en `frontend/js/api/index.js` para enviar el objeto de respuestas y el tiempo transcurrido.
 - **Frontend (Examen):** ActualizaciÃ³n de `frontend/js/pages/exam.js` para capturar las respuestas en formato JSON, calcular el tiempo usado mediante el `Timer` y redirigir a `resultados.html`.
 - **Frontend (Resultados):** Ajuste de `frontend/js/pages/results.js` para renderizar dinÃ¡micamente el anillo de progreso, la nota final (escala 0.0-5.0) y las estadÃ­sticas detalladas.
