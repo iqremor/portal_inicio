@@ -105,6 +105,8 @@
               await footerRes.text();
           }
 
+          // Flag global para sincronización con scripts de página
+          window.__headerLoaded = true;
           // Emitir evento para notificar que los fragmentos están listos
           window.dispatchEvent(new CustomEvent('fragmentsLoaded'));
         } catch (error) {

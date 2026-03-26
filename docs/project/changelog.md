@@ -10,16 +10,16 @@
 
 ### Acciones Realizadas:
 
-- **Frontend:** Sincronización robusta del header en los lobbies mediante el evento personalizado `fragmentsLoaded`, eliminando la dependencia de `setTimeout` y resolviendo la race condition.
-- **Backend (API):** Refactorización del endpoint `/api/usuario/<codigo>` para integrar interruptores maestros globales (`PREICFES_ENABLED`, `PREUNAL_ENABLED`) con la lógica de visibilidad por grado.
-- **Backend (Server):** Optimización de `routes/frontend.py` para servir assets estáticos (CSS/JS) de forma genérica desde cualquier subcarpeta de `frontend/`, corrigiendo errores de carga por rutas relativas.
-- **Base de Datos:** Actualización de `seed_data` e inserción manual de configuraciones faltantes para habilitar los módulos Preicfes/Preunal para los grados 10 y 11.
+- **Frontend:** Implementación de `MutationObserver` en `simulacro.js` para garantizar la carga de datos del usuario y funcionalidad de logout independientemente del timing de inyección del header.
+- **Backend (API):** Reescritura robusta de `routes/api.py` para evitar errores de atributos inexistentes (`getattr`) y asegurar la compatibilidad de campos (`questions`/`preguntas`).
+- **Lógica de Negocio:** Implementación de cálculo dinámico del tiempo límite por examen basado en `EXAM_QUESTIONS_COUNT` y `EXAM_TIMER_DURATION`.
+- **Backend (Rutas):** Restauración del endpoint de intentos (`/attempts`) y creación del endpoint seguro para mejores notas por usuario.
 
 ### Estado final:
 
-- **Calidad de código:** Validada tras refactorización de rutas y lógica de sincronización.
-- **Funcionalidad:** Módulos de simulacro visibles y funcionales en el Dashboard según configuración dinámica. Race condition en el header resuelta.
-- **Pendiente:** Validar el flujo completo de inicio de examen desde los nuevos lobbies.
+- **Calidad de código:** API protegida contra fallos internos y frontend con detección reactiva de elementos.
+- **Funcionalidad:** Flujo completo de inicio de examen desde el lobby Saber-IEM validado.
+- **Pendiente:** Replicar la robustez del logout y sincronización en otros lobbies específicos.
 
 ### Finalización: miércoles, 25 de marzo de 2026
 
