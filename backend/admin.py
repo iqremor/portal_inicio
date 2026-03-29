@@ -480,7 +480,7 @@ class ConfigExamenesView(BaseView):
         val_timer = get_v("EXAM_TIMER_DURATION", "240")
         val_warning = get_v("EXAM_WARNING_TIME", "30")
         val_delay = get_v("EXAM_NEXT_BUTTON_DELAY", "10000")
-        val_attempts = get_v("EXAM_NUM_ATTEMPTS", "3")
+        val_attempts = get_v("EXAM_NUM_ATTEMPTS", "1")
         val_questions = get_v("EXAM_QUESTIONS_COUNT", "10")
 
         current_config = {

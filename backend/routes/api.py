@@ -192,13 +192,13 @@ def get_exam_questions_by_session(session_id, active_session):
             "id": cuadernillo.id,
             "titulo": cuadernillo.nombre,
             "total_preguntas_banco": cuadernillo.total_preguntas_banco,
-            "numAttempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 5)),
+            "numAttempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 1)),
             "config": {
                 "timerDuration": timer_duration,
                 "numQuestions": len(active_session.presented_questions),
                 "subject": cuadernillo.area,
                 "Grado": cuadernillo.grado,
-                "numAttempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 5)),
+                "numAttempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 1)),
             },
             "questions": active_session.presented_questions,
             "preguntas": active_session.presented_questions,  # Soporte para ambos nombres de campo
@@ -328,7 +328,7 @@ def finalizar_examen(session_id, active_session):
             "porcentaje": round((correct_count / total_questions) * 100, 1),
             "tiempo_usado": data.get("tiempo_usado", 0),
             "area": active_session.cuadernillo.area if active_session.cuadernillo else "General",
-            "numAttempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 3)),
+            "numAttempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 1)),
             "revision": revision,
         }
         active_session.cuadernillo_id = None

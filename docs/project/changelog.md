@@ -287,6 +287,7 @@
   - Se corrigió la comparación de intentos en `ui.js` forzando conversión a enteros para evitar bloqueos erróneos.
   - Se implementó auto-inicio de examen en el frontend para recuperar sesiones inactivas (error 400/404).
   - Se sincronizó la constante de intentos predeterminada a 5 en `constants.js`.
+- **Seguridad e Intentos:** Se unificó el valor de seguridad (fallback) para `numAttempts` a **1** en todo el sistema (Backend: `api.py`, `admin.py`; Frontend: `constants.js`, `results.js`) para asegurar un comportamiento restrictivo y coherente ante la ausencia de configuración dinámica en el panel administrativo.
 - **Correcciones:** Se resolvió el error `NameError: jsonify` en `backend/admin.py` y se actualizó la lógica de `fetch` en el frontend para mayor estabilidad.
 
 ### Estado final:

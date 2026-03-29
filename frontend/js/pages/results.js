@@ -119,10 +119,9 @@ class Results {
       // Intentar obtener el máximo de intentos del resultado o usar el valor por defecto configurado
       let maxAttempts = parseInt(this.examResult.numAttempts);
 
-      // Si no viene en el resultado (por caché antigua), podríamos usar 3 como último recurso,
-      // pero el backend ya debería enviarlo.
+      // Si no viene en el resultado (por caché antigua), usar 1 como último recurso (seguridad).
       if (isNaN(maxAttempts)) {
-        maxAttempts = 3;
+        maxAttempts = 1;
       }
 
       console.log(
