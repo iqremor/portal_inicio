@@ -10,3 +10,15 @@
 *   **Manejo de Concurrencia:** Si múltiples estudiantes intentan iniciar o finalizar exámenes simultáneamente, el manejo de archivos JSON podría presentar problemas de concurrencia. Una base de datos gestionaría esto de manera más robusta.
 *   **Validación de Datos:** Aunque hay validación de código estudiantil, se podría reforzar la validación de otros datos de entrada en el backend para prevenir inyecciones o datos malformados.
 *   **Frontend Routing:** La navegación entre `inicio.html`, `examen.html`, `resultados.html` parece manejarse con redirecciones directas. Un router de frontend (ej. con una librería como `react-router-dom` si se usara React, o un router simple de JS) podría ofrecer una experiencia de usuario más fluida y una mejor gestión del estado.
+
+---
+
+### Sugerencias de Mejora (Sesión 13 - 7 de diciembre de 2025)
+
+*   **Revisar `NUM_PREGUNTAS_EXAMEN`:** El número de preguntas (`NUM_PREGUNTAS_EXAMEN = 10`) está actualmente codificado en `finalizar_examen`. Idealmente, esto debería provenir del modelo `Cuadernillo` o almacenarse en la `ActiveSession` cuando el examen se inicia.
+*   **Manejo de Errores Más Robusto en `generador_respuestas.py`:** El script podría beneficiarse de un manejo de errores más específico y mensajes más claros, especialmente al analizar nombres de archivo para determinar el grado y la materia.
+*   **Refinar Estructura de `all_exam_answers.json`:** Aunque el archivo `all_exam_answers.json` utiliza `grado_materia` como clave, que se deriva del nombre del archivo, podría ser más robusto usar un identificador más directo como `cuadernillo.id` si la base de datos es accesible desde el script de generación.
+*   **Eliminar Archivos `respuestas.json` Obsoletos:** El enfoque anterior generaba archivos `respuestas.json` individuales en directorios específicos (ej. `data/decimo/matematicas/`). Estos archivos ahora están obsoletos tras la introducción de `all_exam_answers.json` y deberían ser limpiados. El script `generador_respuestas.py` podría extenderse para eliminar estos archivos antiguos después de generar el consolidado.
+*   **Testing:** Es crucial implementar pruebas unitarias y de integración para el endpoint `finalizar_examen` y el script `generador_respuestas.py` para asegurar su correcto funcionamiento y robustez.
+*   **Actualización de Documentación (`exam_answers_flow.md`):** La sección "Cómo Agregar las Respuestas Correctas para un Examen?" de `exam_answers_flow.md` debe ser actualizada para reflejar el nuevo método de gestión de respuestas a través de `all_exam_answers.json` y el script `generador_respuestas.py`, en lugar de los archivos `respuestas.json` individuales.
+

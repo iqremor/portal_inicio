@@ -1,50 +1,810 @@
 [
   {
-    "codigo": "IEM0601",
-    "nombre_completo": "Ana María García",
-    "grado": "6",
+    "codigo": "IEM1101",
+    "nombre_completo": "ADRADA ARGOTE JHONKER STIVEN",
+    "grado": "11",
     "activo": true,
-    "fecha_registro": "2025-01-01",
+    "fecha_registro": "1/1/2025",
     "role": "USER"
   },
   {
-    "codigo": "IEM0702",
-    "nombre_completo": "Carlos Eduardo López",
-    "grado": "7",
+    "codigo": "IEM1102",
+    "nombre_completo": "CAICEDO RUIZ ADRIANA YISELA",
+    "grado": "11",
     "activo": true,
-    "fecha_registro": "2025-01-01",
+    "fecha_registro": "1/1/2025",
     "role": "USER"
   },
   {
-    "codigo": "IEM0803",
-    "nombre_completo": "María José Rodríguez",
-    "grado": "8",
+    "codigo": "IEM1103",
+    "nombre_completo": "CAICEDO RENTERIA MARREN DAYANA",
+    "grado": "11",
     "activo": true,
-    "fecha_registro": "2025-01-01",
+    "fecha_registro": "1/1/2025",
     "role": "USER"
   },
   {
-    "codigo": "IEM0901",
-    "nombre_completo": "Andrés Felipe Gomez",
-    "grado": "9",
+    "codigo": "IEM1104",
+    "nombre_completo": "CAMAYO CHITO YEFERSON  DAVID",
+    "grado": "11",
     "activo": true,
-    "fecha_registro": "2025-01-01",
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1105",
+    "nombre_completo": "CASANOVA QUIÑONEZ JHARLI SOFIA",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1106",
+    "nombre_completo": "FERNANDEZ IMBACHI KARINA ",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1107",
+    "nombre_completo": "GOMEZ CAICEDO TAHIMI YALENA",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1109",
+    "nombre_completo": "MARIN ARTEAGA CARIANNYS DEIMARIS",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1110",
+    "nombre_completo": "MORENO GONZALEZ VALENTINA ",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1111",
+    "nombre_completo": "NARVAEZ MONTENEGRO JHOAN CAMILO",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1112",
+    "nombre_completo": "ÑAÑEZ MONTENEGRO ZULY MARCELY",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1113",
+    "nombre_completo": "OLIVEROS ANGULO MILER YESID",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1114",
+    "nombre_completo": "OLIVEROS RUEDA MARY LUCIA",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1115",
+    "nombre_completo": "PINTA MUÑOZ ALISHON SAMANTHA",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1116",
+    "nombre_completo": "RUANO CAIPE KEYMER JHOAN",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1117",
+    "nombre_completo": "ZAMBRANO CAICEDO KAREN SOFIA",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1118",
+    "nombre_completo": "ROSERO MEZA ROBIN ALEXIS",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1119",
+    "nombre_completo": "BRAVO GOMEZ DANILSON CAMILO",
+    "grado": "11",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
     "role": "USER"
   },
   {
     "codigo": "IEM1001",
-    "nombre_completo": "Laura Sofía Hernández",
+    "nombre_completo": "AGUAYO FANDIÑO KAREN TALIA",
     "grado": "10",
     "activo": true,
-    "fecha_registro": "2025-01-01",
+    "fecha_registro": "1/1/2025",
     "role": "USER"
   },
   {
-    "codigo": "IEM1101",
-    "nombre_completo": "Maria Vargas",
-    "grado": "11",
+    "codigo": "IEM1002",
+    "nombre_completo": "ARGOTE FERNANDEZ LARRY FERNANDO",
+    "grado": "10",
     "activo": true,
-    "fecha_registro": "2025-01-01",
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1003",
+    "nombre_completo": "ARGOTE MASIAS MARIA JOSE",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1004",
+    "nombre_completo": "ARGOTE ORTIZ VICTOR MANUEL",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1005",
+    "nombre_completo": "CAICEDO PALACIOS MICHEL STIVEN",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1006",
+    "nombre_completo": "CAMAYO CHITO JHONATAN DAVID",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1007",
+    "nombre_completo": "CARRERO GARCES KEVIN DUBAN",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1008",
+    "nombre_completo": "CHAUZA GETIAL JHERSON RONALDO",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1009",
+    "nombre_completo": "FERNANDEZ IMBACHI JHAN CARLOS",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1010",
+    "nombre_completo": "FERNANDEZ REALPE WILMAR ALEXIS",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1011",
+    "nombre_completo": "GONZALEZ ARBOLEDA HILARY VANESSA",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1012",
+    "nombre_completo": "MORAN FAJARDO DIDIER BAYARDO",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1013",
+    "nombre_completo": "MUTIS ESPAÑA JUAN DAVID",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1015",
+    "nombre_completo": "RODRIGUEZ VELASCO YAIRA LISBETH",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1016",
+    "nombre_completo": "ROSERO CORDOBA JHOAN SEBASTIAN",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1017",
+    "nombre_completo": "VARGAS BALDASARRY LORIS GABRIELA",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1018",
+    "nombre_completo": "VELASCO CAICEDO YANSULY YINETH ",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM1020",
+    "nombre_completo": "NARVAEZ SANTANA YULIANA",
+    "grado": "10",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0901",
+    "nombre_completo": "ADRADA CORREA BAYRON ESTIVEN",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0903",
+    "nombre_completo": "ANGULO RODRIGUEZ ANGELICA ",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0904",
+    "nombre_completo": "ARTURO RODRIGUEZ YEIMI ALEXANDRA",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0905",
+    "nombre_completo": "BALANTA GONZALEZ JUAN DIEGO",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0906",
+    "nombre_completo": "CALDERON MARTINEZ ALEXANDRA VANESA",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0909",
+    "nombre_completo": "HERRAN JIMENEZ YEIBER JADNIEL",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0910",
+    "nombre_completo": "MARMOLEJO ANGULO LUIS ALEJANDRO",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0911",
+    "nombre_completo": "MARTINEZ DELGADO VALERYN NICOL",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0912",
+    "nombre_completo": "MORENO HURTADO JHON ANDERSON",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0913",
+    "nombre_completo": "MOSQUERA MOSQUERA JOSE MANUEL",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0914",
+    "nombre_completo": "ORDOÑEZ ARAUJO INGRID VANESSA",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0916",
+    "nombre_completo": "RENGIFO GONZALEZ ASLY JANETH",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0917",
+    "nombre_completo": "TREJOS ADRADA LAURA ESTEFANIA",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0918",
+    "nombre_completo": "VARGAS CORDOBA NORY GINETH",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0919",
+    "nombre_completo": "GOMEZ MUÑOZ WILDER YADID",
+    "grado": "9",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0802",
+    "nombre_completo": "BALDASSARRY GARCES LUIS DAVID",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0803",
+    "nombre_completo": "DAZA FERNANDEZ MANUEL SANTIAGO",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0804",
+    "nombre_completo": "GARCIA MADRIÑAN ANI SIOMARA",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0805",
+    "nombre_completo": "GOMEZ CAICEDO NEIDI DALIANA",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0806",
+    "nombre_completo": "GOMEZ GONZALEZ JEIMAR SARETH",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0807",
+    "nombre_completo": "GOMEZ QUINTERO KAREN SOFIA",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0808",
+    "nombre_completo": "LOPEZ VALENCIA LOREN SOFIA",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0809",
+    "nombre_completo": "MORAN FAJARDO CAMILA ALEXANDRA",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0810",
+    "nombre_completo": "ROSERO CORDOBA DANNA ELIZABETH",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0811",
+    "nombre_completo": "SOLARTE DELGADO JHONIER JEFFREY",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0812",
+    "nombre_completo": "TEJADA FERNANDEZ SANTIAGO ",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0813",
+    "nombre_completo": "ADRADA MESA LUIYI",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0814",
+    "nombre_completo": "RIVERA GOMEZ ELKIN ELIECER",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0815",
+    "nombre_completo": "RIVERA GOMEZ CRISTIAN SAMUEL",
+    "grado": "8",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0701",
+    "nombre_completo": "ADRADA CORREA DARLINSON JOHAN",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0703",
+    "nombre_completo": "CAICEDO PALACIOS SAMUEL ",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0704",
+    "nombre_completo": "CAICEDO VELASCO DIDIER MANUEL",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0705",
+    "nombre_completo": "DAZA SALINAS JOHAN JOSE",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0706",
+    "nombre_completo": "DIAZ GOMEZ ANI GABRIELA",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0707",
+    "nombre_completo": "GARCIA RUIZ DYLAN ",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0708",
+    "nombre_completo": "GONZALEZ CABEZAS KAREN LILIANA",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0709",
+    "nombre_completo": "HENAO ORDOÑEZ YERI MICHEL",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0710",
+    "nombre_completo": "MOSQUERA ARGOTE HAZLI YARELI",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0711",
+    "nombre_completo": "SANCHEZ RUIZ YONIER ALEXIS",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0712",
+    "nombre_completo": "TORRES ÑAÑEZ HILARY ",
+    "grado": "7",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0601",
+    "nombre_completo": "ANGULO CABRERA ALAN RICARDO",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0602",
+    "nombre_completo": "BALANTA MENDOZA ANA VALERIA",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0603",
+    "nombre_completo": "BRAVO MOSQUERA JAMINTON DAMIAN",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0604",
+    "nombre_completo": "CAIPE LOPEZ ALISON SALOME",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0605",
+    "nombre_completo": "DIAZ PALACIOS JHON JADER",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0606",
+    "nombre_completo": "DIAZ SOL DENILSON FERNANDO",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0607",
+    "nombre_completo": "FERNANDEZ IMBACHI CAROLINA ",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0608",
+    "nombre_completo": "GOMEZ MUÑOZ BREINER FARID",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0609",
+    "nombre_completo": "GONZALEZ VELASCO HELEN CAMILA",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0610",
+    "nombre_completo": "GONZALEZ VELASCO YAIRA LISBET",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0611",
+    "nombre_completo": "GUERRON BENITEZ DIEGO ARMANDO",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0612",
+    "nombre_completo": "HERNANDEZ DIAZ THIAGO ",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0613",
+    "nombre_completo": "HERRAN JIMENEZ JOHANYERLIS SOFIA",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0614",
+    "nombre_completo": "LOPEZ NARVAEZ MIGUEL ANGEL",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0615",
+    "nombre_completo": "MARTINEZ DIAZ CAMILO ALEXIS",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0616",
+    "nombre_completo": "MEZA GOMEZ NEILIN VALERIA",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0617",
+    "nombre_completo": "MONTENEGRO FERNANDEZ DILAN ",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0618",
+    "nombre_completo": "MOSQUERA IBARRA WILSON ANDRES",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0619",
+    "nombre_completo": "MUÑOZ VELASCO KAREN TATIANA",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0620",
+    "nombre_completo": "NARVAEZ RUEDA ANDRES JAVIER",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0621",
+    "nombre_completo": "RENGIFO GONZALEZ JULIANA ANDREA",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0622",
+    "nombre_completo": "SALAZAR MONTENEGRO SARAY JULIANA",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0623",
+    "nombre_completo": "SALAZAR CAICEDO JESUS DAVID",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "1/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0624",
+    "nombre_completo": "TRUJILLO GONZALEZ SAMUEL DAVID",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "2/1/2025",
+    "role": "USER"
+  },
+  {
+    "codigo": "IEM0625",
+    "nombre_completo": "ANGULO RENTERIA JHOAN ALBEIRO",
+    "grado": "6",
+    "activo": true,
+    "fecha_registro": "3/1/2025",
     "role": "USER"
   }
 ]

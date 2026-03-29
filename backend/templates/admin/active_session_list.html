@@ -1,56 +1,102 @@
-{% extends 'admin/model/list.html' %}
-
-{# Sobrescribimos el bloque 'body' para añadir nuestros controles de refresco #}
-{% block body %}
-  <div id="auto-refresh-controls" style="padding: 10px; text-align: right; background-color: #f4f4f4; border-bottom: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;">
-      <span style="margin-right: 10px;">Actualización automática: <strong id="refresh-status">Activada</strong></span>
-      <button id="toggle-refresh-btn" class="btn btn-sm btn-primary">Pausar</button>
+{% extends 'admin/model/list.html' %} {# Sobrescribimos el bloque 'body' para
+añadir nuestros controles de refresco #} {% block body %}
+<div
+  id="auto-refresh-controls"
+  style="
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 15px;
+  "
+>
+  <div>
+    <button id="btn-logout-all" class="btn btn-sm btn-danger">
+      <i class="fa fa-power-off"></i> Cerrar Todas las Sesiones
+    </button>
   </div>
-  {# Renderizamos el contenido original de la lista #}
-  {{ super() }}
-{% endblock %}
+  <div>
+    <span style="margin-right: 10px"
+      >Actualización automática:
+      <strong id="refresh-status">Activada</strong></span
+    >
+    <button id="toggle-refresh-btn" class="btn btn-sm btn-primary">
+      Pausar
+    </button>
+  </div>
+</div>
+{# Renderizamos el contenido original de la lista #} {{ super() }} {% endblock
+%} {# Sobrescribimos el bloque 'tail' para añadir nuestro script sin afectar
+otros scripts #} {% block tail %} {{ super() }}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const refreshInterval = 10000; // 10 segundos
+    let autoRefreshTimer;
+    let isPaused = false;
 
-{# Sobrescribimos el bloque 'tail' para añadir nuestro script sin afectar otros scripts #}
-{% block tail %}
-  {{ super() }}
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const refreshInterval = 10000; // 10 segundos
-      let autoRefreshTimer;
-      let isPaused = false;
+    const statusEl = document.getElementById('refresh-status');
+    const toggleBtn = document.getElementById('toggle-refresh-btn');
+    const logoutAllBtn = document.getElementById('btn-logout-all');
 
-      const statusEl = document.getElementById('refresh-status');
-      const toggleBtn = document.getElementById('toggle-refresh-btn');
+    function startRefresh() {
+      autoRefreshTimer = setInterval(function () {
+        console.log('Recargando página...');
+        location.reload();
+      }, refreshInterval);
+    }
 
-      function startRefresh() {
-        autoRefreshTimer = setInterval(function() {
-          console.log('Recargando página...');
+    function stopRefresh() {
+      clearInterval(autoRefreshTimer);
+    }
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function () {
+        isPaused = !isPaused;
+        if (isPaused) {
+          stopRefresh();
+          statusEl.textContent = 'Pausada';
+          toggleBtn.textContent = 'Reanudar';
+          toggleBtn.classList.remove('btn-primary');
+          toggleBtn.classList.add('btn-success');
+        } else {
+          // Recargar inmediatamente al reanudar para tener datos frescos
           location.reload();
-        }, refreshInterval);
-      }
+        }
+      });
+    }
 
-      function stopRefresh() {
-        clearInterval(autoRefreshTimer);
-      }
-
-      if (toggleBtn) {
-        toggleBtn.addEventListener('click', function() {
-          isPaused = !isPaused;
-          if (isPaused) {
-            stopRefresh();
-            statusEl.textContent = 'Pausada';
-            toggleBtn.textContent = 'Reanudar';
-            toggleBtn.classList.remove('btn-primary');
-            toggleBtn.classList.add('btn-success');
-          } else {
-            // Recargar inmediatamente al reanudar para tener datos frescos
-            location.reload();
+    if (logoutAllBtn) {
+      logoutAllBtn.addEventListener('click', async function () {
+        if (
+          confirm(
+            '¿Está seguro de que desea cerrar TODAS las sesiones activas? Todos los estudiantes serán desconectados inmediatamente.'
+          )
+        ) {
+          try {
+            const response = await fetch('/server-admin/logout_all_users', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await response.json();
+            if (data.success) {
+              alert(data.message);
+              location.reload();
+            } else {
+              alert('Error: ' + data.message);
+            }
+          } catch (error) {
+            console.error('Error al cerrar todas las sesiones:', error);
+            alert('Error al procesar la solicitud.');
           }
-        });
-      }
+        }
+      });
+    }
 
-      // Iniciar el refresco al cargar la página
-      startRefresh();
-    });
-  </script>
+    // Iniciar el refresco al cargar la página
+    startRefresh();
+  });
+</script>
 {% endblock %}

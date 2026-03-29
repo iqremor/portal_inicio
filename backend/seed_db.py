@@ -1,17 +1,20 @@
-import os
 import json
-from app import create_app
-from models import db, User, UserRole, Cuadernillo
+import os
+
 from werkzeug.security import generate_password_hash
+
+from app import create_app
+from models import Cuadernillo, User, UserRole, db
 
 # Configura la aplicación Flask
 app = create_app()
 app.app_context().push()
 
+
 def seed_users():
-    json_path = os.path.join(os.path.dirname(__file__), 'data', 'usuarios.json')
+    json_path = os.path.join(os.path.dirname(__file__), "data", "usuarios.json")
     try:
-        with open(json_path, 'r', encoding='utf-8') as f:
+        with open(json_path, "r", encoding="utf-8") as f:
             users_data = json.load(f)
     except FileNotFoundError:
         print(f"Error: Archivo de usuarios no encontrado en: {json_path}")
@@ -21,11 +24,11 @@ def seed_users():
         return
 
     print("Iniciando seeding de usuarios...")
-    
+
     for user_info in users_data:
         codigo = user_info.get("codigo")
         if not codigo:
-            print(f"Advertencia: Información incompleta para un usuario en JSON (sin código).")
+            print("Advertencia: Información incompleta para un usuario en JSON (sin código).")
             continue
 
         # Verificar si el usuario ya existe por código
@@ -44,14 +47,14 @@ def seed_users():
             counter += 1
 
         # Generar una contraseña simple (ej. el código del usuario)
-        password = generate_password_hash(codigo) 
-        
+        password = generate_password_hash(codigo)
+
         # Asignar un rol por defecto si no está en el JSON o si el rol no es válido
         role_str = user_info.get("role", "user").upper()
         try:
             role = UserRole[role_str]
         except KeyError:
-            role = UserRole.USER # Rol por defecto si no es válido
+            role = UserRole.USER  # Rol por defecto si no es válido
 
         new_user = User(
             codigo=codigo,
@@ -60,7 +63,7 @@ def seed_users():
             nombre_completo=user_info.get("nombre_completo"),
             grado=user_info.get("grado"),
             role=role,
-            is_active=user_info.get("activo", True)
+            is_active=user_info.get("activo", True),
         )
         db.session.add(new_user)
         print(f"Añadido usuario: {new_user.nombre_completo} ({new_user.codigo})")
@@ -72,12 +75,13 @@ def seed_users():
         db.session.rollback()
         print(f"Error durante el seeding de usuarios: {e}")
 
+
 def seed_cuadernillos():
-    examenes_path = os.path.join(os.path.dirname(__file__), 'data', 'examenes.json')
-    cuadernillos_path = os.path.join(os.path.dirname(__file__), 'data', 'cuadernillos.json')
+    examenes_path = os.path.join(os.path.dirname(__file__), "data", "examenes.json")
+    cuadernillos_path = os.path.join(os.path.dirname(__file__), "data", "cuadernillos.json")
 
     try:
-        with open(examenes_path, 'r', encoding='utf-8') as f:
+        with open(examenes_path, "r", encoding="utf-8") as f:
             examenes_data = json.load(f)
     except FileNotFoundError:
         print(f"Error: Archivo no encontrado: {examenes_path}")
@@ -87,7 +91,7 @@ def seed_cuadernillos():
         return
 
     try:
-        with open(cuadernillos_path, 'r', encoding='utf-8') as f:
+        with open(cuadernillos_path, "r", encoding="utf-8") as f:
             cuadernillos_data = json.load(f)
     except FileNotFoundError:
         print(f"Error: Archivo no encontrado: {cuadernillos_path}")
@@ -112,7 +116,7 @@ def seed_cuadernillos():
                     break
             if cuadernillo_info:
                 break
-        
+
         if not cuadernillo_info:
             print(f"Advertencia: Cuadernillo con id {cuadernillo_id} no encontrado en cuadernillos.json. Saltando.")
             continue
@@ -130,7 +134,7 @@ def seed_cuadernillos():
             grado=exam_info.get("grado"),
             area=exam_info.get("area"),
             dir_banco=cuadernillo_info.get("dir_banco"),
-            total_preguntas_banco=cuadernillo_info.get("total_preguntas_banco")
+            total_preguntas_banco=cuadernillo_info.get("total_preguntas_banco"),
         )
         db.session.add(new_cuadernillo)
         print(f"Añadido cuadernillo: {new_cuadernillo.nombre}")
@@ -143,6 +147,6 @@ def seed_cuadernillos():
         print(f"Error durante el seeding de cuadernillos: {e}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     seed_users()
     seed_cuadernillos()

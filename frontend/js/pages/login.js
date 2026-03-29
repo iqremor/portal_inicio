@@ -46,7 +46,7 @@ function initializeLogin() {
         try {
             const data = await validateCode(codigo);
             if (data.permitido) {
-                saveSession(codigo, data.usuario.username, data.usuario.role);
+                saveSession(data);
                 showMessage('¡Acceso permitido! Redirigiendo...', 'success');
                 setTimeout(() => {
                     window.location.href = `/frontend/pages/dashboard.html?codigo=${codigo}`;
@@ -55,7 +55,8 @@ function initializeLogin() {
                 showMessage(data.mensaje || 'Código no permitido', 'error');
             }
         } catch (error) {
-            showMessage('Error de conexión. Por favor, intenta nuevamente.', 'error');
+            // Display the specific error message from the backend, or a generic one if not available
+            showMessage(error.message || 'Error de conexión. Por favor, intenta nuevamente.', 'error');
         } finally {
             showLoading(false);
         }

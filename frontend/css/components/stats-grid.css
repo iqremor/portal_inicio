@@ -1,32 +1,76 @@
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .stat-card {
-    background: var(--bg-secondary);
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--primary-color);
+  background: var(--bg-secondary);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1rem;
+  transition: transform 0.3s ease;
 }
 
-.stat-card i {
-    font-size: 1.75rem;
-    color: var(--primary-color);
-    margin-bottom: 0.75rem;
+.stat-card:hover {
+  transform: translateY(-5px);
 }
 
-.stat-card h3 {
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    margin-bottom: 0.25rem;
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  flex-shrink: 0;
+  margin-bottom: 0.5rem;
 }
 
-.stat-card p {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-primary);
+.stat-icon.correct {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+.stat-icon.incorrect {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+.stat-icon.unselected {
+  background: rgba(107, 114, 128, 0.2);
+  color: #9ca3af;
+}
+.stat-icon.time {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
 }

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prueba Saber-IEM</title>
+
+    <!-- Estilos Globales y de Página -->
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/simulacro.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-container">
+      <!-- Header Placeholder -->
+      <div id="header-placeholder"></div>
+
+      <main class="simulacro-main">
+        <!-- Navegación -->
+        <a href="dashboard.html" class="btn-back">
+          <i class="fas fa-arrow-left"></i>
+          Volver al Inicio
+        </a>
+
+        <h2 class="page-title">Prueba Saber</h2>
+
+        <!-- Mensaje de Bienvenida Dinámico -->
+        <div class="description-card">
+          Hola <strong id="student-name-welcome">Estudiante</strong>, bienvenido
+          a la <strong>Prueba Saber</strong>.<br /><br />
+          A continuación encontrarás los componentes de la prueba de saber. Cada
+          área cuenta con un tiempo límite y un número específico de preguntas.
+          Tus resultados se verán reflejados en el panel de puntajes una vez
+          finalices cada examen.
+        </div>
+
+        <div class="simulacro-grid">
+          <!-- Panel de Selección de Áreas -->
+          <div class="lobby-panel">
+            <h3>Componentes</h3>
+            <div id="areas-container">
+              <!-- Se carga dinámicamente -->
+              <div class="loading-spinner">Cargando componentes...</div>
+            </div>
+          </div>
+
+          <!-- Panel de Desempeño -->
+          <div class="lobby-panel">
+            <h3>Nota por Componente</h3>
+            <div class="scores-container" id="scores-container">
+              <!-- Se carga dinámicamente -->
+              <div class="score-item">
+                <span class="area-name">Matemáticas</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+              <div class="score-item">
+                <span class="area-name">Lectura Crítica</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+              <div class="score-item">
+                <span class="area-name">Sociales</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+              <div class="score-item">
+                <span class="area-name">Ciencias Naturales</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+              <div class="score-item">
+                <span class="area-name">Inglés</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer Dinámico -->
+      <div id="footer-placeholder"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+      // Carga de fragmentos optimizada (Sincronizado con resultados.html)
+      async function loadFragments() {
+        try {
+          const [headerRes, footerRes] = await Promise.all([
+            fetch('header.html'),
+            fetch('footer.html'),
+          ]);
+
+          if (headerRes.ok) {
+            document.getElementById('header-placeholder').innerHTML =
+              await headerRes.text();
+          }
+          if (footerRes.ok) {
+            document.getElementById('footer-placeholder').innerHTML =
+              await footerRes.text();
+          }
+
+          // Flag global para sincronización con scripts de página
+          window.__headerLoaded = true;
+          // Emitir evento para notificar que los fragmentos están listos
+          window.dispatchEvent(new CustomEvent('fragmentsLoaded'));
+        } catch (error) {
+          console.error('Error cargando fragmentos:', error);
+        }
+      }
+      loadFragments();
+    </script>
+    <script src="../js/main.js" defer></script>
+    <script type="module" src="../js/pages/simulacro.js"></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import { submitExam } from '../api/index.js';
+import { submitExam, apiFetch } from "../api/index.js"; // Add apiFetch
 
 /**
  * Guarda un intento de quiz en el backend.
@@ -8,36 +8,27 @@ import { submitExam } from '../api/index.js';
  * @returns {Promise<object>} Una promesa que se resuelve con los resultados del examen.
  */
 export async function guardarIntento(sessionId, answers, userCodigo) {
-    const response = await submitExam(sessionId, answers, userCodigo);
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'No se pudo guardar el intento.');
-    }
-
-    return response.json();
+  try {
+    const resultado = await submitExam(sessionId, answers, userCodigo);
+    return resultado;
+  } catch (error) {
+    console.error("Error al guardar el intento:", error);
+    // Re-lanzar el error para que el llamador sepa que algo salió mal.
+    throw new Error(error.message || "No se pudo guardar el intento.");
+  }
 }
 
 /**
- * Obtiene el número de intentos para un examen específico desde el backend.
- * @param {string} sessionId - El ID de la sesión del examen.
- * @param {string} areaId - El ID del área del examen.
+ * Obtiene el número de intentos realizados por un usuario para un cuadernillo específico.
+ * @param {number} cuadernilloId - El ID del cuadernillo.
  * @returns {Promise<number>} El número de intentos realizados.
  */
-export async function obtenerNumeroDeIntentos(sessionId, areaId) {
-    // NOTA: La ruta de la API es un ejemplo y la crearemos en el backend más adelante.
-    const response = await fetch(`/api/examenes/attempts?sessionId=${sessionId}&areaId=${areaId}`, {
-        headers: {
-            // En el futuro, aquí se incluirá el token de autenticación JWT
-            // 'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'No se pudo obtener el número de intentos.');
-    }
-
-    const data = await response.json();
-    return data.attemptCount;
+export async function obtenerNumeroDeIntentos(cuadernilloId) {
+  const response = await apiFetch(
+    `/api/examenes/${cuadernilloId}/attempts`,
+    {},
+    "No se pudo obtener el número de intentos.",
+  );
+  const data = await response.json();
+  return data.current_attempts;
 }

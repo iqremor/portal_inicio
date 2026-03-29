@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal Estudiantil - IEM</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --green-dark: #1a3a1a;
+        --green-mid: #2d5a2d;
+        --green-light: #4a7c4a;
+        --green-card: rgba(45, 90, 45, 0.55);
+        --green-btn: rgba(60, 100, 60, 0.7);
+        --green-btn-border: rgba(180, 210, 180, 0.45);
+        --text-white: #ffffff;
+        --text-muted: rgba(255, 255, 255, 0.82);
+        --header-bg: rgba(20, 48, 20, 0.92);
+      }
+
+      body {
+        font-family: 'Open Sans', sans-serif;
+        background-color: var(--green-dark);
+        color: var(--text-white);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ── FONDO CON TEXTURA VEGETAL ───────────────────────────── */
+      .bg-layer {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+            ellipse at 20% 30%,
+            rgba(80, 140, 60, 0.3) 0%,
+            transparent 55%
+          ),
+          radial-gradient(
+            ellipse at 80% 70%,
+            rgba(30, 90, 30, 0.35) 0%,
+            transparent 55%
+          ),
+          linear-gradient(160deg, #1c3b1c 0%, #2a5a2a 40%, #1e3d1e 100%);
+        z-index: 0;
+      }
+      /* hojas decorativas con SVG inline */
+      .bg-layer::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cellipse cx='110' cy='110' rx='90' ry='40' fill='none' stroke='rgba(100,180,80,0.06)' stroke-width='1.5'/%3E%3Cellipse cx='110' cy='110' rx='60' ry='25' fill='none' stroke='rgba(100,180,80,0.05)' stroke-width='1'/%3E%3C/svg%3E");
+        background-size: 220px 220px;
+        opacity: 0.6;
+      }
+
+      /* ── HEADER ─────────────────────────────────────────────── */
+      header {
+        position: relative;
+        z-index: 10;
+        background: var(--header-bg);
+        border-bottom: 1px solid rgba(100, 160, 80, 0.25);
+        backdrop-filter: blur(8px);
+        padding: 0 2rem;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .header-brand {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo-circle {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        border: 2px solid rgba(140, 200, 100, 0.5);
+        background: linear-gradient(135deg, #2d6a2d, #1a3a1a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.75rem;
+        color: rgba(180, 230, 150, 0.9);
+        letter-spacing: 0.04em;
+        text-align: center;
+        line-height: 1.2;
+        padding: 6px;
+        flex-shrink: 0;
+      }
+
+      .brand-text {
+        text-align: center;
+      }
+      .brand-text h1 {
+        font-family: 'Merriweather', serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text-white);
+        letter-spacing: 0.01em;
+      }
+      .brand-text p {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        margin-top: 1px;
+        font-style: italic;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+      }
+
+      .user-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+      }
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3d7a3d, #1e4a1e);
+        border: 2px solid rgba(140, 200, 100, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: rgba(200, 240, 170, 0.95);
+        letter-spacing: 0.03em;
+      }
+      .user-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-white);
+        letter-spacing: 0.03em;
+      }
+
+      .btn-logout {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.45rem 1rem;
+        border: 1.5px solid rgba(180, 210, 140, 0.4);
+        border-radius: 8px;
+        background: rgba(30, 60, 30, 0.5);
+        color: var(--text-white);
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+        white-space: nowrap;
+      }
+      .btn-logout:hover {
+        background: rgba(50, 90, 50, 0.7);
+        border-color: rgba(180, 220, 140, 0.65);
+      }
+      .btn-logout svg {
+        flex-shrink: 0;
+      }
+
+      /* ── HERO ───────────────────────────────────────────────── */
+      .hero {
+        position: relative;
+        z-index: 5;
+        text-align: center;
+        padding: 4.5rem 1rem 3rem;
+      }
+      .hero h2 {
+        font-family: 'Merriweather', serif;
+        font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+        font-weight: 700;
+        color: var(--text-white);
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+        margin-bottom: 0.65rem;
+      }
+      .hero p {
+        font-size: clamp(0.88rem, 1.8vw, 1rem);
+        color: var(--text-muted);
+      }
+
+      /* ── SECCIÓN ACTIVIDADES ────────────────────────────────── */
+      .activities {
+        position: relative;
+        z-index: 5;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.5rem 5rem;
+      }
+      .activities h3 {
+        font-family: 'Merriweather', serif;
+        font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 2.2rem;
+        color: var(--text-white);
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+      }
+
+      /* ── CARD ───────────────────────────────────────────────── */
+      .card {
+        background: var(--green-card);
+        border: 1px solid rgba(120, 180, 90, 0.28);
+        border-radius: 16px;
+        padding: 2rem 1.5rem 1.8rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.85rem;
+        backdrop-filter: blur(6px);
+        box-shadow:
+          0 4px 24px rgba(0, 0, 0, 0.25),
+          inset 0 1px 0 rgba(160, 220, 110, 0.1);
+        transition:
+          transform 0.25s,
+          box-shadow 0.25s;
+      }
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow:
+          0 8px 32px rgba(0, 0, 0, 0.35),
+          inset 0 1px 0 rgba(160, 220, 110, 0.15);
+      }
+
+      .card h4 {
+        font-family: 'Merriweather', serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text-white);
+        line-height: 1.35;
+      }
+      .card p {
+        font-size: 0.855rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        flex: 1;
+      }
+
+      /* ── BOTÓN COMENZAR (inactivo) ──────────────────────────── */
+      .btn-start {
+        margin-top: 0.6rem;
+        padding: 0.6rem 1.9rem;
+        border-radius: 30px;
+        border: 1.5px solid var(--green-btn-border);
+        background: var(--green-btn);
+        color: var(--text-white);
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: not-allowed; /* inactivo */
+        opacity: 0.72;
+        letter-spacing: 0.03em;
+        pointer-events: none; /* inactivo */
+        transition: none;
+      }
+
+      /* ── RESPONSIVE ─────────────────────────────────────────── */
+      @media (max-width: 600px) {
+        header {
+          height: auto;
+          padding: 0.75rem 1rem;
+          flex-wrap: wrap;
+        }
+        .brand-text h1 {
+          font-size: 0.95rem;
+        }
+        .user-name {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-layer"></div>
+
+    <!-- HEADER -->
+    <header>
+      <div class="header-brand">
+        <div class="logo-circle">IEM</div>
+        <div class="brand-text">
+          <h1>Institución Educativa Mojarras</h1>
+          <p>Convivencia y Superación</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="user-badge">
+          <div class="avatar">ZN</div>
+          <span class="user-name">ZULY ÑAÑEZ</span>
+        </div>
+        <button class="btn-logout">
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          Cerrar Sesión
+        </button>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <h2>Bienvenido al Portal Estudiantil</h2>
+      <p>Aquí podrás acceder a todas tus actividades académicas</p>
+    </section>
+
+    <!-- ACTIVIDADES -->
+    <section class="activities">
+      <h3>Escoge la actividad a realizar</h3>
+
+      <div class="cards-grid">
+        <!-- Preunal -->
+        <div class="card">
+          <h4>Preunal</h4>
+          <p>Simulacro interactivo examen universidad nacional</p>
+          <button class="btn-start" disabled>Comenzar</button>
+        </div>
+
+        <!-- Preicfes -->
+        <div class="card">
+          <h4>Preicfes</h4>
+          <p>Simulacro interactivo de las pruebas saber</p>
+          <button class="btn-start" disabled>Comenzar</button>
+        </div>
+
+        <!-- Pruebas y laboratorios -->
+        <div class="card">
+          <h4>Pruebas y laboratorios interactivos</h4>
+          <p>
+            Pruebas para mejorar la lectura comprensiva y laboratorios virtuales
+          </p>
+          <button class="btn-start" disabled>Comenzar</button>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

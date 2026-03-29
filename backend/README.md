@@ -565,3 +565,48 @@ Esta estructura hace que el proyecto sea mucho más escalable y robusto.
  - Trasladar la base de datos a un sistema más robusto (PostgreSQL, MySQL) para producción.
  - Implementar pruebas unitarias para asegurar la calidad del código.
  - Escalar la aplicación para manejar más tráfico y datos a un framework más complejo y robusto como Django o FastAPI  para trabajar proyecto con logica asincrona como uvicorn o hypercorn.
+
+## Gestión de Datos
+
+Para poblar la base de datos con datos iniciales (usuarios, exámenes, etc.), puedes usar el script de "seeding". Esto es útil para configurar el entorno por primera vez o para restaurar los datos de prueba.
+
+### Requisitos
+
+- Asegúrate de que las tablas de la base de datos ya han sido creadas. Si no es así, ejecuta primero:
+  ```bash
+  python init_db.py
+  ```
+
+### Cargar Datos de Usuarios y Exámenes
+
+El script `seed_db.py` lee los archivos `.json` del directorio `data/` y los carga en la base de datos.
+
+1.  **Poblar la base de datos:**
+    Ejecuta el siguiente comando en la terminal desde el directorio `backend`:
+    ```bash
+    python seed_db.py
+    ```
+    El script cargará los usuarios desde `data/usuarios.json` y los cuadernillos desde `data/examenes.json` y `data/cuadernillos.json`. Si un usuario o cuadernillo ya existe, será omitido.
+
+## Limpieza de la Base de Datos
+
+Si necesitas empezar desde cero y eliminar todos los datos existentes, puedes usar el script `clean_db.py`.
+
+**¡ADVERTENCIA!** Esta acción es destructiva y no se puede deshacer. Se borrará permanentemente el archivo de la base de datos.
+
+1.  **Eliminar la base de datos:**
+    Ejecuta el siguiente comando en la terminal desde el directorio `backend`:
+    ```bash
+    python clean_db.py
+    ```
+    Esto eliminará la carpeta `instance/`, que contiene el archivo `sistema_gestion.db`.
+
+2.  **Pasos siguientes:**
+    Después de limpiar la base de datos, necesitarás recrear las tablas y, opcionalmente, volver a cargar los datos iniciales:
+    ```bash
+    # 1. Recrear las tablas vacías
+    python init_db.py
+
+    # 2. (Opcional) Cargar los datos de prueba
+    python seed_db.py
+    ```

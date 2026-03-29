@@ -1,0 +1,126 @@
+/* Estilos específicos para la tabla de respuestas */
+
+.review-card {
+  max-width: 950px !important;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin: 2rem 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.review-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  color: #ffffff;
+}
+
+.review-table th {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.review-table td {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  vertical-align: middle;
+}
+
+.review-table tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Columna de Pregunta (Imagen) */
+.col-pregunta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.img-review {
+  width: 120px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: zoom-in;
+  transition: transform 0.2s;
+}
+
+.img-review:hover {
+  transform: scale(1.05);
+}
+
+.q-number {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--primary-color, #10b981);
+  min-width: 30px;
+}
+
+/* Letras de opciones */
+.option-letter {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.option-correct {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid #10b981;
+}
+
+.option-incorrect {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.no-error {
+  color: rgba(255, 255, 255, 0.3);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* Botón Volver */
+#backToResults {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  margin-top: 1rem;
+}
+
+#backToResults:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+#backToResults:active {
+  transform: translateY(0);
+}

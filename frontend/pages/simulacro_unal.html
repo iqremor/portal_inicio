@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Preunal - Lobby IEM</title>
+
+    <!-- Estilos Globales y de Página -->
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/simulacro.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-container">
+      <!-- Header Placeholder -->
+      <div id="header-placeholder"></div>
+
+      <main class="simulacro-main">
+        <!-- Navegación -->
+        <a href="dashboard.html" class="btn-back">
+          <i class="fas fa-arrow-left"></i>
+          Volver al Inicio
+        </a>
+
+        <h2 class="page-title">Preunal - Preparación Universitaria</h2>
+
+        <!-- Mensaje de Bienvenida Dinámico -->
+        <div class="description-card">
+          Hola <strong id="student-name-welcome">Estudiante</strong>, bienvenido
+          a la preparación para el examen de la
+          <strong>Universidad Nacional (Preunal)</strong>.<br /><br />
+          Aquí podrás acceder a los componentes diseñados para tu preparación.
+          Cada área tiene un tiempo límite y preguntas específicas. Tus
+          resultados se actualizarán en el panel de desempeño al finalizar cada
+          sección.
+        </div>
+
+        <div class="simulacro-grid">
+          <!-- Panel de Selección de Áreas -->
+          <div class="lobby-panel">
+            <h3>Componentes</h3>
+            <div id="areas-container">
+              <!-- Se carga dinámicamente -->
+              <div class="loading-spinner">Cargando componentes...</div>
+            </div>
+          </div>
+
+          <!-- Panel de Desempeño -->
+          <div class="lobby-panel">
+            <h3>Nota por Componente</h3>
+            <div class="scores-container" id="scores-container">
+              <!-- Se carga dinámicamente -->
+              <div class="score-item">
+                <span class="area-name">Pensamiento Lógico</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+              <div class="score-item">
+                <span class="area-name">Lectura Crítica</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+              <div class="score-item">
+                <span class="area-name">Competencias Ciudadanas</span>
+                <span class="score-value pending">0.0</span>
+              </div>
+              <!-- Otros componentes Preunal podrían añadirse aquí -->
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <div id="footer-placeholder"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+      // Carga de fragmentos optimizada (Sincronizado con resultados.html)
+      async function loadFragments() {
+        try {
+          const [headerRes, footerRes] = await Promise.all([
+            fetch('header.html'),
+            fetch('footer.html'),
+          ]);
+
+          if (headerRes.ok) {
+            document.getElementById('header-placeholder').innerHTML =
+              await headerRes.text();
+          }
+          if (footerRes.ok) {
+            document.getElementById('footer-placeholder').innerHTML =
+              await footerRes.text();
+          }
+
+          // Emitir evento para notificar que los fragmentos están listos
+          window.dispatchEvent(new CustomEvent('fragmentsLoaded'));
+        } catch (error) {
+          console.error('Error cargando fragmentos:', error);
+        }
+      }
+      loadFragments();
+    </script>
+    <script src="../js/main.js" defer></script>
+    <script type="module" src="../js/pages/simulacro_unal.js"></script>
+  </body>
+</html>

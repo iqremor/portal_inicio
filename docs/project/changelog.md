@@ -1,318 +1,297 @@
 # Historial de Cambios
 
-[Este archivo contendrá un registro de todos los cambios significativos realizados en el proyecto.]
+## Sesión 34 - 25 de marzo de 2026
 
-## Sesión 1 - 13 de septiembre de 2025
 ### Objetivos de la sesión:
-- Iniciar el análisis del repositorio y configurar el proyecto según la plantilla `GEMINI.md`.
+
+- Resolver la **deuda técnica crítica** de la Sesión 33: Race condition en el header y bug visual del footer.
+- Validar y corregir la redirección de los botones de "Empezar Simulacro" en los lobbies Preicfes/Preunal.
+- Continuar con la **Fase 3 del Plan NATURA**: Control Administrativo Dinámico (Flags de visibilidad).
 
 ### Acciones Realizadas:
-- Análisis inicial del repositorio, identificando tecnologías (Python Flask, HTML/CSS/JS) y estado general.
-- Identificación y aclaración de la discrepancia en la documentación sobre la tecnología de backend (confirmado Python Flask).
-- Creación del directorio `prototype/`.
-- Reestructuración de las ramas de Git a `main`, `develop`, `debug`.
-- Identificación de áreas críticas y recomendaciones prioritarias para el proyecto.
-### Estado del Proyecto al Final de la Sesión:
-- **Backend:** Python Flask.
-- **Ramas Git:** `main`, `develop`, `debug` configuradas.
-- **Directorio `prototype/`:** Creado.
-- **Análisis inicial del repositorio:** Completado.
-- **Pendiente:** Implementación de herramientas de calidad, testing, documentación de estilo de código, auditoría de dependencias, creación de prototipos y plantillas, y establecimiento de métricas de calidad.
 
-## Sesión 2 - 13 de septiembre de 2025
+- **Frontend:** Implementación de `MutationObserver` en `simulacro.js` para garantizar la carga de datos del usuario y funcionalidad de logout independientemente del timing de inyección del header.
+- **Backend (API):** Reescritura robusta de `routes/api.py` para evitar errores de atributos inexistentes (`getattr`) y asegurar la compatibilidad de campos (`questions`/`preguntas`).
+- **Lógica de Negocio:** Implementación de cálculo dinámico del tiempo límite por examen basado en `EXAM_QUESTIONS_COUNT` y `EXAM_TIMER_DURATION`.
+- **Backend (Rutas):** Restauración del endpoint de intentos (`/attempts`) y creación del endpoint seguro para mejores notas por usuario.
+
+### Estado final:
+
+- **Calidad de código:** API protegida contra fallos internos y frontend con detección reactiva de elementos.
+- **Funcionalidad:** Flujo completo de inicio de examen desde el lobby Saber-IEM validado.
+- **Pendiente:** Replicar la robustez del logout y sincronización en otros lobbies específicos.
+
+### Finalización: miércoles, 25 de marzo de 2026
+
+---
+
+## Sesión 33 - 24 de marzo de 2026
+
 ### Objetivos de la sesión:
-- Resolver errores de rutas y configuración del servidor.
-- Configurar el servicio de archivos estáticos del frontend.
 
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Discrepancia Tecnológica en `overview.md` (Node.js/Express.js vs Python Flask).
-    - Dependencias no auditadas.
-- Tests: No hay testing framework configurado.
+- Iniciar la **Fase 3 del Plan NATURA**: Control Administrativo Dinámico.
+- Implementar flags de visibilidad para módulos (`PREICFES_ENABLED`, `PREUNAL_ENABLED`) en la configuración global.
+- Crear la interfaz de control (toggles) en el panel de Ajustes Globales para el administrador.
+- Validar la visibilidad condicional de módulos en el Dashboard del estudiante.
 
 ### Acciones Realizadas:
-- Corrección de la ruta de `FileAdmin` en `backend/admin.py`.
-- Creación y registro del `frontend_bp` en `backend/routes/frontend.py` y `backend/app.py` para servir archivos estáticos del directorio `frontend/`.
-- Modificación de la ruta principal (`/`) en `backend/routes/web_main.py` para servir `index.html` de la raíz del proyecto.
 
-### Finalización: [PENDIENTE]
+- **Estilos:** Rediseño total de `simulacro.css` eliminando tonos amarillos y aplicando la paleta verde orgánica (`--accent-color`).
+- **Componentes:** Sincronización de Header y Footer en los Lobbies mediante carga asíncrona optimizada (`loadFragments`).
+- **UI/UX:** Integración de FontAwesome 6, eliminación de botones redundantes y mejora de tarjetas de descripción.
+- **Lógica:** Implementación inicial de `updateUI` en `simulacro.js` y `simulacro_unal.js` para mostrar datos de usuario (con delay de sincronización).
+- **Calidad:** Estandarización de clases de footer (`.dashboard-footer`) y limpieza de selectores CSS.
 
-## Sesión 3 - 13 de septiembre de 2025
+### Estado final:
+
+- **Calidad de código:** 100% validado por hooks (Prettier, ESLint, Flake8).
+- **Funcionalidad:** Lobbies visualmente integrados al ecosistema NATURA.
+- **Pendiente (Crítico):**
+  - Corregir inconsistencia en la carga de nombre/grado en el header (race condition).
+  - Validar redirección de botones de inicio de examen (Fase 2 Plan NATURA).
+  - Resolver bug visual de "caja verde" en el contenedor del footer.
+
+### Finalización: martes, 24 de marzo de 2026
+
+---
+
+## Sesión 32 - 23 de marzo de 2026 (12:00 PM)
+
 ### Objetivos de la sesión:
-- Resolver el problema de redirección del dashboard.
-- Migrar la autenticación y datos de usuario de JSON a la base de datos.
-- Organizar modularmente los estilos CSS del login.
-- Ajustar el logo y el texto del header.
-- Solucionar errores de migración de base de datos.
-- Implementar script de seeding para la base de datos.
 
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Discrepancia Tecnológica en `overview.md` (Node.js/Express.js vs Python Flask).
-    - Dependencias no auditadas.
-- Tests: No hay testing framework configurado.
-### Finalización: [PENDIENTE]
-queda pendiente problema de cierre de sesión y carga dinamica de las areas a evaluar
-
-## Sesión 4 - 14 de septiembre de 2025
-### Objetivos de la sesión:
-- Corregir la discrepancia tecnológica en el archivo `overview.md`.
-- Modularizar el header y footer de la página `dashboard.html`.
-- Modularizar y refactorizar los estilos del header.
-- Integrar el escudo del colegio en el header.
-- Mejorar la estructura y semántica del HTML del header.
-- Reorganizar el layout del header para centrar el título.
-- Establecer una imagen de fondo para el dashboard.
-- Ajustar la visualización de los elementos transparentes.
-- Ajustar el tamaño del botón de logout.
-- Encerrar el contenido de la sección hero en un contenedor con estilo de tarjeta.
-
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - **Discrepancia Tecnológica en `overview.md` (Node.js/Express.js vs Python Flask).**
-    - Dependencias no auditadas.
-- Tests: No hay testing framework configurado.
+- Actualizar el estado del **Plan NATURA** (Fase 1 completada, Plan en progreso).
+- Resolver deuda técnica de calidad (Flake8 en Backend).
+- Iniciar la **Fase 2 del Plan NATURA**: Navegación por Componentes (Lobby de Simulacro).
+- Implementar la visualización de notas por componente en el Lobby.
 
 ### Acciones Realizadas:
-- Se actualizó el archivo `docs/project/overview.md` para reflejar que la tecnología del backend es Python/Flask en lugar de Node.js/Express.js.
-- Se corrigieron las secciones de tecnologías, instalación, requisitos y configuración para que coincidan con un proyecto de Python/Flask.
-- Se extrajo el contenido del header de `frontend/pages/dashboard.html` a un nuevo archivo `frontend/pages/header.html`.
-- Se extrajo el contenido del footer de `frontend/pages/dashboard.html` a un nuevo archivo `frontend/pages/footer.html`.
-- Se modificó `frontend/pages/dashboard.html` para cargar dinámicamente el `header.html` y `footer.html` mediante scripts de JavaScript.
-- Se eliminó la información de usuario codificada del `header.html` para permitir la carga dinámica.
-- Se creó un archivo `frontend/css/header.css` con los estilos específicos para el header.
-- Se eliminaron los estilos del header de `frontend/css/dashboard.css` y se importó el nuevo archivo `header.css`.
-- Se refactorizó el CSS del header utilizando la metodología BEM para mejorar la estructura y mantenibilidad.
-- Se actualizó `frontend/pages/header.html` para utilizar las nuevas clases BEM.
-- Se reemplazó el ícono del header por la imagen del escudo del colegio (`escudo.png`).
-- Se ajustaron los estilos en `frontend/css/header.css` para la nueva imagen del logo.
-- Se mejoró la estructura del `header.html` añadiendo comentarios, un enlace al dashboard en el logo y atributos de accesibilidad.
-- Se ajustaron los estilos del logo en `header.css` para eliminar la decoración de texto del nuevo enlace.
-- Se reestructuró el HTML de `header.html` para separar el logo, el título y la sección de usuario, permitiendo un layout más flexible.
-- Se actualizó `header.css` para centrar el título y el eslogan en el espacio disponible.
-- Se corrigió la ruta de la imagen de fondo en `dashboard.css` para que apunte a `assets/images/fondo.jpg`.
-- Se añadió la regla CSS a `frontend/css/header.css` para mostrar "Grado: " antes del número de grado.
-- Se aplicó el color `rgba(8, 145, 3, 0.432)` al fondo del footer (`.dashboard-footer`) y a las tarjetas de actividad (`.activity-card`) en `dashboard.css`.
-- Se ajustó el tamaño del botón de logout en `frontend/css/header.css` (padding y font-size).
-- Se envolvió el contenido de la sección hero en un contenedor (`.hero-card`) con un estilo similar a las tarjetas de actividad en `frontend/pages/dashboard.html` y se le aplicaron los estilos correspondientes en `frontend/css/dashboard.css`.
 
-### Finalización: 14 de septiembre de 2025
+- **Calidad:** Limpieza total de advertencias Flake8 en el backend (0 advertencias).
+- **Plan NATURA (Fase 2):** Implementación de los Lobbies para Preicfes y Preunal.
+  - Creación de `simulacro.html` y `simulacro_unal.html` con integración de headers/footers dinámicos.
+  - Desarrollo de `simulacro.js` y `simulacro_unal.js` para carga dinámica de áreas y puntajes.
+  - Sincronización de estilos orgánicos en `simulacro.css`.
+- **Frontend:** Ajuste de redirección en `dashboard.js` para conectar las tarjetas del dashboard con los nuevos lobbies.
+- **Backend (Web Test):** Actualización de rutas para servir los nuevos archivos de simulacro.
 
-## Sesión 5 - 14 de septiembre de 2025
+### Estado final:
+
+- **Calidad de código:** 100% validado (Flake8 limpio).
+- **Funcionalidad:** Fase 2 del Plan NATURA completada. Sistema de lobbies operativo y navegable.
+
+### Finalización: lunes, 23 de marzo de 2026
+
+---
+
+## Sesión 31 - 23 de marzo de 2026 (11:00 AM)
+
 ### Objetivos de la sesión:
-- 
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
-### Finalización: 14 de septiembre de 2025
-### Acciones Realizadas:
-- Refactorización y organización de los archivos CSS del frontend (`dashboard.css`, `examen.css`, `global.css`, `resultados.css`) en una estructura modular (`base`, `components`, `sections`).
-- Eliminación del archivo `frontend/css/styles.css` y sus referencias en los archivos HTML.
-- Refactorización de la funcionalidad de "cerrar sesión" en JavaScript para hacerla reutilizable y corrección de su interactividad.
-- Personalización del mensaje de bienvenida en el dashboard para incluir el nombre y grado del usuario.
-- Aplicación de un color de fondo específico al header, footer y tarjetas.
-- Modificación del estilo de `activities-section` para que se vea como un contenedor transparente con borde blanco.
-- Revisión de rutas y etiquetas en `frontend//**` para asegurar la compatibilidad con la nueva estructura CSS.
 
-## Sesión 6 - 15 de septiembre de 2025
-### Objetivos de la sesión:
-- Solucionar el problema de organización de los datos JSON para la inicialización de la base de datos.
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
-### Acciones Realizadas:
-- Refactorización de la estructura de datos de los archivos JSON de semilla (`usuarios.json`, `cuadernillos.json`, `examenes.json`).
-- Creación del modelo `Cuadernillo` en `models.py` para los exámenes estáticos.
-- Actualización del script `seed_db.py` para poblar la base de datos con la nueva estructura de datos.
-- Creación del script `init_db.py` para la inicialización de la base de datos.
-- Corrección de la lógica de relación entre `examenes.json` y `cuadernillos.json`.
-### Finalización: 15 de septiembre de 2025
-
-## Sesión 7 - 15 de septiembre de 2025
-### Objetivos de la sesión:
-- Reorganizar el directorio `frontend/js` para mejorar la modularidad y mantenibilidad.
-- Centralizar la funcionalidad de `logout` y la carga dinámica de `header` y `footer` en un único punto de entrada.
-- Crear un módulo `timer.js` para la funcionalidad del cronómetro del examen.
-- Crear un módulo `utils.js` para funciones de utilidad compartidas.
-- Refactorizar los scripts de las páginas para desacoplar la lógica y hacerla más reutilizable.
+- Finalizar la **Fase 3 del Plan FOCUS**: Validación del frontend y UX dinámico.
+- Verificar el comportamiento de la API frente a límites de preguntas y bancos reducidos.
+- Ejecutar controles de calidad (ESLint, Flake8) sobre los cambios de la sesión anterior.
 
 ### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
+
+- **Calidad de código:** 100% validado en sesión 30.
+- **Deuda técnica:** Validar la visualización del progreso del examen con el nuevo límite dinámico.
+- **Tests:** Pendiente validación manual del ciclo completo con configuración variable.
+
+### Finalización: lunes, 23 de marzo de 2026
+
+- **Calidad de código:** Validada con Flake8 y ESLint.
+- **Funcionalidad:** Fase 1 del Plan NATURA completada (Dashboard dinámico y modular). Plan FOCUS marcado como COMPLETADO.
+- **Métricas:** Control de visibilidad por grado habilitado para 3 módulos.
+
+---
+
+## Sesión 26 - 19 de marzo de 2026
+
+### Objetivos de la sesión:
+
+- Corregir el bug del botón recargar imagen.
+- Mejorar la visualización de la página de resultados.
+- Implementar la funcionalidad de reintento directo de examen.
+- Crear el sistema de gestión de planes estratégicos.
 
 ### Acciones Realizadas:
-- Se reorganizó la estructura del directorio `frontend/js`, creando subdirectorios `api`, `components`, `pages` y `shared`.
-- Se movieron los archivos JavaScript existentes a sus directorios correspondientes dentro de la nueva estructura.
-- Se centralizó la lógica de carga del `header` y `footer`, y la funcionalidad de `logout` en el archivo `frontend/js/main.js` para evitar duplicación de código.
-- Se eliminó la carga individual de `header` y `footer` de los archivos `dashboard.js` y `login.js`.
-- Se creó el módulo `frontend/js/shared/timer.js` para encapsular toda la lógica del cronómetro del examen.
-- Se creó el módulo `frontend/js/shared/utils.js` para funciones de utilidad (actualmente vacío, preparado para futuro uso).
-- Se refactorizó `frontend/js/pages/exam.js` para importar y utilizar el nuevo módulo `timer.js`.
-- Se actualizaron las rutas de los scripts en los archivos HTML (`login.html`, `dashboard.html`, `examen.html`, `resultados.html`) para reflejar la nueva estructura de directorios.
-- Se eliminaron las funciones `loadHTML` y `logout` de `auth.js` ya que su funcionalidad fue centralizada en `main.js`.
 
-### Finalización: 15 de septiembre de 2025
+- **Examen:** Corregido bug del botón "Recargar" en cuestionario.js y ui.js. Ahora actualiza solo la imagen (con cache-buster) sin reiniciar el temporizador ni el bloqueo del botón "Siguiente".
+- **Resultados:**
+  - Se ajustó el umbral de aprobación al 60% en results.js.
+  - Se simplificó la visualización de respuestas (solo número).
+  - El campo "Puntaje" se renombró a "Nota Final" con formato de un decimal.
+  - Se implementó el botón "Volver a intentar" con redirección automática al mismo examen.
+  - Se unificó el estilo de los botones de acción con el estilo del botón de cierre de sesión.
+- **Backend:** Se modificó finalizar_examen en api.py para incluir el id del cuadernillo en la respuesta.
+- **Documentación y Planes:**
+  - Se creó el directorio docs/plans/.
+  - Se definió el **Plan PRISMA** (docs/plans/plan_prisma.md) para la visualización grupal de notas y revisión de errores.
+  - Se actualizó GEMINI.md para incluir el protocolo de gestión de planes estratégicos.
 
-## Sesión 8 - 16 de septiembre de 2025
+### Estado final:
+
+- Calidad de código: Git hooks validados (Prettier, Flake8, ESLint).
+- Funcionalidad: Flujo de resultados y reintento optimizado. Sistema de planes activo.
+
+### Finalización: jueves, 19 de marzo de 2026
+
+## Sesión 27 - 21 de marzo de 2026
+
 ### Objetivos de la sesión:
-- Ajustar el modelo `User` para eliminar el campo `email`.
-- Corregir la lógica de creación de usuarios administradores en la CLI para solicitar el `codigo` y no el `email`.
-- Actualizar la visualización de usuarios administradores en la CLI para no mostrar el `email`.
-- Actualizar las dependencias del proyecto (`requirements.txt`).
 
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
+- Implementar la **Fase 1 del Plan PRISMA**: Visualización grupal de resultados en el Panel Admin.
+- Resolver errores técnicos de serialización y firma de funciones en el panel administrativo.
 
 ### Acciones Realizadas:
-- Se eliminó el campo `email` del modelo `User` en `backend/models.py` para que no sea un campo requerido.
-- Se modificó el comando `admin add` en `backend/server.py` para solicitar el `codigo` del nuevo administrador en lugar del `email`.
-- Se actualizó la creación de usuarios administradores en `backend/server.py` para pasar el `codigo` al constructor del modelo `User`.
-- Se eliminó la visualización del campo `email` al listar usuarios administradores en el comando `admin show` de `backend/server.py`.
-- Se actualizaron las dependencias en `requirements.txt`.
 
-### Próximo a implementar:
-- Revisión de usuarios conectados.
-- Monitoreo del tráfico de usuarios.
-- Desconexión de usuarios duplicados.
-- Todas estas funcionalidades serán gestionadas a través del panel de administración de Flask-Admin.
+- **Backend (API):** Creación del endpoint /api/admin/resultados/grado/<grado>/examen/<cuadernillo_id> en backend/routes/api.py con autenticación híbrida (API Session y Flask-Admin Session).
+- **Panel Admin:** Implementación de la vista ReporteGradoView en backend/admin.py y registro en el panel.
+- **Frontend Admin:** Creación del template backend/templates/admin/reporte_grado.html con selectores dinámicos de grado/examen y exportación a CSV.
+- **Calidad:** Limpieza de importaciones no utilizadas en backend/app.py y corrección de errores de serialización JSON en la plantilla administrativa.
 
-### Finalización: 16 de septiembre de 2025
+### Estado final:
 
-## Sesión 9 - 17 de septiembre de 2025
+- **Calidad de código:** Linting limpio tras correcciones automáticas de Git hooks.
+- **Funcionalidad:** Fase 1 del Plan PRISMA completada y probada (manualmente).
+
+### Finalización: sábado, 21 de marzo de 2026
+
+## Sesión 28 - 21 de marzo de 2026
+
 ### Objetivos de la sesión:
-- Corregir el error `Uncaught SyntaxError: redeclaration of import state` en `ui.js`.
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
+
+- **Estabilidad del Servidor:** Optimizar el servidor de producción (Waitress) y corregir errores de apagado (socket errors).
+- **Plan PRISMA (Fase 2):** Implementar la revisión detallada de respuestas para los estudiantes en una vista independiente.
+- **Mejoras UI/UX:** Refinar la página de resultados con la Nota Final gigante y estadísticas centradas.
+
 ### Acciones Realizadas:
-- Se identificó que el archivo `frontend/js/examen/ui.js` contenía código duplicado, causando el error de redeclaración de importaciones.
-- Se corrigió el archivo `frontend/js/examen/ui.js` eliminando el contenido duplicado.
-### Finalización: 17 de septiembre de 2025
-- mejoras y tareas para el futuro, basadas en la deuda técnica actual y
-  el trabajo que hemos realizado:
 
-   1. Implementar Herramientas de Calidad de Código y Testing:
-   2. Resolver Deuda Técnica Pendiente de Sesiones Anteriores:
-   3. Mejorar el Monitoreo de Tráfico de Usuarios en el Admin Panel:
-   4. Refinar la Gestión de Sesiones (Seguridad):
-   5. Habilitar Gestión de Exámenes desde el Panel Admin:
-   6. Mejorar Gestión de Sesiones desde el Panel Admin:
+- **Servidor:** Se integró Waitress en el ServerManager para ejecución en background. Se implementó un cierre diferido (Timer) para solucionar el error WinError 10038 y se optimizó la concurrencia con 12 hilos.
+- **Backend:** Se enriqueció el endpoint /api/examen/<session_id>/finalizar para incluir el mapa de revisión pedagógica (imágenes, respuesta correcta vs elegida). Se robusteció la lógica de calificación para manejar respuestas nulas como NONE.
+- **Frontend (Resultados):** Rediseño de la sección score-summary con layout horizontal, Nota Final prominente y estadísticas en columna con centrado absoluto.
+- **Fase 2 PRISMA:** Creación de la página respuestas.html, su estilo CSS y lógica JS para mostrar una tabla detallada de errores/aciertos, filtrando automáticamente las preguntas no marcadas.
+- **Calidad:** Corrección de errores de sintaxis en results.js y paso exitoso de pre-commit hooks (black, prettier, flake8, eslint).
 
-## Sesión 10 - 20 de septiembre de 2025
-### Objetivos de la sesión:
-- Solucionado bug de visibilidad de exámenes en el dashboard.
-- Implementado flujo de inicio de examen con `session_id` real.
-- Nuevo bug introducido al iniciar el examen (falta de persistencia de preguntas).
+### Estado final:
+
+- **Calidad de cÃ³digo:** 100% validado por herramientas de linting y formateo.
+- **Funcionalidad:** Fase 2 del Plan PRISMA completada. Servidor de producciÃ³n estable y controlable desde el menÃº.
+- **Pendiente:** Fase 3 del Plan PRISMA (ExportaciÃ³n a Excel).
+
+### FinalizaciÃ³n: sÃ¡bado, 21 de marzo de 2026
+
+## SesiÃ³n 29 - 23 de marzo de 2026
+
+### Objetivos de la sesiÃ³n:
+
+- Implementar la **Fase 3 del Plan PRISMA**: ExportaciÃ³n de reportes grupales a Excel (.xlsx) con formato profesional.
+- Integrar la librerÃ­a `openpyxl` para la generaciÃ³n de archivos.
+- Configurar celdas con colores dinÃ¡micos (verde/rojo) y fÃ³rmulas de promedio en el reporte generado.
+
 ### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
+
+- **Calidad de cÃ³digo:** 100% linting validado.
+- **Deuda tÃ©cnica:** Pendiente la integraciÃ³n de exportaciÃ³n masiva en el panel admin.
+- **Tests:** Pruebas manuales de las fases 1 y 2 exitosas.
+
 ### Acciones Realizadas:
-- Ajuste de la lógica en `backend/routes/web_main.py` (`get_examenes_por_grado`) para considerar `UserCuadernilloActivation` y `ExamAvailability`.
-- Modificación de `frontend/js/pages/dashboard.js` para eliminar la lógica de carga y renderización de resultados recientes.
-- Eliminación de `console.log`s de depuración en `frontend/js/pages/dashboard.js`.
-- `backend/routes/web_main.py` (`validar_usuario`) ahora devuelve un `session_id` real al iniciar sesión.
-- `backend/routes/api.py` (`/examenes/<area_id>/iniciar`) ahora asocia el `cuadernillo_id` a la `ActiveSession` y devuelve el `session_id`.
-- `backend/routes/api.py` (`/api/examen/<session_id>`) se añadió para obtener las preguntas de un examen activo usando el `session_id`.
-- `frontend/js/pages/dashboard.js` ahora llama a la API `startExam` para obtener un `session_id` real.
-- `frontend/js/pages/exam.js` ahora obtiene el `userCodigo` del `localStorage` para finalizar el examen.
-### Finalización: 20 de septiembre de 2025
 
-## Sesión 11 - 20 de septiembre de 2025
+- **Dependencias:** InstalaciÃ³n e integraciÃ³n de `openpyxl` en el proyecto.
+- **Backend (Panel Admin):** ImplementaciÃ³n del mÃ©todo `exportar_excel` en `ReporteGradoView` (`backend/admin.py`).
+- **Formato Excel:** ConfiguraciÃ³n de estilos profesionales:
+  - Encabezados con fondo azul y texto blanco.
+  - Celdas de nota con colores condicionales (Verde >= 3.0, Rojo < 3.0).
+  - CÃ¡lculo de promedio grupal al final de la tabla con formato dinÃ¡mico.
+  - Ajuste automÃ¡tico de ancho de columnas.
+- **Frontend Admin:** AdiciÃ³n del botÃ³n "Exportar Excel" en el template `reporte_grado.html` y conexiÃ³n con el endpoint del servidor.
+- **Plan PRISMA:** ActualizaciÃ³n del plan a estado **[COMPLETADO]**.
+
+### Estado final:
+
+- **Calidad de cÃ³digo:** 100% validado (Flake8 limpio).
+- **Funcionalidad:** Plan PRISMA finalizado exitosamente. ExportaciÃ³n a Excel robusta y formateada.
+
+### FinalizaciÃ³n: lunes, 23 de marzo de 2026
+
+## SesiÃ³n 30 - 23 de marzo de 2026
+
+### Objetivos de la sesiÃ³n:
+
+- Implementar la **Fase 1 y 2 del Plan FOCUS**: ConfiguraciÃ³n dinÃ¡mica de la cantidad de preguntas del examen.
+- Modificar el panel administrativo para incluir el ajuste global de preguntas.
+- Actualizar la API de generaciÃ³n de exÃ¡menes para respetar el lÃ­mite configurado.
+
+### Acciones Realizadas:
+
+- **Backend (Admin):** ActualizaciÃ³n de `ConfigExamenesView` en `backend/admin.py` para soportar `EXAM_QUESTIONS_COUNT`.
+- **Frontend (Admin):** AdiciÃ³n del campo "Cantidad de Preguntas por Examen" en el formulario de ajustes globales (`backend/templates/admin/config_examenes.html`).
+- **Backend (API):** RefactorizaciÃ³n de `get_exam_questions_by_session` en `backend/routes/api.py` para leer dinÃ¡micamente el nÃºmero de preguntas a presentar desde la base de datos.
+- **Calidad:** VerificaciÃ³n de lÃ³gica de fallback (mÃ­nimo 10 preguntas si no existe configuraciÃ³n) y manejo de bancos con menos preguntas de las configuradas.
+
+### Estado final:
+
+- **Calidad de cÃ³digo:** 100% validado.
+- **Funcionalidad:** ImplementaciÃ³n del Plan FOCUS al 80% (pendiente validaciÃ³n final en entorno real).
+
+### FinalizaciÃ³n: lunes, 23 de marzo de 2026
+
+## SesiÃ³n 31 - 26 de marzo de 2026
+
+### Objetivos de la sesiÃ³n:
+
+- Corregir el fallo en la visualizaciÃ³n de resultados en `resultados.html`.
+- Sincronizar el backend y frontend para el cÃ¡lculo preciso de la nota y el desglose de respuestas (correctas, incorrectas y sin marcar).
+- Optimizar el flujo de finalizaciÃ³n del examen para incluir el tiempo usado.
+
+### Acciones Realizadas:
+
+- **Backend (API):** RefactorizaciÃ³n del endpoint `/api/examen/<session_id>/finalizar` en `backend/routes/api.py`. Se implementÃ³ una lÃ³gica de conteo robusta que distingue entre respuestas vÃ¡lidas (incorrectas) y casillas vacÃ­as (sin marcar).
+- **Servidor:** Corregido el comando `production` en el menÃº interactivo de `backend/server.py` para vincularse a todas las interfaces (`0.0.0.0`), permitiendo el acceso desde cualquier dispositivo en la red local.
+- **Frontend (API):** SincronizaciÃ³n de `submitExam` en `frontend/js/api/index.js` para enviar el objeto de respuestas y el tiempo transcurrido.
+- **Frontend (Examen):** ActualizaciÃ³n de `frontend/js/pages/exam.js` para capturar las respuestas en formato JSON, calcular el tiempo usado mediante el `Timer` y redirigir a `resultados.html`.
+- **Frontend (Resultados):** Ajuste de `frontend/js/pages/results.js` para renderizar dinÃ¡micamente el anillo de progreso, la nota final (escala 0.0-5.0) y las estadÃ­sticas detalladas.
+- **Calidad:** Paso exitoso de los hooks de pre-commit (Black, Prettier, Flake8).
+
+### Estado final:
+
+- **Calidad de cÃ³digo:** 100% validado y formateado.
+- **Funcionalidad:** Flujo de examen completo y visualizaciÃ³n de resultados 100% operativa y precisa.
+
+### FinalizaciÃ³n: jueves, 26 de marzo de 2026
+
+## Sesión 32 - 29/03/2026 09:11
+
 ### Objetivos de la sesión:
-- Implementar listado de cuadernillos.
-- Refactorizar la lógica de inicio y finalización de exámenes.
-- Mejorar el manejo de rutas de banco de preguntas.
-- Ajustar la configuración del examen en el frontend.
+
+- Validación Fase 3 Plan FOCUS (Admin Panel vs UI).
+- Integración de mejoras UX desde prototipos.
+- Optimización de API (random.sample).
+- Limpieza de deuda técnica (archivos de prototipo).
 
 ### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
-### Finalización: [PENDIENTE]
 
-## Sesión 12 - 20 de septiembre de 2025
-### Objetivos de la sesión:
-- Corregir la carga de imágenes aleatorias en el examen.
-- Eliminar los `print` de depuración del backend.
+- Calidad de código: Hooks configurados (Black, Prettier, Flake8).
+- Deuda técnica: Falta de tests automáticos para flujo Admin -> UI.
+- Tests: Cobertura manual verificada en Sesion 31.
 
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
-### Finalización: [PENDIENTE]
+### Acciones Realizadas:
 
-## Sesión 13 - 20 de septiembre de 2025
-### Objetivos de la sesión:
-- Implementar diseño responsive para la página del dashboard.
-- Ajustar el diseño de la pestaña de inicio del panel de administración.
-- Mejorar la accesibilidad del botón de cerrar sesión en el panel de administración.
+- **Panel de Admin (Configuración):** Se eliminó la sección obsoleta de "Gestión de Módulos (Portal Estudiantil)" de `backend/templates/admin/config_examenes.html`, centralizando dicha funcionalidad en su panel dedicado.
+- **Panel de Admin (Reportes):** Se implementó el botón "Limpiar Notas" en `backend/templates/admin/reporte_grado.html` para permitir el borrado masivo de resultados por grado y área con confirmación de seguridad.
+- **Backend (API):**
+  - Se optimizó el endpoint `finalizar_examen` para devolver `id`, `numAttempts` y `area_id`.
+  - Se implementó una búsqueda ultra-flexible de áreas ignorando mayúsculas, espacios y guiones bajos.
+- **Frontend (Examen/Resultados):**
+  - Se habilitó el botón "Volver a Intentar" en la página de resultados, con validación dinámica de intentos restantes.
+  - Se corrigió la comparación de intentos en `ui.js` forzando conversión a enteros para evitar bloqueos erróneos.
+  - Se implementó auto-inicio de examen en el frontend para recuperar sesiones inactivas (error 400/404).
+  - Se sincronizó la constante de intentos predeterminada a 5 en `constants.js`.
+- **Correcciones:** Se resolvió el error `NameError: jsonify` en `backend/admin.py` y se actualizó la lógica de `fetch` en el frontend para mayor estabilidad.
 
-### Estado inicial:
-- Calidad de código: No hay checks automáticos configurados.
-- Deuda técnica:
-    - Funcionalidad de Exámenes Incompleta.
-    - Falta de Herramientas de Calidad y Testing.
-    - Documentación Incompleta/Desorganizada.
-    - Dependencias no auditadas.
-    - Problema de cierre de sesión y carga dinamica de las areas a evaluar (pendiente de Sesión 3).
-- Tests: No hay testing framework configurado.
-### Finalización: 20 de septiembre de 2025
+### Estado final:
+
+- **Calidad de código:** Validado por pre-commit (Black, Prettier, Flake8).
+- **Funcionalidad:** Flujo de examen 100% robusto, con gestión de intentos dinámica y sincronizada con el panel administrativo.
+
+### Finalización: domingo, 29 de marzo de 2026

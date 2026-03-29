@@ -1,0 +1,10 @@
+[tool.black]
+line-length = 120
+target-version = ['py38']
+exclude = '/(\.git|\.hg|\.mypy_cache|\.tox|\.venv|_build|buck-out|build|dist|mi_server)/'
+
+[tool.isort]
+profile = "black"
+line_length = 120
+known_first_party = ["backend"]
+skip_glob = ["**/migrations/*.py", "**/mi_server/*"]

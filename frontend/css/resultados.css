@@ -1,6 +1,10 @@
-@import "header.css";
-@import "sections/results-page.css";
-@import "components/score-summary.css";
-@import "components/stats-grid.css";
-@import "components/results-footer.css";
-@import "base/results-animations.css";
+@import 'header.css';
+@import 'base/layout.css';
+@import 'base/utilities.css';
+@import 'base/animations.css';
+@import 'sections/hero.css';
+@import 'sections/results-page.css';
+@import 'components/score-summary.css';
+@import 'components/stats-grid.css';
+@import 'components/results-footer.css';
+@import 'base/results-animations.css';

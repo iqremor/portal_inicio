@@ -99,7 +99,6 @@ function endDrag() {
 // --- MANEJADORES DE EVENTOS DE LA RUEDA DEL MOUSE Y DOBLE CLIC ---
 
 function handleWheelZoom(e) {
-    e.preventDefault();
     const delta = e.deltaY > 0 ? -0.1 : 0.1;
     adjustZoom(delta);
 }
@@ -204,7 +203,7 @@ export function initZoom(imageElement) {
     document.getElementById("zoom-reset-btn").addEventListener("click", resetZoom);
     
     // Listeners para el mouse y eventos táctiles
-    imageContainer.addEventListener("wheel", handleWheelZoom);
+    imageContainer.addEventListener("wheel", handleWheelZoom, { passive: true });
     // Solo se añaden los listeners que inician el arrastre
     imageElement.addEventListener("mousedown", startDrag);
     imageElement.addEventListener("touchstart", startDrag, { passive: false });

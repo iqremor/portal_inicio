@@ -4,7 +4,7 @@
     "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
     "grado": "6",
-    "area": "matemáticas",
+    "area": "matematicas",
     "cuadernillo_id": "mat_6_cuad_01"
   },
   "matematicas_grado_7": {
@@ -22,14 +22,16 @@
     "grado": "8",
     "area": "matematicas",
     "cuadernillo_id": "mat_8_cuad_01"
-  },"matematicas_grado_9": {
+  },
+  "matematicas_grado_9": {
     "nombre": "Cuadernillo de Matemáticas - Grado 9",
     "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,
     "grado": "9",
     "area": "matematicas",
     "cuadernillo_id": "mat_9_cuad_01"
-  },"matematicas_grado_10": {
+  },
+  "matematicas_grado_10": {
     "nombre": "Cuadernillo de Matemáticas - Grado 10",
     "descripcion": "Lee las preguntas de las imágenes y responde.",
     "activo": true,

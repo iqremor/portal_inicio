@@ -1,108 +1,228 @@
-import { checkSession } from '../shared/auth.js';
-import { getInitials, formatDate } from '../shared/utils.js';
+import { checkSession, handleLogout } from '../shared/auth.js';
+import { formatDuration, getInitials } from '../shared/utils.js';
+import { obtenerNumeroDeIntentos } from '../examen/storage.js';
+import { startExam } from '../api/index.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const session = checkSession();
-    if (!session.active) {
-        window.location.href = '/frontend/pages/login.html';
-        return;
-    }
+  const session = checkSession();
+  if (!session.active) {
+    window.location.href = '/frontend/pages/login.html';
+    return;
+  }
 
-    const results = new Results(session);
-    results.init();
+  const results = new Results(session);
+  results.init();
 });
 
 class Results {
-    constructor(session) {
-        this.session = session;
-        this.examResult = {};
+  constructor(session) {
+    this.session = session;
+    this.examResult = {};
+  }
+
+  init() {
+    this.loadResultData();
+    this.displayUserInfo();
+    this.displayResults();
+    this.setupEventListeners();
+    this.checkRetryButton();
+
+    // Re-intentar cargar info del header después de un delay
+    setTimeout(() => this.displayUserInfo(), 500);
+    setTimeout(() => this.displayUserInfo(), 1500);
+  }
+
+  loadResultData() {
+    const resultData = localStorage.getItem('ultimoResultado');
+    if (resultData) {
+      this.examResult = JSON.parse(resultData);
+    } else {
+      this.examResult = {
+        area: 'Área Desconocida',
+        porcentaje: 0,
+        preguntas_correctas: 0,
+        preguntas_incorrectas: 0,
+        preguntas_sin_responder: 0,
+        total_preguntas: 0,
+        tiempo_usado: 0,
+        puntuacion: 0,
+        puntuacion_maxima: 5.0,
+      };
+    }
+  }
+
+  displayUserInfo() {
+    const heroUserName = document.getElementById('heroUserName');
+    if (heroUserName) heroUserName.textContent = this.session.nombre_completo;
+
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const userGrade = document.getElementById('userGrade');
+    const grado = this.session.grado || this.examResult.grado || '';
+
+    if (userAvatar)
+      userAvatar.textContent = getInitials(this.session.nombre_completo);
+    if (userName) userName.textContent = this.session.nombre_completo;
+    if (userGrade) userGrade.textContent = grado ? `Grado ${grado}` : '';
+  }
+
+  displayResults() {
+    const {
+      area,
+      porcentaje,
+      preguntas_correctas,
+      preguntas_incorrectas,
+      preguntas_sin_responder,
+      tiempo_usado,
+      puntuacion,
+    } = this.examResult;
+
+    let displayArea = area || 'Área';
+    displayArea = displayArea.charAt(0).toUpperCase() + displayArea.slice(1);
+    displayArea = displayArea.replace(/_/g, ' ');
+
+    document.getElementById('examAreaTitle').textContent = displayArea;
+    document.getElementById('scorePercentage').textContent = `${porcentaje}%`;
+    document.getElementById('correctAnswers').textContent =
+      `${preguntas_correctas}`;
+    document.getElementById('incorrectAnswers').textContent = `${
+      preguntas_incorrectas ?? 0
+    }`;
+    document.getElementById('unselectedAnswers').textContent = `${
+      preguntas_sin_responder ?? 0
+    }`;
+    document.getElementById('timeUsed').textContent =
+      formatDuration(tiempo_usado);
+
+    const bigScoreEl = document.getElementById('bigScore');
+    if (bigScoreEl) bigScoreEl.textContent = (puntuacion || 0).toFixed(1);
+
+    this.updateScoreCircle(porcentaje);
+  }
+
+  async checkRetryButton() {
+    try {
+      const retryBtn = document.getElementById('retryExam');
+      if (!retryBtn) return;
+
+      // Si no tenemos el ID directo del resultado, no podemos consultar intentos específicos
+      if (!this.examResult.id) {
+        console.warn(
+          'No se encontró ID de examen en los resultados. Buscando alternativa...'
+        );
+        // Opcional: Podríamos intentar cargar el ID desde la lista de exámenes si es necesario
+        return;
+      }
+
+      const currentAttempts = await obtenerNumeroDeIntentos(this.examResult.id);
+
+      // Intentar obtener el máximo de intentos del resultado o usar el valor por defecto configurado
+      let maxAttempts = parseInt(this.examResult.numAttempts);
+
+      // Si no viene en el resultado (por caché antigua), podríamos usar 3 como último recurso,
+      // pero el backend ya debería enviarlo.
+      if (isNaN(maxAttempts)) {
+        maxAttempts = 3;
+      }
+
+      console.log(
+        `Verificando intentos: Actuales=${currentAttempts}, Máximos=${maxAttempts}`
+      );
+
+      if (currentAttempts < maxAttempts) {
+        retryBtn.style.setProperty('display', 'inline-flex', 'important');
+      } else {
+        retryBtn.style.display = 'none';
+        console.info('Se han agotado los intentos para este examen.');
+      }
+    } catch (error) {
+      console.error('Error al verificar disponibilidad de reintento:', error);
+    }
+  }
+
+  updateScoreCircle(percentage) {
+    const circle = document.getElementById('scoreRing');
+    const statusEl = document.getElementById('scoreStatus');
+    const scoreContainer = document.querySelector('.score-circle');
+
+    if (!circle || !statusEl) return;
+
+    setTimeout(() => {
+      circle.setAttribute('stroke-dasharray', `${percentage}, 100`);
+    }, 100);
+
+    let statusText = '';
+    let statusClass = '';
+
+    if (percentage >= 90) {
+      statusText = '¡Excelente!';
+      statusClass = 'excellent';
+    } else if (percentage >= 80) {
+      statusText = '¡Buen Trabajo!';
+      statusClass = 'good';
+    } else if (percentage >= 60) {
+      statusText = 'Aprobado';
+      statusClass = 'warning';
+    } else {
+      statusText = 'Necesitas Mejorar';
+      statusClass = 'danger';
     }
 
-    init() {
-        this.loadResultData();
-        this.displayUserInfo();
-        this.displayResults();
-        this.setupEventListeners();
+    statusEl.textContent = statusText;
+    if (scoreContainer) {
+      scoreContainer.classList.remove('excellent', 'good', 'warning', 'danger');
+      scoreContainer.classList.add(statusClass);
+    }
+  }
+
+  setupEventListeners() {
+    const btnBackDashboard = document.getElementById('backToDashboard');
+    const btnRetryExam = document.getElementById('retryExam');
+    const btnViewAnswers = document.getElementById('viewAnswers');
+
+    if (btnBackDashboard) {
+      btnBackDashboard.addEventListener('click', () => {
+        window.location.href = `/frontend/pages/simulacro.html`;
+      });
     }
 
-    loadResultData() {
-        const resultData = localStorage.getItem('ultimoResultado');
-        if (resultData) {
-            this.examResult = JSON.parse(resultData);
-        } else {
-            // Mock data for demonstration purposes
-            this.examResult = {
-                area: 'Matemáticas',
-                porcentaje: 85,
-                preguntas_correctas: 17,
-                total_preguntas: 20,
-                tiempo_usado: 1530, // seconds
-                puntuacion: 850,
-                puntuacion_maxima: 1000
-            };
+    if (btnViewAnswers) {
+      btnViewAnswers.addEventListener('click', () => {
+        window.location.href = 'respuestas.html';
+      });
+    }
+
+    if (btnRetryExam) {
+      btnRetryExam.addEventListener('click', async () => {
+        try {
+          btnRetryExam.disabled = true;
+          btnRetryExam.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Iniciando...';
+
+          // Usar area_id técnico si está disponible, de lo contrario intentar con area
+          const areaId = this.examResult.area_id || this.examResult.area;
+
+          const examData = await startExam(
+            areaId,
+            this.session.codigo,
+            this.session.grado
+          );
+          window.location.href = `/frontend/pages/examen.html?id=${examData.sesion_id}&area=${areaId}`;
+        } catch (error) {
+          console.error('Error al reintentar:', error);
+          btnRetryExam.disabled = false;
+          btnRetryExam.innerHTML =
+            '<i class="fas fa-redo"></i> Volver a Intentar';
         }
+      });
     }
 
-    displayUserInfo() {
-        const userAvatar = document.getElementById('userAvatar');
-        const userName = document.getElementById('userName');
-        const userGrade = document.getElementById('userGrade');
-
-        if (userAvatar) userAvatar.textContent = getInitials(this.session.nombre);
-        if (userName) userName.textContent = this.session.nombre;
-        if (userGrade) userGrade.textContent = localStorage.getItem('usuario_grado') || 'Grado X';
-    }
-
-    displayResults() {
-        const { area, porcentaje, preguntas_correctas, total_preguntas, tiempo_usado, puntuacion, puntuacion_maxima } = this.examResult;
-
-        document.getElementById('examAreaTitle').textContent = area;
-        document.getElementById('scorePercentage').textContent = `${porcentaje}%`;
-        document.getElementById('correctAnswers').textContent = `${preguntas_correctas} / ${total_preguntas}`;
-        document.getElementById('incorrectAnswers').textContent = `${total_preguntas - preguntas_correctas} / ${total_preguntas}`;
-        document.getElementById('timeUsed').textContent = formatDate(tiempo_usado * 1000);
-        document.getElementById('score').textContent = `${puntuacion} / ${puntuacion_maxima}`;
-
-        this.updateScoreCircle(porcentaje);
-        this.updateScoreStatus(porcentaje);
-    }
-
-    updateScoreCircle(percentage) {
-        const circle = document.getElementById('scoreRing');
-        const radius = circle.r.baseVal.value;
-        const circumference = 2 * Math.PI * radius;
-        const offset = circumference - (percentage / 100) * circumference;
-
-        circle.style.strokeDasharray = `${circumference} ${circumference}`;
-        setTimeout(() => {
-            circle.style.strokeDashoffset = offset;
-        }, 100);
-    }
-
-    updateScoreStatus(percentage) {
-        const statusEl = document.getElementById('scoreStatus');
-        if (percentage >= 90) {
-            statusEl.textContent = '¡Excelente!';
-            statusEl.style.color = 'var(--accent-color)';
-        } else if (percentage >= 70) {
-            statusEl.textContent = '¡Buen Trabajo!';
-            statusEl.style.color = 'var(--primary-color)';
-        } else if (percentage >= 50) {
-            statusEl.textContent = 'Aprobado';
-            statusEl.style.color = 'var(--warning-color)';
-        } else {
-            statusEl.textContent = 'Necesitas Mejorar';
-            statusEl.style.color = 'var(--danger-color)';
-        }
-    }
-
-    setupEventListeners() {
-        document.getElementById('backToDashboard').addEventListener('click', () => {
-            window.location.href = `/frontend/pages/dashboard.html?codigo=${this.session.codigo}`;
-        });
-
-        document.getElementById('backToExams').addEventListener('click', () => {
-            window.location.href = `/frontend/pages/dashboard.html?codigo=${this.session.codigo}&view=exams`;
-        });
-    }
+    // Logout
+    setTimeout(() => {
+      const btnLogout = document.querySelector('.main-header__logout-btn');
+      if (btnLogout) {
+        btnLogout.addEventListener('click', () => handleLogout(this.session));
+      }
+    }, 1000);
+  }
 }

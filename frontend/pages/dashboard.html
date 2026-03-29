@@ -1,57 +1,119 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portal Estudiantil IEM</title>
-    
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="dashboard-body">
+
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="dashboard-body">
     <div class="dashboard-container">
-        <!-- Header -->
-        <div id="header-placeholder"></div>
+      <!-- Header -->
+      <div id="header-placeholder"></div>
 
-        <!-- Main Content -->
-        <main class="dashboard-main">
-            <!-- Hero Section -->
-            <section class="hero-section">
-                <div class="hero-card">
-                    <p class="hero-subtitle">¡Hola! <span id="heroUserName"></span>. Aquí encontrarás los cuadernillos para realizar las Pruebas Saber <span id="heroUserGrade"></span></p>
-                </div>
-            </section>
+      <!-- Main Content -->
+      <main class="dashboard-main">
+        <!-- Hero Section -->
+        <section class="hero-section">
+          <div class="hero-card">
+            <h2>Bienvenido al Portal Estudiantil</h2>
+            <p class="hero-subtitle">
+              ¡Hola! <span id="heroUserName"></span>. Aquí podrás acceder a
+              todas tus actividades académicas para
+              <span id="heroUserGrade"></span>
+            </p>
+          </div>
+        </section>
 
-            <!-- Activities Section -->
-            <div class="fixed-title-container">
-                <h2 class="activities-title">Exámenes Disponibles</h2>
+        <!-- Activities Section -->
+        <div class="fixed-title-container">
+          <h3 class="activities-title">Escoge la actividad a realizar</h3>
+        </div>
+
+        <section class="activities-grid">
+          <!-- Preicfes -->
+          <div class="activity-card-new" id="card-preicfes">
+            <div class="activity-icon-new">
+              <i class="fas fa-graduation-cap"></i>
             </div>
-            <section class="activities-section">
-                <!-- Exam cards will be dynamically loaded here by JavaScript -->
-            </section>
+            <h4>Preicfes</h4>
+            <p>
+              Simulacro interactivo de las pruebas saber para preparación
+              integral.
+            </p>
+            <button
+              class="btn btn-primary btn-module"
+              id="btn-preicfes"
+              disabled
+            >
+              Prueba Saber
+            </button>
+          </div>
 
-            
-        </main>
+          <!-- Preunal -->
+          <div class="activity-card-new" id="card-preunal">
+            <div class="activity-icon-new">
+              <i class="fas fa-university"></i>
+            </div>
+            <h4>Preunal</h4>
+            <p>
+              Simulacro interactivo para el examen de la Universidad Nacional.
+            </p>
+            <button
+              class="btn btn-primary btn-module"
+              id="btn-preunal"
+              disabled
+            >
+              Comenzar
+            </button>
+          </div>
 
-        <!-- Footer -->
-        <div id="footer-placeholder"></div>
+          <!-- Laboratorios -->
+          <div class="activity-card-new" id="card-laboratorios">
+            <div class="activity-icon-new">
+              <i class="fas fa-flask"></i>
+            </div>
+            <h4>Pruebas y Laboratorios</h4>
+            <p>
+              Mejora la lectura comprensiva y accede a laboratorios virtuales.
+            </p>
+            <button
+              class="btn btn-primary btn-module"
+              id="btn-laboratorios"
+              disabled
+            >
+              Comenzar
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <div id="footer-placeholder"></div>
     </div>
 
     <script>
-        fetch('header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-        fetch('footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-            });
+      fetch('header.html')
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById('header-placeholder').innerHTML = data;
+        });
+      fetch('footer.html')
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById('footer-placeholder').innerHTML = data;
+        });
     </script>
     <script src="../js/main.js" defer></script>
     <script type="module" src="../js/pages/dashboard.js"></script>
-</body>
+  </body>
 </html>
-

@@ -1,0 +1,194 @@
+{
+  "matematicas": {
+    "descripcion": "Evaluación de conceptos matemáticos básicos",
+    "activo": true,
+    "cuadernillos_disponibles": [
+      {
+        "grado": "6",
+        "cuadernillo_id": "mat_6_cuad_01",
+        "dir_banco": "/data/sexto/matematicas/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "7",
+        "cuadernillo_id": "mat_7_cuad_01",
+        "dir_banco": "/data/septimo/matematicas/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "8",
+        "cuadernillo_id": "mat_8_cuad_01",
+        "dir_banco": "/data/octavo/matematicas/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "9",
+        "cuadernillo_id": "mat_9_cuad_01",
+        "dir_banco": "/data/noveno/matematicas/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "10",
+        "cuadernillo_id": "mat_10_cuad_01",
+        "dir_banco": "/data/decimo/matematicas/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "11",
+        "cuadernillo_id": "mat_11_cuad_01",
+        "dir_banco": "/data/once/matematicas/",
+        "total_preguntas_banco": 20
+      }
+    ]
+  },
+  "ciencias_naturales": {
+    "descripcion": "Evaluación de conceptos científicos básicos",
+    "activo": true,
+    "cuadernillos_disponibles": [
+      {
+        "grado": "6",
+        "cuadernillo_id": "c_naturales_6_cuad_01",
+        "dir_banco": "/data/sexto/ciencias_naturales/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "7",
+        "cuadernillo_id": "c_naturales_7_cuad_01",
+        "dir_banco": "/data/septimo/ciencias_naturales/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "8",
+        "cuadernillo_id": "c_naturales_8_cuad_01",
+        "dir_banco": "/data/octavo/ciencias_naturales/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "9",
+        "cuadernillo_id": "c_naturales_9_cuad_01",
+        "dir_banco": "/data/noveno/ciencias_naturales/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "10",
+        "cuadernillo_id": "c_naturales_10_cuad_01",
+        "dir_banco": "/data/decimo/ciencias_naturales/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "11",
+        "cuadernillo_id": "c_naturales_11_cuad_01",
+        "dir_banco": "/data/once/ciencias_naturales/",
+        "total_preguntas_banco": 20
+      }
+    ]
+  },
+  "ciencias_sociales": {
+    "descripcion": "Evaluación de conceptos sociales básicos",
+    "activo": true,
+    "cuadernillos_disponibles": [
+      {
+        "grado": "6",
+        "cuadernillo_id": "c_sociales_6_cuad_01",
+        "dir_banco": "/data/sexto/ciencias_sociales/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "7",
+        "cuadernillo_id": "c_sociales_7_cuad_01",
+        "dir_banco": "/data/septimo/ciencias_sociales/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "8",
+        "cuadernillo_id": "c_sociales_8_cuad_01",
+        "dir_banco": "/data/octavo/ciencias_sociales/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "9",
+        "cuadernillo_id": "c_sociales_9_cuad_01",
+        "dir_banco": "/data/noveno/ciencias_sociales/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "10",
+        "cuadernillo_id": "c_sociales_10_cuad_01",
+        "dir_banco": "/data/decimo/ciencias_sociales/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "11",
+        "cuadernillo_id": "c_sociales_11_cuad_01",
+        "dir_banco": "/data/once/ciencias_sociales/",
+        "total_preguntas_banco": 20
+      }
+    ]
+  },
+  "lenguaje": {
+    "descripcion": "Evaluación de conceptos lingüísticos básicos",
+    "activo": true,
+    "cuadernillos_disponibles": [
+      {
+        "grado": "6",
+        "cuadernillo_id": "lenguaje_6_cuad_01",
+        "dir_banco": "/data/sexto/lenguaje/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "7",
+        "cuadernillo_id": "lenguaje_7_cuad_01",
+        "dir_banco": "/data/septimo/lenguaje/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "8",
+        "cuadernillo_id": "lenguaje_8_cuad_01",
+        "dir_banco": "/data/octavo/lenguaje/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "9",
+        "cuadernillo_id": "lenguaje_9_cuad_01",
+        "dir_banco": "/data/noveno/lenguaje/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "10",
+        "cuadernillo_id": "lenguaje_10_cuad_01",
+        "dir_banco": "/data/decimo/lenguaje/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "11",
+        "cuadernillo_id": "lenguaje_11_cuad_01",
+        "dir_banco": "/data/once/lenguaje/",
+        "total_preguntas_banco": 20
+      }
+    ]
+  },
+    "ingles": {
+    "descripcion": "Evaluación de conceptos lingüísticos básicos",
+    "activo": true,
+    "cuadernillos_disponibles": [
+      {
+        "grado": "9",
+        "cuadernillo_id": "ingles_9_cuad_01",
+        "dir_banco": "/data/noveno/ingles/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "10",
+        "cuadernillo_id": "ingles_10_cuad_01",
+        "dir_banco": "/data/decimo/ingles/",
+        "total_preguntas_banco": 20
+      },
+      {
+        "grado": "11",
+        "cuadernillo_id": "ingles_11_cuad_01",
+        "dir_banco": "/data/once/ingles/",
+        "total_preguntas_banco": 20
+      }
+    ]
+  }
+}

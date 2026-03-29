@@ -1,44 +1,150 @@
 .score-summary {
-    margin-bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
+  animation: fadeIn 0.8s ease-out;
+  gap: 1.5rem;
+}
+
+.score-main-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  flex-wrap: wrap;
 }
 
 .score-circle {
-    position: relative;
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 1rem;
+  width: 180px;
+  height: 180px;
 }
 
-.score-ring {
-    transform: rotate(-90deg);
+/* Nota Final Gigante */
+.grade-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  width: 160px;
+  height: 160px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.score-ring-bg {
-    fill: none;
-    stroke: #e5e7eb;
+.grade-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: -5px;
 }
 
-.score-ring-fg {
-    fill: none;
-    stroke: var(--accent-color);
-    stroke-linecap: round;
-    transition: stroke-dashoffset 1.5s ease-out;
-    stroke-dasharray: 465;
-    stroke-dashoffset: 465;
+.grade-value {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  line-height: 1;
 }
 
-.score-percentage {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
+/* Colores dinámicos para la nota gigante */
+.score-circle.excellent + .grade-display {
+  border-color: #10b981;
+}
+.score-circle.excellent + .grade-display .grade-value {
+  color: #10b981;
+}
+
+.score-circle.good + .grade-display {
+  border-color: #3b82f6;
+}
+.score-circle.good + .grade-display .grade-value {
+  color: #3b82f6;
+}
+
+.score-circle.warning + .grade-display {
+  border-color: #f59e0b;
+}
+.score-circle.warning + .grade-display .grade-value {
+  color: #f59e0b;
+}
+
+.score-circle.danger + .grade-display {
+  border-color: #ef4444;
+}
+.score-circle.danger + .grade-display .grade-value {
+  color: #ef4444;
+}
+
+.circular-chart {
+  display: block;
+  margin: 10px auto;
+  max-width: 100%;
+  max-height: 250px;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke: var(--primary-color);
+  transition: stroke-dasharray 1s ease-in-out;
+}
+
+.percentage {
+  fill: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.score-status-container {
+  text-align: center;
 }
 
 .score-status {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--accent-color);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+/* Colores dinámicos para el círculo según el desempeño */
+.score-circle.excellent .circle {
+  stroke: #10b981;
+}
+.score-circle.good .circle {
+  stroke: #3b82f6;
+}
+.score-circle.warning .circle {
+  stroke: #f59e0b;
+}
+.score-circle.danger .circle {
+  stroke: #ef4444;
+}
+
+.score-circle.excellent .percentage {
+  fill: #059669;
+}
+.score-circle.good .percentage {
+  fill: #2563eb;
+}
+.score-circle.warning .percentage {
+  fill: #d97706;
+}
+.score-circle.danger .percentage {
+  fill: #dc2626;
 }
