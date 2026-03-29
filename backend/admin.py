@@ -4,7 +4,7 @@
 import os.path as op
 from datetime import datetime, timedelta
 
-from flask import flash, redirect, request, session, url_for
+from flask import flash, jsonify, redirect, request, session, url_for
 from flask_admin import Admin, AdminIndexView, BaseView, expose
 from flask_admin.contrib.fileadmin import FileAdmin
 from flask_admin.contrib.sqla import ModelView
@@ -636,6 +636,78 @@ class ReporteGradoView(BaseView):
             as_attachment=True,
             download_name=filename,
         )
+
+    @expose("/api/resultados/<string:grado>/<int:cuadernillo_id>")
+    def get_resultados_json(self, grado, cuadernillo_id):
+        """Devuelve los resultados de un grado y examen en formato JSON."""
+        if not self.is_accessible():
+            return jsonify({"error": "No autorizado"}), 403
+
+        try:
+            usuarios = User.query.filter_by(grado=grado).all()
+            resultados_data = []
+
+            for usuario in usuarios:
+                ultimo_result = (
+                    ExamResult.query.filter_by(user_id=usuario.id, cuadernillo_id=cuadernillo_id)
+                    .order_by(ExamResult.attempt_number.desc())
+                    .first()
+                )
+
+                intentos_count = ExamResult.query.filter_by(user_id=usuario.id, cuadernillo_id=cuadernillo_id).count()
+
+                resultados_data.append(
+                    {
+                        "codigo": usuario.codigo,
+                        "nombre": usuario.nombre_completo,
+                        "nota": ultimo_result.final_score if ultimo_result else None,
+                        "intentos": intentos_count,
+                        "fecha": ultimo_result.completion_date.strftime("%Y-%m-%d %H:%M") if ultimo_result else None,
+                    }
+                )
+
+            return jsonify({"resultados": resultados_data})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+    @expose("/limpiar_notas/<string:grado>/<int:cuadernillo_id>", methods=["POST"])
+    def limpiar_notas(self, grado, cuadernillo_id):
+        """Elimina todos los resultados y respuestas para un grado y cuadernillo específicos."""
+        try:
+            # 1. Obtener usuarios del grado
+            usuarios = User.query.filter_by(grado=grado).all()
+            user_ids = [u.id for u in usuarios]
+
+            if not user_ids:
+                flash(f"No se encontraron usuarios para el grado {grado}.", "warning")
+                return redirect(url_for(".index"))
+
+            # 2. Eliminar Resultados
+            results_to_delete = ExamResult.query.filter(
+                ExamResult.user_id.in_(user_ids), ExamResult.cuadernillo_id == cuadernillo_id
+            ).all()
+
+            for result in results_to_delete:
+                # 3. Eliminar Respuestas asociadas (por ID de sesión si existe relación,
+                # o por user_id y cuadernillo_id)
+                ExamAnswer.query.filter_by(user_id=result.user_id, cuadernillo_id=result.cuadernillo_id).delete()
+                db.session.delete(result)
+
+            # 4. Resetear Sesiones Activas (importante para permitir reintento)
+            ActiveSession.query.filter(
+                ActiveSession.user_id.in_(user_ids), ActiveSession.cuadernillo_id == cuadernillo_id
+            ).delete(synchronize_session=False)
+
+            db.session.commit()
+            flash(
+                f"Se han eliminado exitosamente los resultados del grado {grado} para este examen.",
+                "success",
+            )
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error al limpiar las notas: {str(e)}", "danger")
+
+        return redirect(url_for(".index"))
 
     def is_accessible(self):
         return session.get("logged_in") and session.get("user_role") == "admin"

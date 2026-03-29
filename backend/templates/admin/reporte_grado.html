@@ -62,6 +62,9 @@
         <button class="btn btn-primary btn-sm ml-2" onclick="exportToExcel()">
           <i class="fas fa-file-excel"></i> Exportar Excel
         </button>
+        <button class="btn btn-danger btn-sm ml-2" onclick="limpiarNotas()">
+          <i class="fas fa-trash"></i> Limpiar Notas
+        </button>
       </div>
     </div>
     <div class="card-body">
@@ -148,15 +151,10 @@
           // que busca en cabecera X-Session-ID. El admin debe tener uno o podemos
           // adaptar el endpoint para que use la sesión de Flask-Admin.
 
-          // NOTA: Para este reporte administrativo, es mejor usar un endpoint
-          // que use session['logged_in'] en lugar de un session_id de API móvil/web user.
-          // O pasar el session_id si el admin también tiene uno.
+          // NOTA: Para este reporte administrativo, usamos la ruta interna del panel admin
+          // que ya tiene acceso a la sesión de Flask-Admin.
 
-          fetch(`/api/admin/resultados/grado/${grado}/examen/${cuadernilloId}`, {
-              headers: {
-                  'X-Session-ID': '{{ session.get("api_session_id", "") }}' // Ver nota abajo
-              }
-          })
+          fetch(`/admin/reporte_grado/api/resultados/${grado}/${cuadernilloId}`)
           .then(response => {
               if (response.status === 401 || response.status === 403) {
                   throw new Error('No autorizado o sesión expirada');
@@ -237,6 +235,31 @@
       }
 
       window.location.href = `/admin/reporte_grado/exportar_excel/${grado}/${cuadernilloId}`;
+  }
+
+  function limpiarNotas() {
+      const selectGrado = document.getElementById('select-grado');
+      const selectCuadernillo = document.getElementById('select-cuadernillo');
+
+      const grado = selectGrado.value;
+      const cuadernilloId = selectCuadernillo.value;
+      const selectElement = selectCuadernillo;
+      const cuadernilloNombre = selectElement.options[selectElement.selectedIndex].text;
+
+      if (!grado || !cuadernilloId) {
+          alert('Por favor, seleccione grado y examen primero.');
+          return;
+      }
+
+      const mensaje = `¿ESTÁ SEGURO?\n\nEsta acción ELIMINARÁ PERMANENTEMENTE todas las notas y respuestas de los estudiantes de GRADO ${grado} para el examen ${cuadernilloNombre}.\n\nEsta acción no se puede deshacer.`;
+
+      if (confirm(mensaje)) {
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = `/admin/reporte_grado/limpiar_notas/${grado}/${cuadernilloId}`;
+          document.body.appendChild(form);
+          form.submit();
+      }
   }
 </script>
 {% endblock %}
