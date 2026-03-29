@@ -103,15 +103,40 @@ class Results {
   async checkRetryButton() {
     try {
       const retryBtn = document.getElementById('retryExam');
-      if (!retryBtn || !this.examResult.id) return;
+      if (!retryBtn) return;
+
+      // Si no tenemos el ID directo del resultado, no podemos consultar intentos específicos
+      if (!this.examResult.id) {
+        console.warn(
+          'No se encontró ID de examen en los resultados. Buscando alternativa...'
+        );
+        // Opcional: Podríamos intentar cargar el ID desde la lista de exámenes si es necesario
+        return;
+      }
 
       const currentAttempts = await obtenerNumeroDeIntentos(this.examResult.id);
-      const maxAttempts = this.examResult.numAttempts || 3;
+
+      // Intentar obtener el máximo de intentos del resultado o usar el valor por defecto configurado
+      let maxAttempts = parseInt(this.examResult.numAttempts);
+
+      // Si no viene en el resultado (por caché antigua), podríamos usar 3 como último recurso,
+      // pero el backend ya debería enviarlo.
+      if (isNaN(maxAttempts)) {
+        maxAttempts = 3;
+      }
+
+      console.log(
+        `Verificando intentos: Actuales=${currentAttempts}, Máximos=${maxAttempts}`
+      );
+
       if (currentAttempts < maxAttempts) {
-        retryBtn.style.display = 'inline-flex';
+        retryBtn.style.setProperty('display', 'inline-flex', 'important');
+      } else {
+        retryBtn.style.display = 'none';
+        console.info('Se han agotado los intentos para este examen.');
       }
     } catch (error) {
-      console.error('Error checking retry availability:', error);
+      console.error('Error al verificar disponibilidad de reintento:', error);
     }
   }
 
@@ -173,7 +198,10 @@ class Results {
           btnRetryExam.disabled = true;
           btnRetryExam.innerHTML =
             '<i class="fas fa-spinner fa-spin"></i> Iniciando...';
-          const areaId = this.examResult.area;
+
+          // Usar area_id técnico si está disponible, de lo contrario intentar con area
+          const areaId = this.examResult.area_id || this.examResult.area;
+
           const examData = await startExam(
             areaId,
             this.session.codigo,

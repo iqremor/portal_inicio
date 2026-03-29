@@ -67,9 +67,10 @@ def start_examen(area_id, active_session):
 
     cuadernillo = Cuadernillo.query.filter_by(area=area_id, grado=grade).first()
     if not cuadernillo:
-        # Intento de búsqueda flexible si el área viene con espacios o mayúsculas
+        # Búsqueda ultra-flexible: ignorar mayúsculas, espacios y guiones bajos
+        normalized_area = area_id.lower().replace(" ", "_")
         cuadernillo = Cuadernillo.query.filter(
-            func.lower(Cuadernillo.area) == area_id.lower(), Cuadernillo.grado == grade
+            func.lower(func.replace(Cuadernillo.area, " ", "_")) == normalized_area, Cuadernillo.grado == grade
         ).first()
 
     if not cuadernillo:
@@ -191,11 +192,13 @@ def get_exam_questions_by_session(session_id, active_session):
             "id": cuadernillo.id,
             "titulo": cuadernillo.nombre,
             "total_preguntas_banco": cuadernillo.total_preguntas_banco,
+            "numAttempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 5)),
             "config": {
                 "timerDuration": timer_duration,
                 "numQuestions": len(active_session.presented_questions),
                 "subject": cuadernillo.area,
                 "Grado": cuadernillo.grado,
+                "numAttempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 5)),
             },
             "questions": active_session.presented_questions,
             "preguntas": active_session.presented_questions,  # Soporte para ambos nombres de campo
@@ -315,6 +318,8 @@ def finalizar_examen(session_id, active_session):
 
         # Guardar datos necesarios antes de limpiar la sesión
         resultado_detalle = {
+            "id": active_session.cuadernillo_id,
+            "area_id": active_session.cuadernillo.area if active_session.cuadernillo else "",
             "puntuacion": round(grade, 2),
             "preguntas_correctas": correct_count,
             "preguntas_incorrectas": incorrect,
@@ -323,9 +328,9 @@ def finalizar_examen(session_id, active_session):
             "porcentaje": round((correct_count / total_questions) * 100, 1),
             "tiempo_usado": data.get("tiempo_usado", 0),
             "area": active_session.cuadernillo.area if active_session.cuadernillo else "General",
+            "numAttempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 3)),
             "revision": revision,
         }
-
         active_session.cuadernillo_id = None
         active_session.presented_questions = None
         db.session.commit()

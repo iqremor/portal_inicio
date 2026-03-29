@@ -93,10 +93,10 @@ async function main() {
     try {
       examData = await getExamQuestions(sessionId);
     } catch (error) {
-      // Si el servidor dice que no hay examen activo (404), intentamos iniciarlo
-      if (error.status === 404) {
+      // Si el servidor dice que no hay examen activo (404 o 400), intentamos iniciarlo
+      if (error.status === 404 || error.status === 400) {
         console.log(
-          'Sesión de examen inactiva (404). Iniciando nuevo examen...'
+          `Sesión de examen inactiva (${error.status}). Iniciando nuevo examen para área: ${areaId}...`
         );
         try {
           await startExam(areaId, userCode, state.currentUser.grado);
@@ -127,8 +127,9 @@ async function main() {
 
     // Priorizar el valor que viene de la API del backend
     state.totalAttemptsAllowed =
-      state.examData.config && state.examData.config.numAttempts
-        ? state.examData.config.numAttempts
+      state.examData.numAttempts ||
+      (state.examData.config && state.examData.config.numAttempts)
+        ? state.examData.numAttempts || state.examData.config.numAttempts
         : quizConfig.numAttempts;
 
     mostrarPaginaInicio(

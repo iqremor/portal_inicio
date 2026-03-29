@@ -105,8 +105,15 @@ export function mostrarPaginaInicio(
   salirDeModoInmersivo();
   state.paginaActual = 'inicio';
 
+  const curAtt = parseInt(currentAttempt) || 0;
+  const maxAtt = parseInt(totalAttemptsAllowed) || 1;
+
+  console.log(
+    `Página Inicio - Intentos realizados: ${curAtt}, Límite: ${maxAtt}`
+  );
+
   // Lógica incremental: si ha hecho 0 intentos, está en el Intento 1.
-  const intentoActual = currentAttempt + 1;
+  const intentoActual = curAtt + 1;
 
   let content = `
         <div style="text-align: center; animation: fadeIn 0.5s ease-out;">
@@ -119,18 +126,18 @@ export function mostrarPaginaInicio(
             </p>
     `;
 
-  if (currentAttempt >= totalAttemptsAllowed) {
+  if (curAtt >= maxAtt) {
     content += `
             <h2 style="font-size: 1.5rem; color: #d9534f;">Límite de intentos alcanzado</h2>
             <p style="font-size: 1.1em; line-height: 1.6; color: #0a0a0aff; max-width: 600px; margin: 1rem auto 2rem;">
-                Has completado los <strong>${totalAttemptsAllowed}</strong> intentos permitidos para esta prueba.
+                Has completado los <strong>${maxAtt}</strong> intentos permitidos para esta prueba.
             </p>
             <button id="btnVolverDashboard" class="btn btn-primary">Volver al Inicio</button>
         `;
   } else {
     content += `
             <p style="font-size: 1.1em; color: #0a0a0aff; margin-bottom: 1.5rem;">
-                Usted realizará el <strong>Intento ${intentoActual} de ${totalAttemptsAllowed}</strong>
+                Usted realizará el <strong>Intento ${intentoActual} de ${maxAtt}</strong>
             </p>
             <button id="btnIniciarQuiz" class="btn btn-primary">Iniciar Prueba</button>
         `;

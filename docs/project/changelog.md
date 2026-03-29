@@ -279,12 +279,19 @@
 
 - **Panel de Admin (Configuración):** Se eliminó la sección obsoleta de "Gestión de Módulos (Portal Estudiantil)" de `backend/templates/admin/config_examenes.html`, centralizando dicha funcionalidad en su panel dedicado.
 - **Panel de Admin (Reportes):** Se implementó el botón "Limpiar Notas" en `backend/templates/admin/reporte_grado.html` para permitir el borrado masivo de resultados por grado y área con confirmación de seguridad.
-- **Backend (Admin):** Se añadió la ruta interna `get_resultados_json` para cargar reportes sin dependencia de la API externa y el método `limpiar_notas` para procesar el borrado de registros de `ExamResult`, `ExamAnswer` y `ActiveSession`.
+- **Backend (API):**
+  - Se optimizó el endpoint `finalizar_examen` para devolver `id`, `numAttempts` y `area_id`.
+  - Se implementó una búsqueda ultra-flexible de áreas ignorando mayúsculas, espacios y guiones bajos.
+- **Frontend (Examen/Resultados):**
+  - Se habilitó el botón "Volver a Intentar" en la página de resultados, con validación dinámica de intentos restantes.
+  - Se corrigió la comparación de intentos en `ui.js` forzando conversión a enteros para evitar bloqueos erróneos.
+  - Se implementó auto-inicio de examen en el frontend para recuperar sesiones inactivas (error 400/404).
+  - Se sincronizó la constante de intentos predeterminada a 5 en `constants.js`.
 - **Correcciones:** Se resolvió el error `NameError: jsonify` en `backend/admin.py` y se actualizó la lógica de `fetch` en el frontend para mayor estabilidad.
 
 ### Estado final:
 
 - **Calidad de código:** Validado por pre-commit (Black, Prettier, Flake8).
-- **Funcionalidad:** Panel administrativo más limpio y con capacidad de gestión de notas mejorada.
+- **Funcionalidad:** Flujo de examen 100% robusto, con gestión de intentos dinámica y sincronizada con el panel administrativo.
 
-### FinalizaciÃ³n: domingo, 29 de marzo de 2026
+### Finalización: domingo, 29 de marzo de 2026
