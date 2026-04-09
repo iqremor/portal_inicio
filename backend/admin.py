@@ -443,6 +443,7 @@ class ConfigExamenesView(BaseView):
                 "EXAM_NEXT_BUTTON_DELAY": request.form.get("next_button_delay"),
                 "EXAM_NUM_ATTEMPTS": request.form.get("num_attempts"),
                 "EXAM_QUESTIONS_COUNT": request.form.get("questions_count"),
+                "SHOW_CORRECT_ANSWERS": "1" if request.form.get("show_correct_answers") == "on" else "0",
             }
 
             try:
@@ -482,6 +483,7 @@ class ConfigExamenesView(BaseView):
         val_delay = get_v("EXAM_NEXT_BUTTON_DELAY", "10000")
         val_attempts = get_v("EXAM_NUM_ATTEMPTS", "1")
         val_questions = get_v("EXAM_QUESTIONS_COUNT", "10")
+        val_show_answers = get_v("SHOW_CORRECT_ANSWERS", "0")
 
         current_config = {
             "timer_duration": val_timer,
@@ -489,6 +491,7 @@ class ConfigExamenesView(BaseView):
             "next_button_delay": val_delay,
             "num_attempts": val_attempts,
             "questions_count": val_questions,
+            "show_correct_answers": val_show_answers == "1",
         }
         return self.render("admin/config_examenes.html", exam_settings=current_config)
 

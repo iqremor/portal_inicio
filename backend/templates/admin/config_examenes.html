@@ -149,6 +149,31 @@
             </p>
           </div>
 
+          <div class="form-group">
+            <div class="custom-control custom-switch">
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="show_correct_answers"
+                name="show_correct_answers"
+                value="on"
+                {%
+                if
+                exam_settings.show_correct_answers
+                %}checked{%
+                endif
+                %}
+              />
+              <label class="custom-control-label" for="show_correct_answers"
+                >ver respuestas</label
+              >
+            </div>
+            <p class="help-text">
+              Si está activado, los estudiantes podrán ver qué preguntas
+              contestaron bien/mal después de terminar el examen.
+            </p>
+          </div>
+
           <div class="text-right mt-4">
             <button type="submit" class="btn btn-primary btn-save">
               <i class="fas fa-save"></i> Guardar Cambios

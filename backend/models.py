@@ -346,34 +346,17 @@ def seed_data():
         )
         db.session.add(config_main)
 
-    # Añadir roles de usuario si no existen
-    if not UserRole.query.first():
-        roles = [UserRole.ADMIN, UserRole.USER, UserRole.MODERATOR]
-        db.session.add(roles)
-
-    # Crear usuario administrador por defecto
-    admin_user = User.query.filter_by(username="admin").first()
-    if not admin_user:
-        admin_user = User(username="admin", email="admin@sistema.com", role=UserRole.ADMIN)
-        admin_user.set_password("admin123")
-        db.session.add(admin_user)
-
-    # Crear usuario de prueba
-    test_user = User.query.filter_by(username="usuario_test").first()
-    if not test_user:
-        test_user = User(username="usuario_test", email="test@sistema.com", role=UserRole.USER)
-        test_user.set_password("test123")
-        db.session.add(test_user)
-
     # Crear configuración inicial del sistema
     configs = [
         ("max_peticiones_por_usuario", "10", "Máximo número de peticiones por usuario"),
         ("tiempo_limite_peticion", "30", "Días límite para completar una petición"),
         ("email_notificaciones", "true", "Activar notificaciones por email"),
-        ("EXAM_TIMER_DURATION", "240", "Duración del temporizador en segundos"),
-        ("EXAM_WARNING_TIME", "30", "Tiempo de advertencia en segundos"),
-        ("EXAM_NEXT_BUTTON_DELAY", "10000", "Retraso del botón siguiente en ms"),
-        ("EXAM_NUM_ATTEMPTS", "3", "Número de intentos permitidos"),
+        ("EXAM_TIMER_DURATION", "240", "Duración del examen por pregunta (segundos)"),
+        ("EXAM_WARNING_TIME", "30", "Tiempo de advertencia antes de finalizar (segundos)"),
+        ("EXAM_NEXT_BUTTON_DELAY", "10000", "Retraso obligatorio del botón siguiente (ms)"),
+        ("EXAM_NUM_ATTEMPTS", "1", "Número máximo de intentos permitidos"),
+        ("EXAM_QUESTIONS_COUNT", "10", "Número de preguntas por examen"),
+        ("SHOW_CORRECT_ANSWERS", "0", "Habilita el botón de ver respuestas correctas (1=Sí, 0=No)"),
         ("PREICFES_ENABLED", "1", "Activa o desactiva el módulo Preicfes (1=Activo, 0=Inactivo)"),
         ("PREUNAL_ENABLED", "1", "Activa o desactiva el módulo Preunal (1=Activo, 0=Inactivo)"),
         ("LABORATORIOS_ENABLED", "1", "Activa o desactiva el módulo Laboratorios (1=Activo, 0=Inactivo)"),

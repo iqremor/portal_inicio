@@ -26,10 +26,77 @@ class Results {
     this.displayResults();
     this.setupEventListeners();
     this.checkRetryButton();
+    this.checkAnswersButtonVisibility();
 
     // Re-intentar cargar info del header después de un delay
     setTimeout(() => this.displayUserInfo(), 500);
     setTimeout(() => this.displayUserInfo(), 1500);
+  }
+
+  async checkAnswersButtonVisibility() {
+    console.log(
+      'Iniciando verificación de visibilidad del botón de respuestas...'
+    );
+    console.log('Contenido completo de this.session:', this.session);
+
+    const btnViewAnswers = document.getElementById('viewAnswers');
+    if (!btnViewAnswers) {
+      console.warn('No se encontró el botón viewAnswers en el DOM');
+      return;
+    }
+
+    // Intentar obtener el ID de sesión de todas las variantes posibles en este proyecto
+    const sessionId =
+      this.session.sessionId ||
+      this.session.session_id ||
+      this.session.sessionID ||
+      this.session.token ||
+      this.session.id;
+
+    console.log('ID de sesión detectado:', sessionId);
+
+    if (!sessionId) {
+      console.error(
+        'ERROR: No se pudo encontrar un ID de sesión en el objeto:',
+        this.session
+      );
+      // Como último recurso, si no hay sesión, el botón DEBE permanecer oculto (seguridad)
+      btnViewAnswers.style.setProperty('display', 'none', 'important');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/configuracion/examen', {
+        headers: {
+          'X-Session-ID': sessionId,
+        },
+      });
+
+      console.log('Respuesta de API configuración:', response.status);
+
+      if (response.ok) {
+        const config = await response.json();
+        console.log('Configuración de examen recibida:', config);
+
+        // El valor viene como booleano desde el backend (get_exam_config)
+        if (config.show_correct_answers === true) {
+          console.log('Mostrando botón de respuestas por configuración');
+          btnViewAnswers.style.setProperty(
+            'display',
+            'inline-flex',
+            'important'
+          );
+        } else {
+          console.log('Manteniendo botón oculto por configuración');
+          btnViewAnswers.style.setProperty('display', 'none', 'important');
+        }
+      } else {
+        const errorData = await response.json();
+        console.error('Error en respuesta de configuración:', errorData);
+      }
+    } catch (error) {
+      console.error('Error al cargar la configuración de respuestas:', error);
+    }
   }
 
   loadResultData() {

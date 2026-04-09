@@ -45,6 +45,20 @@ def get_config_value(clave, default=None):
     return config.valor if config else default
 
 
+@api_bp.route("/configuracion/examen", methods=["GET"])
+@api_login_required
+def get_exam_config(active_session):
+    """Devuelve la configuración pública de los exámenes."""
+    # Asegurar que leemos el valor más reciente de la DB
+    db.session.expire_all()
+    return jsonify(
+        {
+            "show_correct_answers": get_config_value("SHOW_CORRECT_ANSWERS", "0") == "1",
+            "num_attempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 1)),
+        }
+    )
+
+
 @api_bp.route("/examenes/<string:area_id>/iniciar", methods=["POST"])
 @api_login_required
 def start_examen(area_id, active_session):
