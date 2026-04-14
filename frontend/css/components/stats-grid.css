@@ -16,11 +16,35 @@
   justify-content: center;
   text-align: center;
   gap: 1rem;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.stat-card:hover {
+.stat-card--clickable {
+  cursor: pointer;
+}
+
+.stat-card--clickable:hover {
   transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-primary);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card--clickable:active {
+  transform: translateY(-2px);
+}
+
+.stat-card--disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  filter: grayscale(0.5);
+}
+
+.stat-card--disabled:hover {
+  transform: none;
+  background: var(--bg-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
 }
 
 .stat-icon {

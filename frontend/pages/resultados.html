@@ -77,7 +77,11 @@
           </div>
 
           <div class="stats-grid">
-            <div class="stat-card">
+            <div
+              class="stat-card stat-card--clickable"
+              id="cardCorrect"
+              title="Ver preguntas correctas"
+            >
               <div class="stat-icon correct">
                 <i class="fas fa-check-circle"></i>
               </div>
@@ -86,7 +90,11 @@
                 <span id="correctAnswers" class="stat-value">-</span>
               </div>
             </div>
-            <div class="stat-card">
+            <div
+              class="stat-card stat-card--clickable"
+              id="cardIncorrect"
+              title="Ver preguntas incorrectas"
+            >
               <div class="stat-icon incorrect">
                 <i class="fas fa-times-circle"></i>
               </div>
@@ -95,7 +103,11 @@
                 <span id="incorrectAnswers" class="stat-value">-</span>
               </div>
             </div>
-            <div class="stat-card">
+            <div
+              class="stat-card stat-card--clickable"
+              id="cardUnselected"
+              title="Ver preguntas sin marcar"
+            >
               <div class="stat-icon unselected">
                 <i class="fas fa-minus-circle"></i>
               </div>
@@ -116,13 +128,6 @@
           <div class="results-actions">
             <button id="retryExam" class="btn btn-secondary">
               <i class="fas fa-redo"></i> Volver a Intentar
-            </button>
-            <button
-              id="viewAnswers"
-              class="btn btn-secondary"
-              style="display: none !important"
-            >
-              <i class="fas fa-eye"></i> Ver respuestas
             </button>
             <button id="backToDashboard" class="btn btn-primary">
               <i class="fas fa-home"></i> Volver al Inicio

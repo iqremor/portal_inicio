@@ -60,18 +60,44 @@ class ResponseReview {
     const tbody = document.getElementById('answersTableBody');
     if (!tbody || !this.examResult.revision) return;
 
-    // Filtrar solo las que tienen respuesta (diferente de 'NONE')
-    const answeredQuestions = this.examResult.revision.filter(
-      (q) => q.user_answer !== 'NONE'
-    );
+    // Obtener filtro de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const filter = urlParams.get('filter') || 'all';
 
-    if (answeredQuestions.length === 0) {
-      tbody.innerHTML =
-        '<tr><td colspan="3" style="text-align:center; padding: 3rem;">No respondiste ninguna pregunta en esta prueba.</td></tr>';
+    let filteredQuestions = this.examResult.revision;
+
+    if (filter === 'correct') {
+      filteredQuestions = this.examResult.revision.filter((q) => q.is_correct);
+      document.getElementById('viewTitle').textContent = 'Preguntas Correctas';
+    } else if (filter === 'incorrect') {
+      filteredQuestions = this.examResult.revision.filter(
+        (q) => !q.is_correct && q.user_answer !== 'NONE'
+      );
+      document.getElementById('viewTitle').textContent =
+        'Preguntas Incorrectas';
+    } else if (filter === 'unmarked') {
+      filteredQuestions = this.examResult.revision.filter(
+        (q) => q.user_answer === 'NONE'
+      );
+      document.getElementById('viewTitle').textContent = 'Preguntas Sin Marcar';
+    } else {
+      document.getElementById('viewTitle').textContent = 'Revisión General';
+    }
+
+    // Marcar pestaña activa
+    document.querySelectorAll('.filter-tab').forEach((tab) => {
+      tab.classList.remove('active');
+      if (tab.id === `filter-${filter}`) {
+        tab.classList.add('active');
+      }
+    });
+
+    if (filteredQuestions.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 3rem;">No hay preguntas para mostrar en esta categoría (${filter}).</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = answeredQuestions
+    tbody.innerHTML = filteredQuestions
       .map(
         (q) => `
             <tr>
@@ -90,9 +116,11 @@ class ResponseReview {
                 </td>
                 <td style="text-align: center;">
                     ${
-                      !q.is_correct
-                        ? `<span class="option-letter option-incorrect">${q.user_answer}</span>`
-                        : `<span class="no-error">— (Correcta) —</span>`
+                      q.user_answer === 'NONE'
+                        ? `<span class="option-letter option-unmarked">N/M</span>`
+                        : !q.is_correct
+                          ? `<span class="option-letter option-incorrect">${q.user_answer}</span>`
+                          : `<span class="no-error">— (Correcta) —</span>`
                     }
                 </td>
             </tr>

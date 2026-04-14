@@ -31,8 +31,24 @@
 
         <div class="results-card review-card">
           <div class="results-header">
-            <h2>Detalle de la Prueba</h2>
-            <p>Solo se muestran las preguntas que respondiste.</p>
+            <h2 id="viewTitle">Revisión de la Prueba</h2>
+            <p>Análisis detallado de tu desempeño por categoría.</p>
+          </div>
+
+          <!-- Navegación de Filtros (Tabs) -->
+          <div class="review-filters">
+            <a href="?filter=all" class="filter-tab" id="filter-all"
+              >Ver Todo</a
+            >
+            <a href="?filter=correct" class="filter-tab" id="filter-correct"
+              >Correctas</a
+            >
+            <a href="?filter=incorrect" class="filter-tab" id="filter-incorrect"
+              >Incorrectas</a
+            >
+            <a href="?filter=unmarked" class="filter-tab" id="filter-unmarked"
+              >Sin Marcar</a
+            >
           </div>
 
           <div class="table-responsive">
@@ -40,8 +56,8 @@
               <thead>
                 <tr>
                   <th>Pregunta</th>
-                  <th>Respuesta Correcta</th>
-                  <th>Tu Respuesta (Equivocada)</th>
+                  <th style="text-align: center">Respuesta Correcta</th>
+                  <th style="text-align: center">Tu Respuesta</th>
                 </tr>
               </thead>
               <tbody id="answersTableBody">

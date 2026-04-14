@@ -40,6 +40,40 @@
   background: rgba(255, 255, 255, 0.03);
 }
 
+/* Filtros por pestaña */
+.review-filters {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.filter-tab {
+  padding: 0.6rem 1.2rem;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary, #94a3b8);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.filter-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.filter-tab.active {
+  background: var(--accent-primary, #ff6b35);
+  color: white;
+  border-color: var(--accent-primary, #ff6b35);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
 /* Columna de Pregunta (Imagen) */
 .col-pregunta {
   display: flex;
@@ -88,6 +122,13 @@
   background: rgba(239, 68, 68, 0.2);
   color: #ef4444;
   border: 1px solid #ef4444;
+}
+
+.option-unmarked {
+  background: rgba(107, 114, 128, 0.2);
+  color: #9ca3af;
+  border: 1px solid #9ca3af;
+  font-size: 0.8rem; /* Para que quepa "N/M" */
 }
 
 .no-error {
