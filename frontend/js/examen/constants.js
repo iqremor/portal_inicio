@@ -9,6 +9,6 @@
 export let quizConfig = {
   timerDuration: 240, // Duración del temporizador en segundos (4 minutos)
   warningTime: 30, // Mostrar advertencia cuando queden 30 segundos.
-  nextButtonDelay: 10000, // 10 segundos
+  nextButtonDelay: 0, // Por defecto 0, sobrescrito dinámicamente
   numAttempts: 1, // Número de intentos permitidos (fallback de seguridad, sobrescrito por el panel admin)
 };

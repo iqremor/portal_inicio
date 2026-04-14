@@ -148,9 +148,12 @@ export function iniciarQuiz(examData) {
       quizConfig.timerDuration = examData.config.timerDuration;
     if (examData.config.warningTime)
       quizConfig.warningTime = examData.config.warningTime;
-    if (examData.config.nextButtonDelay)
+    if (examData.config.nextButtonDelay !== undefined)
       quizConfig.nextButtonDelay = examData.config.nextButtonDelay;
-    if (examData.config.numAttempts)
+    else if (examData.config.next_button_delay !== undefined)
+      quizConfig.nextButtonDelay = examData.config.next_button_delay;
+
+    if (examData.config.numAttempts !== undefined)
       quizConfig.numAttempts = examData.config.numAttempts;
   }
 

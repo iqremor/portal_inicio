@@ -353,7 +353,7 @@ def seed_data():
         ("email_notificaciones", "true", "Activar notificaciones por email"),
         ("EXAM_TIMER_DURATION", "240", "Duración del examen por pregunta (segundos)"),
         ("EXAM_WARNING_TIME", "30", "Tiempo de advertencia antes de finalizar (segundos)"),
-        ("EXAM_NEXT_BUTTON_DELAY", "10000", "Retraso obligatorio del botón siguiente (ms)"),
+        ("EXAM_NEXT_BUTTON_DELAY", "10000", "Retraso obligatorio del botón siguiente (segundos)"),
         ("EXAM_NUM_ATTEMPTS", "1", "Número máximo de intentos permitidos"),
         ("EXAM_QUESTIONS_COUNT", "10", "Número de preguntas por examen"),
         ("SHOW_CORRECT_ANSWERS", "0", "Habilita el botón de ver respuestas correctas (1=Sí, 0=No)"),

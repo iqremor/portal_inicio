@@ -436,14 +436,23 @@ class ConfigExamenesView(BaseView):
     @expose("/", methods=("GET", "POST"))
     def index(self):
         if request.method == "POST":
-            print(f"DEBUG: Recibiendo POST en ConfigExamenesView. Datos: {request.form}")
+            # Extraer valor y convertir a ms
+            try:
+                sec_val = int(request.form.get("next_button_delay", 10))
+                ms_val = sec_val * 1000
+            except:
+                ms_val = 10000
+
             configs = {
                 "EXAM_TIMER_DURATION": request.form.get("timer_duration"),
                 "EXAM_WARNING_TIME": request.form.get("warning_time"),
-                "EXAM_NEXT_BUTTON_DELAY": request.form.get("next_button_delay"),
+                "EXAM_NEXT_BUTTON_DELAY": str(ms_val),
                 "EXAM_NUM_ATTEMPTS": request.form.get("num_attempts"),
                 "EXAM_QUESTIONS_COUNT": request.form.get("questions_count"),
                 "SHOW_CORRECT_ANSWERS": "1" if request.form.get("show_correct_answers") == "on" else "0",
+                "PREICFES_ENABLED": "1" if request.form.get("preicfes_enabled") == "on" else "0",
+                "PREUNAL_ENABLED": "1" if request.form.get("preunal_enabled") == "on" else "0",
+                "LABORATORIOS_ENABLED": "1" if request.form.get("laboratorios_enabled") == "on" else "0",
             }
 
             try:
@@ -451,53 +460,45 @@ class ConfigExamenesView(BaseView):
                     if valor is not None:
                         config = ConfiguracionSistema.query.filter_by(clave=clave).first()
                         if config:
-                            print(f"DEBUG: Actualizando {clave} de {config.valor} a {valor}")
                             config.valor = str(valor)
-                            db.session.add(config)  # Forzar re-añadir para marcar como dirty
+                            db.session.add(config)
                         else:
-                            print(f"DEBUG: Creando nueva clave {clave} con valor {valor}")
                             config = ConfiguracionSistema(
                                 clave=clave, valor=str(valor), descripcion=f"Configuración de {clave}"
                             )
                             db.session.add(config)
-
                 db.session.commit()
-                print("DEBUG: Commit realizado con éxito")
-                flash("Configuración del examen actualizada correctamente.", "success")
+                flash("Configuración actualizada correctamente.", "success")
             except Exception as e:
                 db.session.rollback()
-                print(f"DEBUG: ERROR al guardar: {str(e)}")
-                flash(f"Error al guardar la configuración: {str(e)}", "danger")
+                flash(f"Error al guardar: {str(e)}", "danger")
 
             return redirect(url_for("config_examenes.index"))
 
-        # Cargar valores actuales
+        # CARGA DE DATOS
         db.session.expire_all()
 
         def get_v(clave, default):
             c = ConfiguracionSistema.query.filter_by(clave=clave).first()
             return c.valor if c else default
 
-        val_timer = get_v("EXAM_TIMER_DURATION", "240")
-        val_warning = get_v("EXAM_WARNING_TIME", "30")
-        val_delay = get_v("EXAM_NEXT_BUTTON_DELAY", "10000")
-        val_attempts = get_v("EXAM_NUM_ATTEMPTS", "1")
-        val_questions = get_v("EXAM_QUESTIONS_COUNT", "10")
-        val_show_answers = get_v("SHOW_CORRECT_ANSWERS", "0")
-        val_preicfes = get_v("PREICFES_ENABLED", "0")
-        val_preunal = get_v("PREUNAL_ENABLED", "0")
-        val_labs = get_v("LABORATORIOS_ENABLED", "0")
+        # Conversión de MS a Segundos para el panel
+        try:
+            db_ms = int(get_v("EXAM_NEXT_BUTTON_DELAY", "10000"))
+            panel_sec = db_ms // 1000
+        except:
+            panel_sec = 10
 
         current_config = {
-            "timer_duration": val_timer,
-            "warning_time": val_warning,
-            "next_button_delay": val_delay,
-            "num_attempts": val_attempts,
-            "questions_count": val_questions,
-            "show_correct_answers": val_show_answers == "1",
-            "preicfes_enabled": val_preicfes == "1",
-            "preunal_enabled": val_preunal == "1",
-            "laboratorios_enabled": val_labs == "1",
+            "timer_duration": get_v("EXAM_TIMER_DURATION", "240"),
+            "warning_time": get_v("EXAM_WARNING_TIME", "30"),
+            "next_button_delay": panel_sec,
+            "num_attempts": get_v("EXAM_NUM_ATTEMPTS", "1"),
+            "questions_count": get_v("EXAM_QUESTIONS_COUNT", "10"),
+            "show_correct_answers": get_v("SHOW_CORRECT_ANSWERS", "0") == "1",
+            "preicfes_enabled": get_v("PREICFES_ENABLED", "0") == "1",
+            "preunal_enabled": get_v("PREUNAL_ENABLED", "0") == "1",
+            "laboratorios_enabled": get_v("LABORATORIOS_ENABLED", "0") == "1",
         }
         return self.render("admin/config_examenes.html", exam_settings=current_config)
 

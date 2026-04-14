@@ -55,6 +55,7 @@ def get_exam_config(active_session):
         {
             "show_correct_answers": get_config_value("SHOW_CORRECT_ANSWERS", "0") == "1",
             "num_attempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 1)),
+            "next_button_delay": int(get_config_value("EXAM_NEXT_BUTTON_DELAY", 10000)),
         }
     )
 
@@ -141,8 +142,10 @@ def get_exam_questions_by_session(session_id, active_session):
     if not cuadernillo:
         return jsonify({"error": "Cuadernillo no encontrado."}), 404
 
-    # Obtener configuraciones
+    # Obtener configuraciones de la base de datos
+    db.session.expire_all()
     timer_duration = int(get_config_value("EXAM_TIMER_DURATION", 240))
+    next_button_delay = int(get_config_value("EXAM_NEXT_BUTTON_DELAY", 10000))
     num_questions_to_present = int(get_config_value("EXAM_QUESTIONS_COUNT", 10))
 
     # Construir ruta de preguntas
@@ -209,6 +212,8 @@ def get_exam_questions_by_session(session_id, active_session):
             "numAttempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 1)),
             "config": {
                 "timerDuration": timer_duration,
+                "nextButtonDelay": next_button_delay,
+                "next_button_delay": next_button_delay,
                 "numQuestions": len(active_session.presented_questions),
                 "subject": cuadernillo.area,
                 "Grado": cuadernillo.grado,

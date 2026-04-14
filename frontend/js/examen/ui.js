@@ -277,7 +277,7 @@ export function renderizarImagen(isReload = false) {
     nextButton.classList.add('btn-secondary');
 
     const delay = quizConfig.nextButtonDelay || 0;
-
+    console.log(`DEBUG: Aplicando delay al botón Siguiente: ${delay}ms`);
     if (delay > 0) {
       setTimeout(() => {
         nextButton.disabled = false;
