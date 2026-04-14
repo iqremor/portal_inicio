@@ -193,6 +193,9 @@ export function renderizarImagen(isReload = false) {
   const seconds = tiempoAMostrar % 60;
   const tiempoFormateado = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
+  console.log(`Pregunta actual (Índice): ${state.indicePreguntaActual + 1}`);
+  console.log(`Pregunta ID: ${currentQuestion.question_number}`);
+
   contenedorApp.innerHTML = `
         <div class="quiz-header-view">
             <div class="timer-container-quiz">
@@ -241,14 +244,6 @@ export function renderizarImagen(isReload = false) {
         </div>
 
         <div class="question-container">
-            <div class="question-header">
-                <span class="question-number">${
-                  state.indicePreguntaActual + 1
-                }</span>
-                <p class="question-text">${
-                  currentQuestion.text || 'Cargando pregunta...'
-                }</p>
-            </div>
             <div class="mb-8">
                 <img id="zoomable-image" src="${finalImagePath}" alt="Imagen del cuadernillo" class="imagen-quiz">
             </div>
@@ -277,7 +272,6 @@ export function renderizarImagen(isReload = false) {
     nextButton.classList.add('btn-secondary');
 
     const delay = quizConfig.nextButtonDelay || 0;
-    console.log(`DEBUG: Aplicando delay al botón Siguiente: ${delay}ms`);
     if (delay > 0) {
       setTimeout(() => {
         nextButton.disabled = false;

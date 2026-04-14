@@ -58,13 +58,25 @@ class ResponseReview {
 
   renderTable() {
     const tbody = document.getElementById('answersTableBody');
-    if (!tbody || !this.examResult.revision) return;
+    const thead = document.querySelector('.review-table thead tr');
+    if (!tbody || !this.examResult.revision || !thead) return;
 
     // Obtener filtro de la URL
     const urlParams = new URLSearchParams(window.location.search);
     const filter = urlParams.get('filter') || 'all';
 
     let filteredQuestions = this.examResult.revision;
+
+    // Ajustar encabezado según el filtro
+    if (filter === 'unmarked') {
+      thead.innerHTML = '<th>Pregunta</th>';
+    } else {
+      thead.innerHTML = `
+        <th>Pregunta</th>
+        <th style="text-align: center;">Respuesta Correcta</th>
+        <th style="text-align: center;">Tu Respuesta</th>
+      `;
+    }
 
     if (filter === 'correct') {
       filteredQuestions = this.examResult.revision.filter((q) => q.is_correct);
@@ -93,26 +105,39 @@ class ResponseReview {
     });
 
     if (filteredQuestions.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 3rem;">No hay preguntas para mostrar en esta categoría (${filter}).</td></tr>`;
+      const colspan = filter === 'unmarked' ? 1 : 3;
+      tbody.innerHTML = `<tr><td colspan="${colspan}" style="text-align:center; padding: 3rem;">No hay preguntas para mostrar en esta categoría.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = filteredQuestions
-      .map(
-        (q) => `
+      .map((q) => {
+        const isUnmarked = filter === 'unmarked';
+        const rowContent = `
+            <td style="${isUnmarked ? 'text-align: center;' : ''}">
+                <div class="col-pregunta" style="${
+                  isUnmarked ? 'justify-content: center;' : ''
+                }">
+                    <img src="${q.image_url}" alt="Pregunta ${
+                      q.question_number
+                    }" class="img-review">
+                </div>
+            </td>
+        `;
+
+        if (isUnmarked) {
+          return `<tr>${rowContent}</tr>`;
+        }
+
+        return `
             <tr>
-                <td>
-                    <div class="col-pregunta">
-                        <span class="q-number">${q.question_number}</span>
-                        <img src="${q.image_url}" alt="Pregunta ${
-                          q.question_number
-                        }" class="img-review" onclick="window.open(this.src, '_blank')">
-                    </div>
-                </td>
+                ${rowContent}
                 <td style="text-align: center;">
-                    <span class="option-letter option-correct">${
-                      q.correct_answer
-                    }</span>
+                    ${
+                      q.user_answer === 'NONE'
+                        ? '<span class="no-error">—</span>'
+                        : `<span class="option-letter option-correct">${q.correct_answer}</span>`
+                    }
                 </td>
                 <td style="text-align: center;">
                     ${
@@ -124,9 +149,40 @@ class ResponseReview {
                     }
                 </td>
             </tr>
-        `
-      )
+        `;
+      })
       .join('');
+
+    // Configurar el modal para todas las imágenes
+    this.setupImageModal();
+  }
+
+  setupImageModal() {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    const closeBtn = document.querySelector('.modal-close');
+
+    if (!modal || !modalImg) return;
+
+    // Abrir modal al hacer clic en imagen de revisión
+    document.querySelectorAll('.img-review').forEach((img) => {
+      img.addEventListener('click', () => {
+        modal.style.display = 'block';
+        modalImg.src = img.src;
+      });
+    });
+
+    // Cerrar con el botón X
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // Cerrar al hacer clic fuera de la imagen
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
   }
 
   setupEventListeners() {
