@@ -60,7 +60,7 @@ function initHeaderObserver(session) {
   // 2. Observar cambios en el placeholder del header
   const target = document.getElementById('header-placeholder');
   if (target) {
-    const observer = new MutationObserver((mutations) => {
+    const observer = new MutationObserver(() => {
       if (populate()) {
         observer.disconnect(); // Dejar de observar una vez poblado
       }

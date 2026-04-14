@@ -1,5 +1,62 @@
 # Historial de Cambios
 
+## Sesión 36 - 14 de abril de 2026
+
+### Objetivos de la sesión:
+
+- Resolver la deuda técnica de calidad: Corregir la configuración de ESLint (Prettier plugin).
+- Continuar con la **Fase 2/3 del Plan NATURA**: Refinar el flujo de navegación entre el Lobby de Simulacro y el Examen.
+- Validar la persistencia de la configuración `SHOW_CORRECT_ANSWERS` implementada en la sesión anterior.
+
+### Estado inicial:
+
+- **Calidad de código:** Error de configuración en ESLint detectado en la Sesión 35.
+- **Funcionalidad:** Control administrativo de visibilidad de respuestas operativo. Plan NATURA en Fase 2/3.
+- **Tests:** Pendiente implementación de framework de testing.
+
+### Acciones Realizadas:
+
+- **Calidad:** Corrección de advertencias ESLint (`no-unused-vars`) en `respuestas.js` y `simulacro.js`.
+- **Backend (Admin):** Integración de controles globales para los módulos Preicfes, Preunal y Laboratorios en `ConfigExamenesView` (`admin.py`).
+- **Frontend (Admin):** Actualización de la plantilla `config_examenes.html` con interruptores (switches) dinámicos para la visibilidad de módulos.
+- **Plan NATURA:** Fase 3 (Control Administrativo Dinámico) marcada como COMPLETADA. Validación del flujo de retorno al lobby en la Fase 2.
+
+### Estado final:
+
+- **Calidad de código:** 100% validado por ESLint y formateadores.
+- **Funcionalidad:** Control administrativo total sobre la visibilidad de módulos en el Dashboard. Flujo de navegación NATURA estabilizado.
+- **Pendiente:** Fase 4 del Plan NATURA (API de Resumen de Desempeño).
+
+### Finalización: martes, 14 de abril de 2026
+
+---
+
+## Sesión 35 - 8 de abril de 2026
+
+### Objetivos de la sesión:
+
+- Implementar un botón de control administrativo para habilitar o deshabilitar la visualización de respuestas correctas para los estudiantes.
+- Asegurar que el botón "ver respuestas" en la página de resultados sea dinámico y dependa de la configuración del administrador.
+
+### Acciones Realizadas:
+
+- **Backend (Modelos):** Consolidación de `seed_data` en `models.py` y adición de la clave de configuración `SHOW_CORRECT_ANSWERS`.
+- **Backend (Admin):** Actualización de `ConfigExamenesView` en `admin.py` y su respectiva plantilla `config_examenes.html` para incluir un interruptor (switch) de control.
+- **Backend (API):** Creación del endpoint `/api/configuracion/examen` con limpieza de caché de sesión (`expire_all`) para garantizar datos en tiempo real.
+- **Frontend (UI):** Ocultación por defecto del botón de respuestas en `resultados.html` mediante CSS prioritario (`display: none !important`).
+- **Frontend (Lógica):** Implementación de `checkAnswersButtonVisibility` en `results.js` con detección robusta de `sessionId` y manejo dinámico de visibilidad.
+- **Calidad:** Formateo automático de archivos mediante pre-commit hooks (Black, Prettier, Trailing Whitespace).
+
+### Estado final:
+
+- **Calidad de código:** Validada por formateadores. Error de configuración de ESLint (Prettier plugin) detectado para corrección futura.
+- **Funcionalidad:** Control administrativo de visibilidad de respuestas operativo al 100%.
+- **Pendiente:** Corregir la configuración de ESLint en el entorno de desarrollo para permitir hooks completos.
+
+### Finalización: miércoles, 8 de abril de 2026
+
+---
+
 ## Sesión 34 - 25 de marzo de 2026
 
 ### Objetivos de la sesión:

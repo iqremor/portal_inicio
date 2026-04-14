@@ -484,6 +484,9 @@ class ConfigExamenesView(BaseView):
         val_attempts = get_v("EXAM_NUM_ATTEMPTS", "1")
         val_questions = get_v("EXAM_QUESTIONS_COUNT", "10")
         val_show_answers = get_v("SHOW_CORRECT_ANSWERS", "0")
+        val_preicfes = get_v("PREICFES_ENABLED", "0")
+        val_preunal = get_v("PREUNAL_ENABLED", "0")
+        val_labs = get_v("LABORATORIOS_ENABLED", "0")
 
         current_config = {
             "timer_duration": val_timer,
@@ -492,6 +495,9 @@ class ConfigExamenesView(BaseView):
             "num_attempts": val_attempts,
             "questions_count": val_questions,
             "show_correct_answers": val_show_answers == "1",
+            "preicfes_enabled": val_preicfes == "1",
+            "preunal_enabled": val_preunal == "1",
+            "laboratorios_enabled": val_labs == "1",
         }
         return self.render("admin/config_examenes.html", exam_settings=current_config)
 

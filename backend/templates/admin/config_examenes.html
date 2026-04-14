@@ -174,6 +174,76 @@
             </p>
           </div>
 
+          <hr />
+          <h4>Visibilidad de Módulos (Dashboard)</h4>
+          <p class="mb-4">
+            Controle qué paneles son visibles para los estudiantes de forma
+            global.
+          </p>
+
+          <div class="form-group">
+            <div class="custom-control custom-switch">
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="preicfes_enabled"
+                name="preicfes_enabled"
+                value="on"
+                {%
+                if
+                exam_settings.preicfes_enabled
+                %}checked{%
+                endif
+                %}
+              />
+              <label class="custom-control-label" for="preicfes_enabled"
+                >Módulo Preicfes (Saber IEM)</label
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="custom-control custom-switch">
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="preunal_enabled"
+                name="preunal_enabled"
+                value="on"
+                {%
+                if
+                exam_settings.preunal_enabled
+                %}checked{%
+                endif
+                %}
+              />
+              <label class="custom-control-label" for="preunal_enabled"
+                >Módulo Preunal (Prueba UNAL)</label
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="custom-control custom-switch">
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="laboratorios_enabled"
+                name="laboratorios_enabled"
+                value="on"
+                {%
+                if
+                exam_settings.laboratorios_enabled
+                %}checked{%
+                endif
+                %}
+              />
+              <label class="custom-control-label" for="laboratorios_enabled"
+                >Módulo de Laboratorios</label
+              >
+            </div>
+          </div>
+
           <div class="text-right mt-4">
             <button type="submit" class="btn btn-primary btn-save">
               <i class="fas fa-save"></i> Guardar Cambios

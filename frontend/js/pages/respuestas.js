@@ -73,7 +73,7 @@ class ResponseReview {
 
     tbody.innerHTML = answeredQuestions
       .map(
-        (q, index) => `
+        (q) => `
             <tr>
                 <td>
                     <div class="col-pregunta">
