@@ -69,7 +69,7 @@ class UserSyncManager:
                         codigo=codigo,
                         nombre_completo=nombre,
                         grado=grado,
-                        role=UserRole.ESTUDIANTE,
+                        role=UserRole.USER,
                         is_active=True,
                     )
                     new_user.set_password(codigo)  # Password por defecto = codigo
@@ -87,3 +87,23 @@ class UserSyncManager:
 
         db.session.commit()
         return summary
+
+    @staticmethod
+    def clear_all_students():
+        """
+        Elimina a todos los usuarios con rol ESTUDIANTE de la base de datos.
+        Retorna el conteo de usuarios eliminados.
+        """
+        try:
+            # Contar antes de borrar para el reporte
+            count = User.query.filter_by(role=UserRole.USER).count()
+
+            # Realizar borrado masivo
+            User.query.filter_by(role=UserRole.USER).delete()
+
+            db.session.commit()
+            return count
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error al limpiar base de datos de usuarios: {str(e)}")
+            raise e

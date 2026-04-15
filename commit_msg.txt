@@ -1,5 +1,6 @@
-﻿fix: corregir errores de importación y estabilizar descarga de plantillas FOCUS
+﻿feat: completar flujo de gestión de usuarios FOCUS y corregir lógica de roles
 
-- Añadidas importaciones faltantes (os, current_app) en admin.py y user_management.py.
-- Implementado manejo de errores robusto con try-except y flash messages en la descarga.
-- Asegurada la creación automática de directorios para archivos temporales.
+- Integración de borrado masivo seguro en UserSyncManager.
+- Restauración y corrección del método add_individual en el panel admin.
+- Mejora de la interfaz visual con tarjetas de advertencia.
+- Sincronización integral del rol UserRole.USER para estudiantes.

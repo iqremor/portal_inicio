@@ -26,6 +26,8 @@
   - Inicio del plan para la gestión integral de la base de datos de usuarios.
   - Creación del motor de sincronización masiva en `backend/utils/user_management.py` con soporte para Excel y CSV.
   - Implementación de la vista `GestionUsuariosView` en el panel administrativo, incluyendo la descarga de plantillas oficiales y alta individual con contraseña automática.
+  - Creación de la "Zona de Peligro" con borrado masivo de estudiantes bajo verificación por palabra clave ("ELIMINAR").
+  - Corrección integral de roles (`UserRole.USER`) en el motor de sincronización y formularios.
 
 ### Estado final:
 

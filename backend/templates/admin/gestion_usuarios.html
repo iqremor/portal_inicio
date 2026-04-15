@@ -171,6 +171,110 @@
         </div>
       </div>
 
+      <!-- PANEL DE PELIGRO: LIMPIEZA DE BASE DE DATOS -->
+      <div class="focus-card border-danger mt-4">
+        <h3 class="text-danger">
+          <i class="fas fa-exclamation-triangle"></i> Zona de Peligro
+        </h3>
+        <p>
+          Elimine de forma masiva todos los registros de estudiantes del
+          sistema. Esta acción es irreversible y borrará también sus resultados
+          y respuestas asociadas.
+        </p>
+
+        <button
+          type="button"
+          class="btn btn-outline-danger"
+          data-toggle="modal"
+          data-target="#clearConfirmModal"
+        >
+          <i class="fas fa-trash-alt"></i> Limpiar Base de Datos de Estudiantes
+        </button>
+      </div>
+
+      <!-- Modal de Confirmación -->
+      <div
+        class="modal fade"
+        id="clearConfirmModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="clearConfirmModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+              <h5 class="modal-title" id="clearConfirmModalLabel">
+                Confirmación de Seguridad
+              </h5>
+              <button
+                type="button"
+                class="close text-white"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form
+              method="POST"
+              action="{{ url_for('gestion_usuarios.clear_students') }}"
+            >
+              <div class="modal-body">
+                <p>
+                  ¿Está absolutamente seguro de que desea eliminar a
+                  <strong>TODOS los estudiantes</strong>?
+                </p>
+                <p class="text-muted">
+                  Para confirmar, escriba la palabra <strong>ELIMINAR</strong> a
+                  continuación:
+                </p>
+                <input
+                  type="text"
+                  name="confirm_text"
+                  id="confirm_input"
+                  class="form-control"
+                  placeholder="Escriba ELIMINAR"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  id="btn_final_delete"
+                  class="btn btn-danger"
+                  disabled
+                >
+                  Sí, eliminar todos los registros
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const confirmInput = document.getElementById('confirm_input');
+          const btnFinalDelete = document.getElementById('btn_final_delete');
+
+          if (confirmInput && btnFinalDelete) {
+            confirmInput.addEventListener('input', function (e) {
+              btnFinalDelete.disabled =
+                e.target.value.toUpperCase() !== 'ELIMINAR';
+            });
+          }
+        });
+      </script>
+
       <!-- RESULTADOS DE LA ÚLTIMA OPERACIÓN (Si existen) -->
       {% if session.get('last_focus_summary') %}
       <div class="focus-card">

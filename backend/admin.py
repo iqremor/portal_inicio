@@ -491,7 +491,7 @@ class GestionUsuariosView(BaseView):
                     codigo=codigo,
                     nombre_completo=nombre,
                     grado=grado,
-                    role=UserRole.ESTUDIANTE,
+                    role=UserRole.USER,
                     is_active=True,
                 )
                 new_user.set_password(codigo)
@@ -501,6 +501,21 @@ class GestionUsuariosView(BaseView):
         except Exception as e:
             db.session.rollback()
             flash(f"Error al añadir usuario: {str(e)}", "danger")
+
+        return redirect(url_for(".index"))
+
+    @expose("/clear_students", methods=["POST"])
+    def clear_students(self):
+        confirm = request.form.get("confirm_text", "").strip().upper()
+        if confirm != "ELIMINAR":
+            flash("La palabra de confirmación no coincide. No se realizaron cambios.", "warning")
+            return redirect(url_for(".index"))
+
+        try:
+            count = UserSyncManager.clear_all_students()
+            flash(f"Se han eliminado exitosamente {count} estudiantes de la base de datos.", "success")
+        except Exception as e:
+            flash(f"Error al limpiar la base de datos: {str(e)}", "danger")
 
         return redirect(url_for(".index"))
 
