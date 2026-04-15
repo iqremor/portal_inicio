@@ -1,6 +1,5 @@
-﻿feat: implementar Plan FOCUS - Gestión Integral de Usuarios (Excel/Sync & Manual)
+﻿fix: corregir errores de importación y estabilizar descarga de plantillas FOCUS
 
-- Motor de sincronización masiva con soporte para Excel y CSV.
-- Interfaz administrativa FOCUS con descarga de plantillas.
-- Alta individual de estudiantes con contraseña automática.
-- Protección de administradores y logs básicos de operación.
+- Añadidas importaciones faltantes (os, current_app) en admin.py y user_management.py.
+- Implementado manejo de errores robusto con try-except y flash messages en la descarga.
+- Asegurada la creación automática de directorios para archivos temporales.

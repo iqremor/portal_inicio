@@ -1,10 +1,11 @@
 # admin.py
 
 # --Librerías Necesarias --
+import os
 import os.path as op
 from datetime import datetime, timedelta
 
-from flask import flash, jsonify, redirect, request, session, url_for
+from flask import current_app, flash, jsonify, redirect, request, session, url_for
 from flask_admin import Admin, AdminIndexView, BaseView, expose
 from flask_admin.contrib.fileadmin import FileAdmin
 from flask_admin.contrib.sqla import ModelView
@@ -434,9 +435,13 @@ class GestionUsuariosView(BaseView):
 
     @expose("/download_template")
     def download_template(self):
-        template_path = os.path.join(current_app.instance_path, "plantilla_usuarios_iem.xlsx")
-        UserSyncManager.generate_template(template_path)
-        return send_file(template_path, as_attachment=True, download_name="plantilla_usuarios_iem.xlsx")
+        try:
+            template_path = os.path.join(current_app.instance_path, "plantilla_usuarios_iem.xlsx")
+            UserSyncManager.generate_template(template_path)
+            return send_file(template_path, as_attachment=True, download_name="plantilla_usuarios_iem.xlsx")
+        except Exception as e:
+            flash(f"Error al generar la plantilla: {str(e)}", "danger")
+            return redirect(url_for(".index"))
 
     @expose("/import", methods=["POST"])
     def import_from_file(self):

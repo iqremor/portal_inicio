@@ -1,4 +1,6 @@
 # backend/utils/user_management.py
+import os
+
 import pandas as pd
 
 from models import User, UserRole, db
@@ -8,14 +10,21 @@ class UserSyncManager:
     @staticmethod
     def generate_template(file_path):
         """Genera un archivo Excel de plantilla para la carga de usuarios."""
-        data = {
-            "codigo": ["123456", "789012"],
-            "nombre_completo": ["Juan Perez", "Maria Garcia"],
-            "grado": ["10", "once"],
-        }
-        df = pd.DataFrame(data)
-        df.to_excel(file_path, index=False)
-        return file_path
+        try:
+            # Asegurar que el directorio base exista
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+            data = {
+                "codigo": ["123456", "789012"],
+                "nombre_completo": ["Juan Perez", "Maria Garcia"],
+                "grado": ["10", "once"],
+            }
+            df = pd.DataFrame(data)
+            df.to_excel(file_path, index=False)
+            return file_path
+        except Exception as e:
+            print(f"Error generando plantilla: {str(e)}")
+            raise e
 
     @staticmethod
     def sync_from_file(file_path, delete_others=False):
