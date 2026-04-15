@@ -45,12 +45,20 @@ def create_app():
     from routes.web_main import web_main_bp
     from routes.web_test import web_test_bp
 
-    # REORDENADO: Registrando frontend_bp primero para descartar conflictos
-    app.register_blueprint(frontend_bp)
-    app.register_blueprint(web_main_bp, url_prefix="")
-    app.register_blueprint(web_test_bp, url_prefix="/test")
-    app.register_blueprint(server_admin_bp)
+    # Registro de blueprints en orden de prioridad:
+    # 1. API y rutas de datos (prefijos específicos)
     app.register_blueprint(api_bp, url_prefix="/api")
     app.register_blueprint(data_files_bp, url_prefix="/data_files")
+
+    # 2. Administración y Pruebas
+    app.register_blueprint(server_admin_bp)
+    app.register_blueprint(web_test_bp, url_prefix="/test")
+
+    # 3. Web Main (Rutas de nivel raíz)
+    app.register_blueprint(web_main_bp, url_prefix="")
+
+    # 4. Frontend (Catch-all para archivos estáticos y páginas)
+    # Se registra al final para no interferir con las rutas funcionales
+    app.register_blueprint(frontend_bp)
 
     return app

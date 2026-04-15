@@ -1,6 +1,5 @@
-﻿feat: completar flujo de gestión de usuarios FOCUS y corregir lógica de roles
+﻿fix: resolver error 404 en inicio de examen y normalizar grados en API
 
-- Integración de borrado masivo seguro en UserSyncManager.
-- Restauración y corrección del método add_individual en el panel admin.
-- Mejora de la interfaz visual con tarjetas de advertencia.
-- Sincronización integral del rol UserRole.USER para estudiantes.
+- Reordenado registro de blueprints en app.py para evitar que el frontend capture rutas de la API.
+- Implementada normalización robusta de grados (decimo -> 10, etc.) en endpoints /iniciar y /resumen_notas.
+- Mejorada la resiliencia del filtrado de cuadernillos ante diferentes formatos de entrada.

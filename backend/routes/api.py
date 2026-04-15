@@ -81,12 +81,34 @@ def start_examen(area_id, active_session):
     if not user or user.id != active_session.user_id:
         return jsonify({"error": "Usuario inválido o no coincide con la sesión."}), 403
 
-    cuadernillo = Cuadernillo.query.filter_by(area=area_id, grado=grade).first()
+    # Mapeo de normalización de grados (para que coincidan con lo guardado en DB)
+    grade_map = {
+        "sexto": "6",
+        "septimo": "7",
+        "octavo": "8",
+        "noveno": "9",
+        "decimo": "10",
+        "once": "11",
+        "6": "6",
+        "7": "7",
+        "8": "8",
+        "9": "9",
+        "10": "10",
+        "11": "11",
+    }
+
+    # Normalizar grado recibido
+    normalized_input_grade = grade_map.get(str(grade).lower(), str(grade))
+
+    # Intentar búsqueda directa
+    cuadernillo = Cuadernillo.query.filter_by(area=area_id, grado=normalized_input_grade).first()
+
     if not cuadernillo:
-        # Búsqueda ultra-flexible: ignorar mayúsculas, espacios y guiones bajos
+        # Búsqueda ultra-flexible: ignorar mayúsculas, espacios y guiones bajos en el área
         normalized_area = area_id.lower().replace(" ", "_")
         cuadernillo = Cuadernillo.query.filter(
-            func.lower(func.replace(Cuadernillo.area, " ", "_")) == normalized_area, Cuadernillo.grado == grade
+            func.lower(func.replace(Cuadernillo.area, " ", "_")) == normalized_area,
+            Cuadernillo.grado == normalized_input_grade,
         ).first()
 
     if not cuadernillo:
@@ -368,12 +390,32 @@ def get_user_resumen_notas(codigo, active_session):
     if user.codigo != codigo:
         return jsonify({"error": "No autorizado"}), 403
 
+    # Mapeo de normalización de grados
+    grade_map = {
+        "sexto": "6",
+        "septimo": "7",
+        "octavo": "8",
+        "noveno": "9",
+        "decimo": "10",
+        "once": "11",
+        "6": "6",
+        "7": "7",
+        "8": "8",
+        "9": "9",
+        "10": "10",
+        "11": "11",
+    }
+
+    # Normalizar grado del usuario para la consulta
+    user_grade = str(user.grado).lower()
+    normalized_user_grade = grade_map.get(user_grade, user_grade)
+
     # Obtener las mejores notas de cada área para el grado del usuario
     results = (
         db.session.query(Cuadernillo.area, func.max(ExamResult.final_score).label("mejor_nota"))
         .join(ExamResult, ExamResult.cuadernillo_id == Cuadernillo.id)
         .filter(ExamResult.user_id == user.id)
-        .filter(Cuadernillo.grado == user.grado)
+        .filter(Cuadernillo.grado == normalized_user_grade)
         .group_by(Cuadernillo.area)
         .all()
     )
