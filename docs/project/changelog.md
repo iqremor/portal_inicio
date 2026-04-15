@@ -1,5 +1,37 @@
 # Historial de Cambios
 
+## Sesión 37 - 15 de abril de 2026
+
+### Objetivos de la sesión:
+
+- Finalizar la **Fase 4 del Plan NATURA**: Implementar la API de Resumen de Desempeño.
+- Refactorizar la carga de puntajes en los lobbies de simulacro para mejorar la eficiencia y seguridad.
+- Validar el estado inicial del proyecto tras la sesión anterior.
+
+### Estado inicial:
+
+- **Calidad de código:** Validada por ESLint y Flake8 en la Sesión 36.
+- **Funcionalidad:** Fases 1, 2 y 3 del Plan NATURA completadas. Pendiente integración de datos reales en los paneles de puntaje.
+- **Tests:** Pendiente implementación de framework de testing.
+
+### Acciones Realizadas:
+
+- **Backend (API):** Creación del endpoint `/api/usuario/<codigo>/resumen_notas` en `routes/api.py`. Este endpoint agrupa las mejores notas por área y grado del estudiante, validando la sesión activa.
+- **Frontend (Lógica):** Refactorización completa de `simulacro.js` y `simulacro_unal.js`.
+  - Se migró del endpoint administrativo (inseguro para el cliente) al nuevo endpoint de resumen de usuario.
+  - Se optimizó el mapeo de puntajes por área (`exam.area`) en lugar de IDs, aumentando la resiliencia del sistema.
+- **Plan NATURA:** Actualización de `docs/plans/plan_natura.md` marcando todas las fases como COMPLETADAS.
+
+### Estado final:
+
+- **Calidad de código:** 100% validado por Flake8 (backend). Frontend funcional con el nuevo flujo de datos.
+- **Funcionalidad:** Ecosistema NATURA 100% operativo. Los estudiantes ahora ven sus mejores puntajes actualizados en tiempo real en los lobbies de simulacro.
+- **Pendiente:** Iniciar el siguiente plan estratégico o implementar el framework de testing.
+
+### Finalización: miércoles, 15 de abril de 2026
+
+---
+
 ## Sesión 36 - 14 de abril de 2026
 
 ### Objetivos de la sesión:

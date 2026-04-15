@@ -16,10 +16,15 @@ class ResponseReview {
   constructor(session) {
     this.session = session;
     this.examResult = null;
+    this.config = {
+      show_correct_answers: true,
+      show_marked_answers: true,
+    };
   }
 
-  init() {
+  async init() {
     this.loadData();
+    await this.loadConfig();
     this.displayUserInfo();
     this.renderTable();
     this.setupEventListeners();
@@ -29,15 +34,39 @@ class ResponseReview {
     setTimeout(() => this.displayUserInfo(), 1500);
   }
 
+  async loadConfig() {
+    try {
+      const sessionId =
+        this.session.sessionId ||
+        this.session.session_id ||
+        this.session.sessionID ||
+        this.session.token ||
+        this.session.id;
+
+      const response = await fetch('/api/configuracion/examen', {
+        headers: {
+          'X-Session-ID': sessionId,
+        },
+      });
+
+      if (response.ok) {
+        this.config = await response.json();
+      }
+    } catch (error) {
+      console.error('Error al cargar la configuración de revisión:', error);
+    }
+  }
+
   loadData() {
     const data = localStorage.getItem('ultimoResultado');
     if (data) {
       this.examResult = JSON.parse(data);
-      document.getElementById('examTitle').textContent = (
-        this.examResult.area || 'Prueba'
-      )
-        .replace(/_/g, ' ')
-        .toUpperCase();
+      const titleEl = document.getElementById('examTitle');
+      if (titleEl) {
+        titleEl.textContent = (this.examResult.area || 'Prueba')
+          .replace(/_/g, ' ')
+          .toUpperCase();
+      }
     } else {
       window.location.href = 'resultados.html';
     }
@@ -59,18 +88,31 @@ class ResponseReview {
   renderTable() {
     const tbody = document.getElementById('answersTableBody');
     const thead = document.querySelector('.review-table thead tr');
+    const filterContainer = document.querySelector('.review-filters');
+
     if (!tbody || !this.examResult.revision || !thead) return;
 
     // Obtener filtro de la URL
     const urlParams = new URLSearchParams(window.location.search);
-    const filter = urlParams.get('filter') || 'all';
+    let filter = urlParams.get('filter') || 'all';
+
+    // Mantener los filtros activos: El usuario siempre puede filtrar lo que respondió
+    // Ocultar visualmente las pestañas de éxito/error SOLO si el admin quiere total privacidad
+    // Pero si el usuario llega vía clic desde Resultados, debemos mostrarle su categoría.
 
     let filteredQuestions = this.examResult.revision;
 
-    // Ajustar encabezado según el filtro
+    // Ajustar encabezado según el filtro y la configuración
     if (filter === 'unmarked') {
       thead.innerHTML = '<th>Pregunta</th>';
+    } else if (!this.config.show_correct_answers) {
+      // Modo "A ciegas": Solo mostramos la pregunta y lo que el usuario marcó
+      thead.innerHTML = `
+        <th>Pregunta</th>
+        <th style="text-align: center;">Tu Respuesta Marcada</th>
+      `;
     } else {
+      // Modo Completo: Mostramos pregunta, clave y respuesta del usuario
       thead.innerHTML = `
         <th>Pregunta</th>
         <th style="text-align: center;">Respuesta Correcta</th>
@@ -80,20 +122,22 @@ class ResponseReview {
 
     if (filter === 'correct') {
       filteredQuestions = this.examResult.revision.filter((q) => q.is_correct);
-      document.getElementById('viewTitle').textContent = 'Preguntas Correctas';
+      document.getElementById('viewTitle').textContent = 'Tus Aciertos';
     } else if (filter === 'incorrect') {
       filteredQuestions = this.examResult.revision.filter(
         (q) => !q.is_correct && q.user_answer !== 'NONE'
       );
-      document.getElementById('viewTitle').textContent =
-        'Preguntas Incorrectas';
+      document.getElementById('viewTitle').textContent = 'Tus Errores';
     } else if (filter === 'unmarked') {
       filteredQuestions = this.examResult.revision.filter(
         (q) => q.user_answer === 'NONE'
       );
       document.getElementById('viewTitle').textContent = 'Preguntas Sin Marcar';
     } else {
-      document.getElementById('viewTitle').textContent = 'Revisión General';
+      document.getElementById('viewTitle').textContent = this.config
+        .show_correct_answers
+        ? 'Revisión General'
+        : 'Mis Elecciones Marcadas';
     }
 
     // Marcar pestaña activa
@@ -129,6 +173,21 @@ class ResponseReview {
           return `<tr>${rowContent}</tr>`;
         }
 
+        // Caso: Solo ver respuestas marcadas
+        if (!this.config.show_correct_answers) {
+          return `
+            <tr>
+                ${rowContent}
+                <td style="text-align: center;">
+                    <span class="option-letter option-unmarked">${
+                      q.user_answer === 'NONE' ? 'N/M' : q.user_answer
+                    }</span>
+                </td>
+            </tr>
+          `;
+        }
+
+        // Caso: Revisión completa (Normal)
         return `
             <tr>
                 ${rowContent}

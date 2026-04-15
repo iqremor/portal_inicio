@@ -1,0 +1,5 @@
+﻿feat: completar Plan NATURA y mejorar flujo de revisión pedagógica
+
+- Finalización del Plan NATURA (Fase 4: API de Resumen).
+- Implementación de revisión 'a ciegas' con control administrativo.
+- Refactorización de lobbies para mayor seguridad.

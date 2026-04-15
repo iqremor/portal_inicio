@@ -71,12 +71,26 @@ class Results {
         const config = await response.json();
         console.log('Configuración de examen recibida:', config);
 
-        if (config.show_correct_answers === true) {
-          console.log('Revisiones habilitadas por configuración');
+        if (
+          config.show_correct_answers === true ||
+          config.show_marked_answers === true
+        ) {
+          console.log(
+            'Revisiones habilitadas por configuración (Completa o Marcadas)'
+          );
           statCards.forEach((card) => {
             if (card) {
               card.classList.remove('stat-card--disabled');
               card.classList.add('stat-card--clickable');
+
+              if (
+                config.show_correct_answers === false &&
+                config.show_marked_answers === true
+              ) {
+                card.title = 'Ver mis elecciones marcadas';
+              } else {
+                card.title = 'Ver detalle pedagógico';
+              }
             }
           });
         } else {

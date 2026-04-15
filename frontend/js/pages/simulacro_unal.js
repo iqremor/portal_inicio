@@ -35,38 +35,29 @@ async function loadLobbyData(session) {
     const allExams = await response.json();
 
     // Filtrar exámenes por el grado del estudiante y que sean específicos para Preunal
-    // Asumimos que los nombres de área o el `tipo` (si se pasara) ayudan a identificar Preunal
-    // Por ahora, filtramos por un nombre de área común para Preunal o si el examen está marcado como Preunal
     const studentGrade = session.grado;
     const preunalExams = allExams.filter(
       (exam) =>
-        exam.grado.toLowerCase() === studentGrade.toLowerCase() &&
+        exam.grado.toString().toLowerCase() === studentGrade.toLowerCase() &&
         (exam.nombre.toLowerCase().includes('preunal') ||
-          exam.area.toLowerCase().includes('preunal')) // Heurística simple, podría necesitar ajuste
+          exam.area.toLowerCase().includes('preunal'))
     );
 
-    // Consultar resultados previos del estudiante (MEJORES NOTAS)
-    // Usamos el endpoint de resultados por usuario si existe
+    // Consultar mejores notas del estudiante usando el nuevo endpoint de resumen
     const resResults = await fetch(
-      `/api/admin/resultados/grado/${studentGrade}/examen/all`,
+      `/api/usuario/${session.codigo}/resumen_notas`,
       {
         headers: { 'X-Session-ID': session.session_id },
       }
     );
 
-    let userResults = [];
+    let bestScoresMap = {};
     if (resResults.ok) {
-      const allResults = await resResults.json();
-      // Filtrar resultados que correspondan a los exámenes Preunal
-      userResults = allResults.filter(
-        (r) =>
-          preunalExams.some((exam) => exam.id === r.cuadernillo_id) &&
-          r.codigo === session.codigo
-      );
+      bestScoresMap = await resResults.json();
     }
 
     renderAreas(preunalExams, areasContainer, session);
-    renderScores(preunalExams, userResults, scoresContainer);
+    renderScores(preunalExams, bestScoresMap, scoresContainer);
   } catch (error) {
     console.error('Error cargando datos del lobby Preunal:', error);
     if (areasContainer) {
@@ -94,24 +85,17 @@ function renderAreas(exams, container, session) {
             <span class="area-info">${exam.tiempo_limite_minutos} min</span>
         `;
 
-    btn.addEventListener('click', () => startExam(exam.id, exam.area, session)); // Pass exam.id and exam.area
+    btn.addEventListener('click', () => startExam(exam.id, exam.area, session));
     container.appendChild(btn);
   });
 }
 
-function renderScores(exams, results, container) {
+function renderScores(exams, bestScoresMap, container) {
   if (!container) return;
   container.innerHTML = '';
 
-  // Mapeo de áreas para asegurar que mostramos todas, incluso con 0.0
   exams.forEach((exam) => {
-    // Buscar el mejor resultado para esta área (cuadernillo_id)
-    const areaResults = results.filter((r) => r.cuadernillo_id === exam.id);
-    const bestScore =
-      areaResults.length > 0
-        ? Math.max(...areaResults.map((r) => parseFloat(r.nota_final)))
-        : 0.0;
-
+    const bestScore = bestScoresMap[exam.area] || 0.0;
     const scoreItem = document.createElement('div');
     scoreItem.className = 'score-item';
 

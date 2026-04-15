@@ -107,16 +107,16 @@ async function loadLobbyData(session) {
       return normalizedExamGrade === normalizedStudentGrade;
     });
 
-    const resResults = await fetch('/api/resultados/usuario/mejores', {
-      headers: { 'X-Session-ID': session.sessionId || session.session_id },
-    });
+    const resResults = await fetch(
+      `/api/usuario/${session.codigo}/resumen_notas`,
+      {
+        headers: { 'X-Session-ID': session.sessionId || session.session_id },
+      }
+    );
 
     let bestScoresMap = {};
     if (resResults.ok) {
-      const results = await resResults.json();
-      results.forEach((r) => {
-        bestScoresMap[r.cuadernillo_id] = r.mejor_nota;
-      });
+      bestScoresMap = await resResults.json();
     }
 
     renderAreas(availableExams, areasContainer, session);
@@ -163,7 +163,7 @@ function renderScores(exams, bestScoresMap, container) {
     a.nombre.localeCompare(b.nombre)
   );
   sortedExams.forEach((exam) => {
-    const bestScore = bestScoresMap[exam.id] || 0.0;
+    const bestScore = bestScoresMap[exam.area] || 0.0;
     const scoreItem = document.createElement('div');
     scoreItem.className = 'score-item';
     const isPending = bestScore === 0;

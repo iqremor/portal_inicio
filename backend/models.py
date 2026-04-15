@@ -357,6 +357,7 @@ def seed_data():
         ("EXAM_NUM_ATTEMPTS", "1", "Número máximo de intentos permitidos"),
         ("EXAM_QUESTIONS_COUNT", "10", "Número de preguntas por examen"),
         ("SHOW_CORRECT_ANSWERS", "0", "Habilita el botón de ver respuestas correctas (1=Sí, 0=No)"),
+        ("SHOW_MARKED_ANSWERS", "0", "Habilita el botón de ver solo respuestas marcadas (1=Sí, 0=No)"),
         ("PREICFES_ENABLED", "1", "Activa o desactiva el módulo Preicfes (1=Activo, 0=Inactivo)"),
         ("PREUNAL_ENABLED", "1", "Activa o desactiva el módulo Preunal (1=Activo, 0=Inactivo)"),
         ("LABORATORIOS_ENABLED", "1", "Activa o desactiva el módulo Laboratorios (1=Activo, 0=Inactivo)"),

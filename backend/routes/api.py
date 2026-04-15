@@ -54,6 +54,7 @@ def get_exam_config(active_session):
     return jsonify(
         {
             "show_correct_answers": get_config_value("SHOW_CORRECT_ANSWERS", "0") == "1",
+            "show_marked_answers": get_config_value("SHOW_MARKED_ANSWERS", "0") == "1",
             "num_attempts": int(get_config_value("EXAM_NUM_ATTEMPTS", 1)),
             "next_button_delay": int(get_config_value("EXAM_NEXT_BUTTON_DELAY", 10000)),
         }
@@ -358,6 +359,27 @@ def finalizar_examen(session_id, active_session):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
+
+@api_bp.route("/usuario/<string:codigo>/resumen_notas", methods=["GET"])
+@api_login_required
+def get_user_resumen_notas(codigo, active_session):
+    user = active_session.user
+    if user.codigo != codigo:
+        return jsonify({"error": "No autorizado"}), 403
+
+    # Obtener las mejores notas de cada área para el grado del usuario
+    results = (
+        db.session.query(Cuadernillo.area, func.max(ExamResult.final_score).label("mejor_nota"))
+        .join(ExamResult, ExamResult.cuadernillo_id == Cuadernillo.id)
+        .filter(ExamResult.user_id == user.id)
+        .filter(Cuadernillo.grado == user.grado)
+        .group_by(Cuadernillo.area)
+        .all()
+    )
+
+    resumen = {r.area: round(r.mejor_nota, 1) for r in results}
+    return jsonify(resumen)
 
 
 @api_bp.route("/resultados/usuario/mejores", methods=["GET"])
