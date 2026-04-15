@@ -7,7 +7,16 @@ from functools import wraps
 from flask import Blueprint, current_app, jsonify, request, session
 from sqlalchemy import func
 
-from models import ActiveSession, Cuadernillo, ExamAnswer, ExamResult, User, UserCuadernilloActivation, db
+from models import (
+    ActiveSession,
+    Cuadernillo,
+    ExamAnswer,
+    ExamAvailability,
+    ExamResult,
+    User,
+    UserCuadernilloActivation,
+    db,
+)
 
 
 # Decorator for API authentication
@@ -126,26 +135,36 @@ def start_examen(area_id, active_session):
 
 @api_bp.route("/examenes", methods=["GET"])
 def get_examenes():
-    """Retorna una lista de todos los cuadernillos disponibles con tiempo calculado."""
+    """Retorna una lista de todos los cuadernillos habilitados con tiempo calculado."""
     try:
         num_questions = int(get_config_value("EXAM_QUESTIONS_COUNT", 10))
         duration_per_q = int(get_config_value("EXAM_TIMER_DURATION", 240))
         calculated_minutes = (num_questions * duration_per_q) // 60
 
+        # Obtener todos los cuadernillos
         cuadernillos = Cuadernillo.query.all()
+
+        # Obtener mapa de disponibilidad
+        availability = ExamAvailability.query.all()
+        availability_map = {(a.cuadernillo_id, a.grado): a.is_enabled for a in availability}
+
         cuadernillos_data = []
         for cuadernillo in cuadernillos:
-            cuadernillos_data.append(
-                {
-                    "id": cuadernillo.id,
-                    "nombre": cuadernillo.nombre,
-                    "area": cuadernillo.area,
-                    "grado": cuadernillo.grado,
-                    "dir_banco": cuadernillo.dir_banco,
-                    "total_preguntas": getattr(cuadernillo, "total_preguntas_banco", 0),
-                    "tiempo_limite_minutos": calculated_minutes,
-                }
-            )
+            # Si hay una configuración específica, respetarla. Si no, habilitado por defecto.
+            is_enabled = availability_map.get((cuadernillo.id, cuadernillo.grado), True)
+
+            if is_enabled:
+                cuadernillos_data.append(
+                    {
+                        "id": cuadernillo.id,
+                        "nombre": cuadernillo.nombre,
+                        "area": cuadernillo.area,
+                        "grado": cuadernillo.grado,
+                        "dir_banco": cuadernillo.dir_banco,
+                        "total_preguntas": getattr(cuadernillo, "total_preguntas_banco", 0),
+                        "tiempo_limite_minutos": calculated_minutes,
+                    }
+                )
         return jsonify(cuadernillos_data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500

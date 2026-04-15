@@ -8,15 +8,16 @@
 
 ### Fase 1: Enriquecimiento del Banco de Datos
 
+- **Estandarización de Nombres**: Implementar la convención de nombres de archivo donde el último carácter antes de la extensión defina el rango de opciones (ej: `pregunta_01_H.png` para opciones A-H, `pregunta_08_C.png` para A-C).
 - Revisar la estructura de `backend/data/respuestas.json` para asegurar que el mapeo de letras soporte índices superiores a 3 (D).
 - Identificar en los cuadernillos de Inglés el rango máximo de opciones requerido (ej: A-H).
-- Determinar si el número de opciones se detectará automáticamente por el contenido del JSON de preguntas o si se definirá un estándar por cuadernillo.
 
 ### Fase 2: Flexibilidad en la API del Backend
 
-- Modificar `backend/routes/api.py` para eliminar el hardcoding del array `["A", "B", "C", "D"]`.
-- Implementar una lógica que genere el array de opciones (`options`) dinámicamente basado en la metadata de la pregunta o el rango de respuestas correctas permitidas.
-- Asegurar que el validador de respuestas en el endpoint de finalización acepte letras más allá de la "D".
+- **Parser de Nombres de Imagen**: Implementar en `backend/routes/api.py` una lógica de extracción que lea el sufijo del nombre del archivo para generar dinámicamente el array `options`.
+  - Ejemplo: Si el archivo termina en `_H.png`, el array de opciones será `["A", "B", "C", "D", "E", "F", "G", "H"]`.
+- Modificar el generador de preguntas para que el array `options` deje de ser un valor fijo.
+- Asegurar que el validador de respuestas en el endpoint de finalización acepte letras más allá de la "D" basándose en el rango detectado.
 
 ### Fase 3: Adaptación de la Interfaz (UI)
 

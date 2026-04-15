@@ -992,16 +992,12 @@ class ExamAvailabilityView(BaseView):
                 grado = c.grado
                 is_enabled = f"cuadernillo-{cuadernillo_id}-{grado}" in request.form
                 availability = ExamAvailability.query.filter_by(cuadernillo_id=cuadernillo_id, grado=grado).first()
+
                 if availability:
-                    if availability.is_enabled != is_enabled:
-                        availability.is_enabled = is_enabled
-                        db.session.add(availability)
+                    availability.is_enabled = is_enabled
                 else:
-                    if is_enabled:
-                        availability = ExamAvailability(
-                            cuadernillo_id=cuadernillo_id, grado=grado, is_enabled=is_enabled
-                        )
-                        db.session.add(availability)
+                    availability = ExamAvailability(cuadernillo_id=cuadernillo_id, grado=grado, is_enabled=is_enabled)
+                db.session.add(availability)
 
             # 2. Manejar Módulos Globales (Preicfes, Preunal, Laboratorios)
             grados_query = db.session.query(User.grado).filter(User.grado != None).distinct().all()

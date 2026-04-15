@@ -28,6 +28,12 @@
   - Implementación de la vista `GestionUsuariosView` en el panel administrativo, incluyendo la descarga de plantillas oficiales y alta individual con contraseña automática.
   - Creación de la "Zona de Peligro" con borrado masivo de estudiantes bajo verificación por palabra clave ("ELIMINAR").
   - Corrección integral de roles (`UserRole.USER`) en el motor de sincronización y formularios.
+- **Disponibilidad de Exámenes:**
+  - Estabilización del panel administrativo: Corrección de IDs duplicados en switches y mejora de la lógica de persistencia.
+  - Sincronización del lobby: El estudiante ahora solo ve los exámenes habilitados explícitamente por el administrador.
+  - Fix de Error 500: Corregida la importación de `ExamAvailability` en `routes/api.py`.
+  - Mejora de UX: Filtrado sincronizado por grado y limpieza de columnas redundantes.
+- **Plan VARIA:** Actualización del plan para integrar la detección dinámica de opciones (A-H) mediante sufijos en los nombres de imagen.
 
 ### Estado final:
 

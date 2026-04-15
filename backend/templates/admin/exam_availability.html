@@ -1,132 +1,203 @@
-{% extends 'admin/master.html' %}
+{% extends 'admin/master.html' %} {% block body %}
+<h1>Gestión de Disponibilidad de Exámenes</h1>
+<p class="lead">Controla qué exámenes están activos para cada grado.</p>
 
-{% block body %}
-  <h1>Gestión de Disponibilidad de Exámenes</h1>
-  <p class="lead">Controla qué exámenes están activos para cada grado.</p>
+<div class="mb-3">
+  <h5>Filtrar por Grado:</h5>
+  <button
+    type="button"
+    class="btn btn-secondary btn-sm filter-btn active"
+    data-grade="all"
+  >
+    Todos los Grados
+  </button>
+  {% set grade_norm = {'sexto':'6', 'septimo':'7', 'octavo':'8', 'noveno':'9',
+  'decimo':'10', 'once':'11'} %} {% for grado in grados %} {% set normalized_g =
+  grade_norm.get(grado|lower, grado) %}
+  <button
+    type="button"
+    class="btn btn-secondary btn-sm filter-btn"
+    data-grade="{{ normalized_g }}"
+  >
+    Grado {{ grado }}
+  </button>
+  {% endfor %}
+</div>
 
-  <div class="mb-3">
-    <h5>Filtrar por Grado:</h5>
-    <button type="button" class="btn btn-secondary btn-sm filter-btn active" data-grade="all">Todos los Grados</button>
-    {% for grado in grados %}
-      <button type="button" class="btn btn-secondary btn-sm filter-btn" data-grade="{{ grado }}">Grado {{ grado }}</button>
-    {% endfor %}
-  </div>
-
-  <form method="POST" action="{{ url_for('.index') }}">
-
-    <!-- Módulos Globales -->
-    <div class="card mb-4">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0">Módulos del Portal Estudiantil</h5>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover mb-0">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Módulo</th>
-                            {% for grado in grados %}
-                                <th class="text-center">Grado {{ grado }}</th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% set modulos = [('PREICFES', 'Preicfes (Saber 11)'), ('PREUNAL', 'Preunal (Univ. Nacional)'), ('LABORATORIOS', 'Laboratorios')] %}
-                        {% for mod_key, mod_label in modulos %}
-                        <tr>
-                            <td class="font-weight-bold">{{ mod_label }}</td>
-                            {% for grado in grados %}
-                                <td class="text-center">
-                                    <div class="custom-control custom-checkbox">
-                                        {% set enabled_grades = modules_config.get(mod_key, []) %}
-                                        <input type="checkbox" class="custom-control-input" id="module-{{ mod_key }}-{{ grado }}" name="module-{{ mod_key }}-{{ grado }}" {{ 'checked' if (grado|string) in enabled_grades else '' }}>
-                                        <label class="custom-control-label" for="module-{{ mod_key }}-{{ grado }}"></label>
-                                    </div>
-                                </td>
-                            {% endfor %}
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<form method="POST" action="{{ url_for('.index') }}">
+  <!-- Módulos Globales -->
+  <div class="card mb-4">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0">Módulos del Portal Estudiantil</h5>
     </div>
-
-    <h5 class="mb-3">Disponibilidad de Cuadernillos por Examen</h5>
-    <div class="table-responsive">
-      <table id="exam-availability-table" class="table table-bordered table-striped">
-        <thead class="thead-dark">
-          <tr>
-            <th>Cuadernillo</th>
-            <th>Área</th>
-            <th class="text-center">Habilitado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for c in cuadernillos %}
-            <tr data-grade="{{ c.grado }}">
-              <td>{{ c.nombre }}</td>
-              <td>{{ c.area }}</td>
-              <td class="text-center">
-                <div class="custom-control custom-switch">
-                  {% set is_enabled = availability_map.get((c.id, c.grado), True) %}
-                  <input type="checkbox"
-                         class="custom-control-input"
-                         id="switch-{{ c.id }}"
-                         name="cuadernillo-{{ c.id }}-{{ c.grado }}"
-                         {{ 'checked' if is_enabled else '' }}>
-                  <label class="custom-control-label" for="switch-{{ c.id }}"></label>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover mb-0">
+          <thead class="thead-light">
+            <tr>
+              <th>Módulo</th>
+              {% for grado in grados %} {% set normalized_g =
+              grade_norm.get(grado|lower, grado) %}
+              <th class="text-center grade-col" data-grade="{{ normalized_g }}">
+                Grado {{ grado }}
+              </th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% set modulos = [('PREICFES', 'Preicfes (Saber 11)'), ('PREUNAL',
+            'Preunal (Univ. Nacional)'), ('LABORATORIOS', 'Laboratorios')] %} {%
+            for mod_key, mod_label in modulos %}
+            <tr>
+              <td class="font-weight-bold">{{ mod_label }}</td>
+              {% for grado in grados %} {% set normalized_g =
+              grade_norm.get(grado|lower, grado) %}
+              <td class="text-center grade-col" data-grade="{{ normalized_g }}">
+                <div class="custom-control custom-checkbox">
+                  {% set enabled_grades = modules_config.get(mod_key, []) %}
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="module-{{ mod_key }}-{{ grado }}"
+                    name="module-{{ mod_key }}-{{ grado }}"
+                    {%
+                    if
+                    (grado|string)
+                    in
+                    enabled_grades
+                    %}checked{%
+                    endif
+                    %}
+                  />
+                  <label
+                    class="custom-control-label"
+                    for="module-{{ mod_key }}-{{ grado }}"
+                  ></label>
                 </div>
               </td>
+              {% endfor %}
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 
-    <div class="form-group mt-4">
-      <button type="submit" class="btn btn-primary btn-lg">Guardar Cambios</button>
-    </div>
+  <h5 class="mb-3">Disponibilidad de Cuadernillos por Examen</h5>
+  <div class="table-responsive">
+    <table
+      id="exam-availability-table"
+      class="table table-bordered table-striped"
+    >
+      <thead class="thead-dark">
+        <tr>
+          <th>Cuadernillo</th>
+          <th>Área</th>
+          <th class="text-center">Habilitado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in cuadernillos %} {% set normalized_row_g =
+        grade_norm.get(c.grado|lower, c.grado) %}
+        <tr data-grade="{{ normalized_row_g }}">
+          <td>{{ c.nombre }}</td>
+          <td>{{ c.area }}</td>
+          <td class="text-center">
+            <div class="custom-control custom-switch">
+              {% set is_enabled = availability_map.get((c.id, c.grado), True) %}
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="switch-{{ c.id }}-{{ c.grado }}"
+                name="cuadernillo-{{ c.id }}-{{ c.grado }}"
+                {%
+                if
+                is_enabled
+                %}checked{%
+                endif
+                %}
+              />
+              <label
+                class="custom-control-label"
+                for="switch-{{ c.id }}-{{ c.grado }}"
+              ></label>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-    <input type="hidden" name="active_grade_filter" id="active_grade_filter" value="all">
-  </form>
+  <div class="form-group mt-4">
+    <button type="submit" class="btn btn-primary btn-lg">
+      <i class="fas fa-save"></i> Guardar Cambios
+    </button>
+  </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const filterButtons = document.querySelectorAll('.filter-btn');
-      const tableRows = document.querySelectorAll('#exam-availability-table tbody tr');
-      const activeGradeFilterInput = document.getElementById('active_grade_filter');
+  <input
+    type="hidden"
+    name="active_grade_filter"
+    id="active_grade_filter"
+    value="all"
+  />
+</form>
 
-      function applyFilter(selectedGrade) {
-        filterButtons.forEach(btn => {
-          if (btn.dataset.grade === selectedGrade) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
-        });
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const tableRows = document.querySelectorAll(
+      '#exam-availability-table tbody tr'
+    );
+    const moduleCols = document.querySelectorAll('.grade-col');
+    const activeGradeFilterInput = document.getElementById(
+      'active_grade_filter'
+    );
 
-        tableRows.forEach(row => {
-          if (selectedGrade === 'all' || row.dataset.grade === selectedGrade) {
-            row.style.display = '';
-          } else {
-            row.style.display = 'none';
-          }
-        });
-        activeGradeFilterInput.value = selectedGrade;
-      }
-
-      filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          applyFilter(this.dataset.grade);
-        });
+    function applyFilter(selectedGrade) {
+      filterButtons.forEach((btn) => {
+        if (btn.dataset.grade === selectedGrade) {
+          btn.classList.add('active', 'btn-primary');
+          btn.classList.remove('btn-secondary');
+        } else {
+          btn.classList.remove('active', 'btn-primary');
+          btn.classList.add('btn-secondary');
+        }
       });
 
-      // Apply filter on page load based on URL parameter
-      const urlParams = new URLSearchParams(window.location.search);
-      const initialFilter = urlParams.get('filter_grade') || 'all';
-      applyFilter(initialFilter);
+      // Filtrar filas de cuadernillos
+      tableRows.forEach((row) => {
+        if (selectedGrade === 'all' || row.dataset.grade === selectedGrade) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // Filtrar columnas de la tabla de módulos
+      moduleCols.forEach((col) => {
+        if (selectedGrade === 'all' || col.dataset.grade === selectedGrade) {
+          col.style.display = '';
+        } else {
+          col.style.display = 'none';
+        }
+      });
+
+      activeGradeFilterInput.value = selectedGrade;
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        applyFilter(this.dataset.grade);
+      });
     });
-  </script>
+
+    // Apply filter on page load based on URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialFilter = urlParams.get('filter_grade') || 'all';
+    applyFilter(initialFilter);
+  });
+</script>
 
 {% endblock %}
