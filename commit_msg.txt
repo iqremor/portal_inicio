@@ -1,5 +1,5 @@
-﻿feat: completar Plan NATURA y mejorar flujo de revisión pedagógica
+﻿feat: añadir botón de retorno al simulacro tras anulación de intento
 
-- Finalización del Plan NATURA (Fase 4: API de Resumen).
-- Implementación de revisión 'a ciegas' con control administrativo.
-- Refactorización de lobbies para mayor seguridad.
+- Permite a los estudiantes regresar al lobby del simulacro si ya tienen intentos previos registrados.
+- Mejora el flujo de navegación en la pantalla de inicio del examen.
+- Evita que el usuario quede atrapado en el flujo de examen tras una anulación accidental.

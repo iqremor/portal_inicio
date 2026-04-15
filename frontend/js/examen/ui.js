@@ -139,7 +139,14 @@ export function mostrarPaginaInicio(
             <p style="font-size: 1.1em; color: #0a0a0aff; margin-bottom: 1.5rem;">
                 Usted realizará el <strong>Intento ${intentoActual} de ${maxAtt}</strong>
             </p>
-            <button id="btnIniciarQuiz" class="btn btn-primary">Iniciar Prueba</button>
+            <div class="start-actions" style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="btnIniciarQuiz" class="btn btn-primary">Iniciar Prueba</button>
+                ${
+                  curAtt > 0
+                    ? '<button id="btnVolverSimulacro" class="btn btn-secondary">Volver al Simulacro</button>'
+                    : ''
+                }
+            </div>
         `;
   }
 
@@ -150,6 +157,13 @@ export function mostrarPaginaInicio(
   const btnIniciar = document.getElementById('btnIniciarQuiz');
   if (btnIniciar) {
     btnIniciar.addEventListener('click', doIniciarQuiz);
+  }
+
+  const btnVolverSimulacro = document.getElementById('btnVolverSimulacro');
+  if (btnVolverSimulacro) {
+    btnVolverSimulacro.addEventListener('click', () => {
+      window.location.href = '/frontend/pages/simulacro.html';
+    });
   }
 
   const btnVolverDashboard = document.getElementById('btnVolverDashboard');

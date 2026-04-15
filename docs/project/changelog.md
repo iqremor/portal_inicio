@@ -21,6 +21,7 @@
   - Se migró del endpoint administrativo (inseguro para el cliente) al nuevo endpoint de resumen de usuario.
   - Se optimizó el mapeo de puntajes por área (`exam.area`) en lugar de IDs, aumentando la resiliencia del sistema.
 - **Plan NATURA:** Actualización de `docs/plans/plan_natura.md` marcando todas las fases como COMPLETADAS.
+- **Navegación (Examen):** Implementación de un botón condicional "Volver al Simulacro" en `frontend/js/examen/ui.js` que aparece solo si el estudiante ya cuenta con al menos un intento previo, permitiendo una salida segura tras una anulación.
 
 ### Estado final:
 
