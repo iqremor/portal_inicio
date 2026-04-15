@@ -1,0 +1,215 @@
+{% extends 'admin/master.html' %} {% block head_css %} {{ super() }}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/admin_custom.css') }}"
+/>
+<style>
+  .focus-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+  }
+  .import-zone {
+    border: 2px dashed #4caf50;
+    border-radius: 8px;
+    padding: 3rem;
+    text-align: center;
+    background: #f9fff9;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+  .import-zone:hover {
+    background: #f0fff0;
+    border-color: #45a049;
+  }
+  .stat-badge {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #4caf50;
+  }
+  .error-list {
+    background: #fff5f5;
+    border-left: 4px solid #f44336;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+</style>
+{% endblock %} {% block body %}
+<div class="admin-container">
+  <aside class="sidebar">{% include 'admin/_menu.html' %}</aside>
+  <main class="main-content">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-text">Plan FOCUS: Gestión de Usuarios</div>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        class="alert alert-{{ category }} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+
+      <div class="row">
+        <!-- PANEL DE IMPORTACIÓN MASIVA -->
+        <div class="col-md-7">
+          <div class="focus-card">
+            <h3>Sincronización Masiva (Excel/CSV)</h3>
+            <p class="text-muted">
+              Cargue un archivo para agregar o actualizar múltiples usuarios a
+              la vez.
+            </p>
+
+            <div class="mb-4">
+              <a
+                href="{{ url_for('gestion_usuarios.download_template') }}"
+                class="btn btn-outline-success"
+              >
+                <i class="fas fa-file-download"></i> Descargar Plantilla Oficial
+                (.xlsx)
+              </a>
+            </div>
+
+            <form
+              method="POST"
+              enctype="multipart/form-data"
+              action="{{ url_for('gestion_usuarios.import_from_file') }}"
+            >
+              <div class="form-group">
+                <label>Seleccionar Archivo:</label>
+                <input
+                  type="file"
+                  name="user_file"
+                  class="form-control-file"
+                  accept=".xlsx, .xls, .csv"
+                  required
+                />
+              </div>
+
+              <div class="custom-control custom-switch mb-4">
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  id="sync_mirror"
+                  name="sync_mirror"
+                />
+                <label class="custom-control-label" for="sync_mirror"
+                  >Sincronización Espejo (Desactivar usuarios no listados en el
+                  archivo)</label
+                >
+              </div>
+
+              <button type="submit" class="btn btn-success btn-block py-2">
+                <i class="fas fa-sync-alt"></i> Iniciar Sincronización
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- PANEL DE ALTA INDIVIDUAL -->
+        <div class="col-md-5">
+          <div class="focus-card">
+            <h3>Alta Individual</h3>
+            <p class="text-muted">Añadir un solo estudiante manualmente.</p>
+
+            <form
+              method="POST"
+              action="{{ url_for('gestion_usuarios.add_individual') }}"
+            >
+              <div class="form-group">
+                <label>Código de Usuario</label>
+                <input
+                  type="text"
+                  name="codigo"
+                  class="form-control"
+                  placeholder="Ej: 2024001"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Nombre Completo</label>
+                <input
+                  type="text"
+                  name="nombre"
+                  class="form-control"
+                  placeholder="Ej: Juan Pérez"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Grado</label>
+                <select name="grado" class="form-control" required>
+                  <option value="6">Sexto</option>
+                  <option value="7">Séptimo</option>
+                  <option value="8">Octavo</option>
+                  <option value="9">Noveno</option>
+                  <option value="10">Décimo</option>
+                  <option value="11">Once</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-user-plus"></i> Guardar Usuario
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTADOS DE LA ÚLTIMA OPERACIÓN (Si existen) -->
+      {% if session.get('last_focus_summary') %}
+      <div class="focus-card">
+        <h4>Resultado de la Sincronización</h4>
+        <div class="row text-center mt-3">
+          <div class="col-4">
+            <div class="stat-badge text-success">
+              {{ session['last_focus_summary']['created'] }}
+            </div>
+            <div class="text-muted">Creados</div>
+          </div>
+          <div class="col-4">
+            <div class="stat-badge text-primary">
+              {{ session['last_focus_summary']['updated'] }}
+            </div>
+            <div class="text-muted">Actualizados</div>
+          </div>
+          <div class="col-4">
+            <div class="stat-badge text-warning">
+              {{ session['last_focus_summary']['deleted'] }}
+            </div>
+            <div class="text-muted">Desactivados</div>
+          </div>
+        </div>
+
+        {% if session['last_focus_summary']['errors'] %}
+        <div class="error-list">
+          <strong>Errores detectados:</strong>
+          <ul class="mb-0">
+            {% for error in session['last_focus_summary']['errors'] %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+      {# Limpiar el resumen de la sesión después de mostrarlo #} {% set _ =
+      session.pop('last_focus_summary') %} {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}

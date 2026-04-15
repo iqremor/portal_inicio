@@ -420,6 +420,92 @@ class ActiveSessionView(ModelView):
         return redirect(url_for("web_main.login", next=request.url))
 
 
+from flask import send_file
+
+from utils.user_management import UserSyncManager
+
+# ... (otras vistas)
+
+
+class GestionUsuariosView(BaseView):
+    @expose("/")
+    def index(self):
+        return self.render("admin/gestion_usuarios.html")
+
+    @expose("/download_template")
+    def download_template(self):
+        template_path = os.path.join(current_app.instance_path, "plantilla_usuarios_iem.xlsx")
+        UserSyncManager.generate_template(template_path)
+        return send_file(template_path, as_attachment=True, download_name="plantilla_usuarios_iem.xlsx")
+
+    @expose("/import", methods=["POST"])
+    def import_from_file(self):
+        if "user_file" not in request.files:
+            flash("No se seleccionó ningún archivo.", "danger")
+            return redirect(url_for(".index"))
+
+        file = request.files["user_file"]
+        if file.filename == "":
+            flash("Nombre de archivo vacío.", "danger")
+            return redirect(url_for(".index"))
+
+        temp_path = os.path.join(current_app.instance_path, file.filename)
+        file.save(temp_path)
+
+        delete_others = request.form.get("sync_mirror") == "on"
+
+        try:
+            summary = UserSyncManager.sync_from_file(temp_path, delete_others)
+            session["last_focus_summary"] = summary
+            flash("Sincronización masiva completada.", "success")
+        except Exception as e:
+            flash(f"Error durante la sincronización: {str(e)}", "danger")
+        finally:
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+
+        return redirect(url_for(".index"))
+
+    @expose("/add_individual", methods=["POST"])
+    def add_individual(self):
+        codigo = request.form.get("codigo")
+        nombre = request.form.get("nombre")
+        grado = request.form.get("grado")
+
+        if not codigo or not nombre or not grado:
+            flash("Todos los campos son obligatorios.", "danger")
+            return redirect(url_for(".index"))
+
+        try:
+            user = User.query.filter_by(codigo=codigo).first()
+            if user:
+                flash(f"El código {codigo} ya está registrado.", "warning")
+            else:
+                new_user = User(
+                    username=codigo,
+                    codigo=codigo,
+                    nombre_completo=nombre,
+                    grado=grado,
+                    role=UserRole.ESTUDIANTE,
+                    is_active=True,
+                )
+                new_user.set_password(codigo)
+                db.session.add(new_user)
+                db.session.commit()
+                flash(f"Usuario {nombre} añadido exitosamente.", "success")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error al añadir usuario: {str(e)}", "danger")
+
+        return redirect(url_for(".index"))
+
+    def is_accessible(self):
+        return session.get("logged_in") and session.get("user_role") == "admin"
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for("admin.login_view", next=request.url))
+
+
 class GestionIntentosView(BaseView):
     @expose("/")
     def index(self):
@@ -742,6 +828,7 @@ def init_admin(app):
     admin.add_view(PeticionModelView(Peticion, db.session, name="Peticiones"))
     admin.add_view(ComentarioModelView(Comentario, db.session, name="Comentarios"))
     admin.add_view(ConfiguracionSistemaView(ConfiguracionSistema, db.session, name="Configuración Sistema"))
+    admin.add_view(GestionUsuariosView(name="Gestión de Usuarios (FOCUS)", endpoint="gestion_usuarios"))
     admin.add_view(ConfigExamenesView(name="Configuración de Exámenes", endpoint="config_examenes"))
     admin.add_view(ReporteGradoView(name="Reporte por Grado", endpoint="reporte_grado"))
     admin.add_view(ModelView(Log, db.session, name="Logs del Sistema"))

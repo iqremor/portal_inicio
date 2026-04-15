@@ -1,5 +1,6 @@
-﻿feat: añadir botón de retorno al simulacro tras anulación de intento
+﻿feat: implementar Plan FOCUS - Gestión Integral de Usuarios (Excel/Sync & Manual)
 
-- Permite a los estudiantes regresar al lobby del simulacro si ya tienen intentos previos registrados.
-- Mejora el flujo de navegación en la pantalla de inicio del examen.
-- Evita que el usuario quede atrapado en el flujo de examen tras una anulación accidental.
+- Motor de sincronización masiva con soporte para Excel y CSV.
+- Interfaz administrativa FOCUS con descarga de plantillas.
+- Alta individual de estudiantes con contraseña automática.
+- Protección de administradores y logs básicos de operación.

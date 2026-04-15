@@ -22,6 +22,10 @@
   - Se optimizó el mapeo de puntajes por área (`exam.area`) en lugar de IDs, aumentando la resiliencia del sistema.
 - **Plan NATURA:** Actualización de `docs/plans/plan_natura.md` marcando todas las fases como COMPLETADAS.
 - **Navegación (Examen):** Implementación de un botón condicional "Volver al Simulacro" en `frontend/js/examen/ui.js` que aparece solo si el estudiante ya cuenta con al menos un intento previo, permitiendo una salida segura tras una anulación.
+- **Plan FOCUS (Gestión de Usuarios):**
+  - Inicio del plan para la gestión integral de la base de datos de usuarios.
+  - Creación del motor de sincronización masiva en `backend/utils/user_management.py` con soporte para Excel y CSV.
+  - Implementación de la vista `GestionUsuariosView` en el panel administrativo, incluyendo la descarga de plantillas oficiales y alta individual con contraseña automática.
 
 ### Estado final:
 
