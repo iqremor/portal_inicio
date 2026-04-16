@@ -310,8 +310,17 @@ def get_user_data(codigo, active_session):
 @api_bp.route("/examenes/grado/<string:grado>", methods=["GET"])
 @api_login_required
 def get_examenes_por_grado(grado, active_session):
-    examenes = Cuadernillo.query.filter_by(grado=grado).all()
-    return jsonify([e.to_dict() for e in examenes])
+    """Retorna los exámenes asignados a un grado específico."""
+    availability = ExamAvailability.query.filter_by(grado=grado, is_enabled=True).all()
+
+    examenes = []
+    for avail in availability:
+        if avail.cuadernillo:
+            d = avail.cuadernillo.to_dict()
+            d["grado_asignado"] = avail.grado  # Mantener trazabilidad
+            examenes.append(d)
+
+    return jsonify(examenes)
 
 
 @api_bp.route("/examenes/<int:cuadernillo_id>/attempts", methods=["GET"])

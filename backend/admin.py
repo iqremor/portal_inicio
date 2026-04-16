@@ -624,11 +624,24 @@ class ReporteGradoView(BaseView):
         grados_query = db.session.query(User.grado).filter(User.grado != None).distinct().all()
         grados = sorted([g[0] for g in grados_query if g[0]])
 
-        # Obtener todos los cuadernillos y convertirlos a dicts AQUÍ para evitar errores en Jinja
+        # Obtener todos los cuadernillos (para el dropdown inicial, cargamos todos)
         cuadernillos_objs = Cuadernillo.query.order_by(Cuadernillo.grado, Cuadernillo.area).all()
         cuadernillos_list = [c.to_dict() for c in cuadernillos_objs]
 
         return self.render("admin/reporte_grado.html", grados=grados, cuadernillos=cuadernillos_list)
+
+    @expose("/api/examenes_por_grado/<string:grado>")
+    def api_examenes_por_grado(self, grado):
+        """API interna para cargar el dropdown de exámenes asignados a un grado."""
+        availability = ExamAvailability.query.filter_by(grado=grado, is_enabled=True).all()
+        data = []
+        for a in availability:
+            if a.cuadernillo:
+                d = a.cuadernillo.to_dict()
+                # Añadir etiqueta de origen para la UI
+                d["label"] = f"{d['area']} (Origen: Saber {d['grado']}) - {d['nombre']}"
+                data.append(d)
+        return jsonify(data)
 
     @expose("/exportar_excel/<string:grado>/<int:cuadernillo_id>")
     def exportar_excel(self, grado, cuadernillo_id):
@@ -639,7 +652,7 @@ class ReporteGradoView(BaseView):
         from openpyxl import Workbook
         from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
-        # 1. Obtener datos (mismo lógica que la API)
+        # 1. Obtener datos
         usuarios = User.query.filter_by(grado=grado).all()
         cuadernillo = Cuadernillo.query.get(cuadernillo_id)
 
@@ -662,22 +675,22 @@ class ReporteGradoView(BaseView):
         red_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
 
         # Encabezados de información general
-        ws.merge_cells("A1:E1")
+        ws.merge_cells("A1:F1")
         ws["A1"] = f"REPORTE DE RESULTADOS - GRADO {grado}"
         ws["A1"].font = Font(size=14, bold=True)
         ws["A1"].alignment = center_align
 
-        ws.merge_cells("A2:E2")
-        ws["A2"] = f"Examen: {cuadernillo.area.upper()} - {cuadernillo.nombre}"
+        ws.merge_cells("A2:F2")
+        ws["A2"] = f"Examen: {cuadernillo.area.upper()} (Origen: Grado {cuadernillo.grado}) - {cuadernillo.nombre}"
         ws["A2"].font = Font(size=12)
         ws["A2"].alignment = center_align
 
-        ws.merge_cells("A3:E3")
+        ws.merge_cells("A3:F3")
         ws["A3"] = f"Fecha de generación: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
         ws["A3"].alignment = center_align
 
         # Encabezados de tabla
-        headers = ["Código", "Nombre Completo", "Nota Final", "Intentos", "Fecha de Finalización"]
+        headers = ["Código", "Nombre Completo", "Nota Final", "Porcentaje", "Intentos", "Fecha Finalización"]
         for col_num, header in enumerate(headers, 1):
             cell = ws.cell(row=5, column=col_num)
             cell.value = header
@@ -715,12 +728,19 @@ class ReporteGradoView(BaseView):
                 else:
                     nota_cell.fill = red_fill
 
-            ws.cell(row=row_num, column=4, value=intentos_count).border = border
+                porcentaje = (nota / 5.0) * 100
+                ws.cell(row=row_num, column=4, value=f"{round(porcentaje, 1)}%").border = border
+            else:
+                ws.cell(row=row_num, column=4, value="-").border = border
+
             ws.cell(row=row_num, column=4).alignment = center_align
 
-            fecha_str = ultimo_result.completion_date.strftime("%Y-%m-%d %H:%M") if ultimo_result else "-"
-            ws.cell(row=row_num, column=5, value=fecha_str).border = border
+            ws.cell(row=row_num, column=5, value=intentos_count).border = border
             ws.cell(row=row_num, column=5).alignment = center_align
+
+            fecha_str = ultimo_result.completion_date.strftime("%Y-%m-%d %H:%M") if ultimo_result else "-"
+            ws.cell(row=row_num, column=6, value=fecha_str).border = border
+            ws.cell(row=row_num, column=6).alignment = center_align
 
             row_num += 1
 
@@ -737,7 +757,7 @@ class ReporteGradoView(BaseView):
             promedio_cell.fill = red_fill
 
         # Ajustar ancho de columnas
-        column_widths = [15, 40, 15, 10, 25]
+        column_widths = [15, 45, 12, 12, 10, 20]
         for i, width in enumerate(column_widths, 1):
             ws.column_dimensions[ws.cell(row=5, column=i).column_letter].width = width
 
@@ -746,7 +766,7 @@ class ReporteGradoView(BaseView):
         wb.save(output)
         output.seek(0)
 
-        filename = f"Reporte_Grado_{grado}_{cuadernillo.area}_{datetime.now().strftime('%Y%m%d')}.xlsx"
+        filename = f"Reporte_UNICUS_{grado}_{cuadernillo.area}_{datetime.now().strftime('%Y%m%d')}.xlsx"
 
         return send_file(
             output,
@@ -986,24 +1006,36 @@ class ExamAvailabilityView(BaseView):
     @expose("/", methods=("GET", "POST"))
     def index(self):
         if request.method == "POST":
-            # 1. Manejar Cuadernillos Normales
-            all_cuadernillos = Cuadernillo.query.all()
-            for c in all_cuadernillos:
-                cuadernillo_id = c.id
-                grado = c.grado
-                is_enabled = f"cuadernillo-{cuadernillo_id}-{grado}" in request.form
-                availability = ExamAvailability.query.filter_by(cuadernillo_id=cuadernillo_id, grado=grado).first()
-
-                if availability:
-                    availability.is_enabled = is_enabled
-                else:
-                    availability = ExamAvailability(cuadernillo_id=cuadernillo_id, grado=grado, is_enabled=is_enabled)
-                db.session.add(availability)
-
-            # 2. Manejar Módulos Globales (Preicfes, Preunal, Laboratorios)
+            # 1. Obtener todos los grados únicos para procesar la matriz
             grados_query = db.session.query(User.grado).filter(User.grado != None).distinct().all()
             unique_grados = sorted([g[0] for g in grados_query if g[0]])
 
+            # 2. Manejar Cuadernillos (Matriz Universal)
+            all_cuadernillos = Cuadernillo.query.all()
+
+            # Limpiar asignaciones anteriores si se desea sincronización espejo,
+            # o actualizar individualmente. Para UNICUS usaremos actualización inteligente.
+            for c in all_cuadernillos:
+                for g in unique_grados:
+                    # El campo en el form será: cuadernillo-{id}-grado-{g}
+                    field_name = f"cuadernillo-{c.id}-grado-{g}"
+                    is_enabled = field_name in request.form
+
+                    availability = ExamAvailability.query.filter_by(cuadernillo_id=c.id, grado=g).first()
+
+                    if is_enabled:
+                        if not availability:
+                            availability = ExamAvailability(cuadernillo_id=c.id, grado=g, is_enabled=True)
+                            db.session.add(availability)
+                        else:
+                            availability.is_enabled = True
+                    else:
+                        if availability:
+                            # En lugar de borrar, marcamos como deshabilitado para mantener histórico si es necesario,
+                            # o borramos si preferimos limpiar la DB. Borraremos para limpieza.
+                            db.session.delete(availability)
+
+            # 3. Manejar Módulos Globales (Preicfes, Preunal, Laboratorios)
             modulos = ["PREICFES", "PREUNAL", "LABORATORIOS"]
             for mod in modulos:
                 enabled_grades = []
@@ -1024,7 +1056,7 @@ class ExamAvailabilityView(BaseView):
 
             try:
                 db.session.commit()
-                flash("La disponibilidad de exámenes y módulos ha sido actualizada.", "success")
+                flash("La matriz de asignación universal ha sido actualizada.", "success")
             except Exception as e:
                 db.session.rollback()
                 flash(f"Error al actualizar la disponibilidad: {str(e)}", "danger")
@@ -1039,12 +1071,25 @@ class ExamAvailabilityView(BaseView):
             flash("Error al acceder a la tabla de disponibilidad.", "warning")
             return self.render("admin/exam_availability.html", cuadernillos=[], grados=[], availability_map={})
 
-        cuadernillos = Cuadernillo.query.order_by(Cuadernillo.grado, Cuadernillo.area).all()
+        # Cargar todos los cuadernillos (los 27)
+        cuadernillos_all = Cuadernillo.query.order_by(Cuadernillo.grado, Cuadernillo.area).all()
+
+        # Categorizar para las pestañas
+        cuadernillos = {
+            "SABER": [c for c in cuadernillos_all if "pruebas_saber" in c.cuadernillo_id.lower()],
+            "UNAL": [c for c in cuadernillos_all if "pruebas_unal" in c.cuadernillo_id.lower()],
+            "LAB": [
+                c
+                for c in cuadernillos_all
+                if "laboratorios" in c.cuadernillo_id.lower() or "lab" in c.cuadernillo_id.lower()
+            ],
+        }
 
         # Obtener todos los grados posibles
         grados_query = db.session.query(User.grado).filter(User.grado != None).distinct().all()
         grados = sorted([g[0] for g in grados_query if g[0]])
 
+        # Mapa de disponibilidad: (cuadernillo_id, grado_destino) -> True/False
         availability_map = {}
         for avail in availability_data:
             availability_map[(avail.cuadernillo_id, avail.grado)] = avail.is_enabled
