@@ -222,9 +222,21 @@ def get_exam_questions_by_session(session_id, active_session):
         image_files = sorted(
             [f for f in os.listdir(questions_dir_path) if f.lower().endswith((".png", ".jpg", ".jpeg"))]
         )
-        option_map = {0: "A", 1: "B", 2: "C", 3: "D"}
+        option_map = {0: "A", 1: "B", 2: "C", 3: "D", 4: "E", 5: "F", 6: "G", 7: "H"}
+        full_option_letters = ["A", "B", "C", "D", "E", "F", "G", "H"]
 
         for i, img in enumerate(image_files):
+            # DETERMINACIÓN DINÁMICA DE OPCIONES (Plan VARIA)
+            name_without_ext = os.path.splitext(img)[0]
+            parts = name_without_ext.split("_")
+            last_part = parts[-1].upper()
+
+            if len(last_part) == 1 and "C" <= last_part <= "H":
+                max_index = ord(last_part) - ord("A")
+                current_options = full_option_letters[: max_index + 1]
+            else:
+                current_options = ["A", "B", "C", "D"]
+
             correct_letter = option_map.get(correct_answers[i], "N/A") if i < len(correct_answers) else "N/A"
             all_questions.append(
                 {
@@ -233,7 +245,7 @@ def get_exam_questions_by_session(session_id, active_session):
                     "text": f"Pregunta {i + 1}",
                     "imagen": img,
                     "image_url": f"/data_files/{cleaned_dir_banco}/{img}",
-                    "options": ["A", "B", "C", "D"],
+                    "options": current_options,
                     "correct_answer": correct_letter,
                 }
             )
@@ -322,7 +334,8 @@ def finalizar_examen(session_id, active_session):
         return jsonify({"error": "No hay preguntas registradas"}), 400
 
     presented_map = {q["question_number"]: q for q in presented}
-    rev_map = {"A": 0, "B": 1, "C": 2, "D": 3}
+    # Mapeo completo de letras a índices para calificar (A-H)
+    full_rev_map = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7}
 
     # Conteo robusto de respuestas y preparación de revisión pedagógica
     answered_q_nums = set()
@@ -337,8 +350,11 @@ def finalizar_examen(session_id, active_session):
         sel = user_answers_map.get(q_num)
         is_correct = False
 
+        # Obtener rango válido de opciones para esta pregunta específica
+        valid_options = q.get("options", ["A", "B", "C", "D"])
+
         user_choice = "NONE"
-        if sel and str(sel).upper() in ["A", "B", "C", "D"]:
+        if sel and str(sel).upper() in valid_options:
             user_choice = str(sel).upper()
             answered_q_nums.add(q_num)
             if user_choice == q["correct_answer"]:

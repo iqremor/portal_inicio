@@ -93,17 +93,30 @@ async function main() {
     try {
       examData = await getExamQuestions(sessionId);
     } catch (error) {
-      // Si el servidor dice que no hay examen activo (404 o 400), intentamos iniciarlo
+      // Si el servidor dice que no hay examen activo (404 o 400)
       if (error.status === 404 || error.status === 400) {
+        // Si no hay areaId definido en la URL, no podemos auto-iniciar, redirigimos al lobby
+        if (!areaId) {
+          console.warn(
+            'No hay examen activo y no se especificó área. Redirigiendo al lobby.'
+          );
+          window.location.href = '/frontend/pages/simulacro.html';
+          return;
+        }
+
         console.log(
-          `Sesión de examen inactiva (${error.status}). Iniciando nuevo examen para área: ${areaId}...`
+          `Sesión de examen inactiva (${error.status}). Intentando recuperar datos para área: ${areaId}...`
         );
+
         try {
+          // Intentar iniciar o recuperar el examen
           await startExam(areaId, userCode, state.currentUser.grado);
           examData = await getExamQuestions(sessionId);
         } catch (startError) {
-          console.error('No se pudo auto-iniciar el examen:', startError);
-          throw startError; // Si falla el inicio, lanzamos el error
+          console.error('No se pudo recuperar el examen:', startError);
+          // Si el inicio falla (ej: sin intentos), redirigir al lobby
+          window.location.href = '/frontend/pages/simulacro.html';
+          return;
         }
       } else {
         throw error;

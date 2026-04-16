@@ -1,8 +1,0 @@
-﻿fix: corregir errores 500 en API y estabilizar panel administrativo de exámenes
-
-- Asegurada la integridad de las importaciones en routes/api.py (ExamAvailability).
-- Implementada normalización de grados en los filtros del template para evitar fallos de coincidencia.
-- Generación de IDs únicos para interruptores de disponibilidad corregida.
-- Sincronización del endpoint /api/examenes con la tabla de disponibilidad.
-- Corrección de sintaxis de Jinja en templates para compatibilidad con Prettier.
-- Limpieza visual y técnica del panel de gestión de disponibilidad.

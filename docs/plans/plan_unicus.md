@@ -1,36 +1,43 @@
-# Plan UNICUS: Control de Sesión Única y Seguridad de Acceso
+# 🎯 Plan UNICUS: Asignación Flexible de Cuadernillos
 
-**Estado:** [BORRADOR]
-**Fecha de Creación:** 14 de abril de 2026
-**Objetivo Principal:** Implementar una restricción de concurrencia que impida que un mismo usuario mantenga más de una sesión activa simultáneamente, garantizando la integridad de los exámenes y previniendo el uso compartido de cuentas.
+**Estado:** `[EN_PROGRESO]`
+**Fecha de Creación:** 16 de abril de 2026
+**Objetivo Principal:** Permitir que el administrador asigne cualquier cuadernillo (sin importar su grado original) a cualquier otro grado de forma dinámica.
+
+---
 
 ## 📋 Fases del Plan
 
-### Fase 1: Auditoría del Sistema de Sesiones
+### Fase 1: Evolución del Modelo de Datos [EN_PROGRESO]
 
-- Revisar el modelo `ActiveSession` en `backend/models.py` para asegurar que el campo `user_id` sea suficiente para la búsqueda.
-- Analizar el flujo de autenticación en `backend/routes/web_main.py` y la generación de `session_id`.
-- Verificar cómo el frontend almacena y valida el `session_id` actualmente.
+- **Mapeo Universal**: Actualmente `ExamAvailability` relaciona un cuadernillo con su grado original. Modificaremos la lógica para que sea una tabla de **Asignaciones Explícitas**.
+- **Independencia**: El campo `grado` en el `Cuadernillo` pasará a ser solo una etiqueta de "Grado Sugerido", mientras que la disponibilidad real se definirá en una interfaz de asignación.
 
-### Fase 2: Lógica de Restricción (Backend)
+### Fase 2: Interfaz de "Súper Asignación" (Panel Admin) [EN_ESPERA]
 
-- **Implementar Política de Desplazamiento:** Al iniciar una nueva sesión, el sistema debe buscar y eliminar cualquier entrada previa en la tabla `ActiveSession` para ese `user_id`.
-- Modificar el endpoint de login para que, antes de crear una nueva sesión, invalide las anteriores.
-- Asegurar que el cierre de sesión anterior sea "limpio" en la base de datos.
+- **Selector de Destino**: El administrador elige el grado al que desea asignar exámenes (ej: "Grado 11").
+- **Biblioteca de Origen**: Se muestra una lista de todos los cuadernillos disponibles en el sistema (Grados 6 al 11).
+- **Acción de Cruce**: Un sistema de _Checkboxes_ o _Drag & Drop_ para marcar qué cartillas de 6°, 7°, 8°, etc., estarán visibles para los estudiantes de 11°.
 
-### Fase 3: Sincronización y Feedback (Frontend)
+### Fase 3: Filtrado Dinámico en el Lobby [EN_ESPERA]
 
-- Implementar un interceptor o lógica de verificación que detecte si el `session_id` almacenado ha sido invalidado por el servidor.
-- Mostrar una alerta clara al usuario: _"Tu sesión ha sido cerrada porque se inició sesión en otro dispositivo"_.
-- Redirigir automáticamente al login tras la invalidación.
+- **Consulta de Asignación**: El Dashboard del estudiante ya no buscará `Examenes donde grado == 11`, sino `Examenes ASIGNADOS a grado 11`.
+- **Etiquetado Claro**: En el lobby del estudiante, si un examen de 6° se le asigna a 11°, aparecerá con una etiqueta descriptiva (ej: "Nivelación" o "Refuerzo Base").
 
-### Fase 4: Validación y Pruebas
+### Fase 4: Control de Intentos y Resultados [EN_ESPERA]
 
-- Realizar pruebas de concurrencia abriendo el mismo usuario en diferentes navegadores.
-- Verificar que los intentos de examen no se dupliquen ni se corrompan si una sesión es desplazada durante una prueba.
+- **Persistencia**: Asegurar que si un estudiante de 11° realiza un examen de 6°, el resultado se guarde correctamente en su historial de 11° para que el reporte de grado sea coherente.
+
+---
+
+## 🛠️ Implementación Inmediata
+
+1.  Crear la vista `AsignacionEspecialView` en `backend/admin.py`.
+2.  Desarrollar la plantilla `admin/asignacion_especial.html`.
+3.  Actualizar el endpoint `/api/examenes` para que use la nueva lógica de asignación.
 
 ---
 
 ## 📝 Notas de Seguimiento
 
-- _Sesión 36_: Creación del plan como respuesta a la necesidad de controlar la duplicidad de sesiones por usuario.
+- _Sesión 38_: Se detecta la necesidad de organizar exámenes de forma no lineal (Grado 11 accediendo a cartillas inferiores).

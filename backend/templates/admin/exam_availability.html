@@ -95,6 +95,7 @@
           <th>Cuadernillo</th>
           <th>Área</th>
           <th class="text-center">Habilitado</th>
+          <th class="text-center">Gestión</th>
         </tr>
       </thead>
       <tbody>
@@ -123,6 +124,15 @@
                 for="switch-{{ c.id }}-{{ c.grado }}"
               ></label>
             </div>
+          </td>
+          <td class="text-center">
+            <a
+              href="{{ url_for('cuadernillo.edit_view', id=c.id) }}"
+              class="btn btn-xs btn-default"
+              title="Editar detalles"
+            >
+              <i class="fa fa-pencil-alt"></i>
+            </a>
           </td>
         </tr>
         {% endfor %}

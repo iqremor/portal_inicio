@@ -1,15 +1,15 @@
-/* Opciones de Respuesta como Botones Superiores */
+/* Opciones de Respuesta como Botones Superiores (Plan VARIA) */
 .options-top-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
   width: 100%;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 25px;
-  justify-content: space-between;
 }
 
 .option-btn-wrapper {
-  flex: 1; /* Esto hace que todos los botones tengan el mismo tamaño */
   display: flex;
+  min-width: 0; /* Evita que el flex item se desborde */
 }
 
 .option-btn-wrapper input[type='radio'] {

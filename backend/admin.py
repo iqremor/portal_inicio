@@ -845,6 +845,7 @@ def init_admin(app):
 
     # Registrar las vistas de modelos
     admin.add_view(UserModelView(User, db.session, name="Usuarios"))
+    admin.add_view(ModelView(Cuadernillo, db.session, name="Cuadernillos", endpoint="cuadernillo"))
     admin.add_view(PeticionModelView(Peticion, db.session, name="Peticiones"))
     admin.add_view(ComentarioModelView(Comentario, db.session, name="Comentarios"))
     admin.add_view(ConfiguracionSistemaView(ConfiguracionSistema, db.session, name="Configuración Sistema"))
