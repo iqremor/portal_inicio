@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestor de Exámenes - Plan UNICUS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/fontsource-inter@4.0.0/latin.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .tab-active {
+        border-bottom: 3px solid #4f46e5;
+        color: #4f46e5;
+        font-weight: 600;
+      }
+      .tab-inactive {
+        border-bottom: 3px solid transparent;
+        color: #6b7280;
+      }
+      .tab-inactive:hover {
+        color: #374151;
+        border-bottom-color: #d1d5db;
+      }
+
+      /* Card Transitions */
+      .exam-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+      }
+      .exam-card:hover {
+        transform: translateY(-3px);
+        box-shadow:
+          0 10px 20px -5px rgba(0, 0, 0, 0.1),
+          0 6px 8px -4px rgba(0, 0, 0, 0.05);
+      }
+      .card-disabled {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        opacity: 0.65;
+        filter: grayscale(0.6);
+      }
+      .card-enabled-exam {
+        background-color: #ffffff;
+        border: 2px solid #10b981;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+      }
+      .card-enabled-web {
+        background-color: #ffffff;
+        border: 2px solid #3b82f6;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+      }
+      .status-badge {
+        opacity: 0;
+        transition: all 0.25s ease;
+      }
+      .card-enabled-exam .status-badge-exam,
+      .card-enabled-web .status-badge-web {
+        opacity: 1;
+      }
+
+      /* Custom Scrollbar */
+      .scroll-area::-webkit-scrollbar {
+        width: 6px;
+      }
+      .scroll-area::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+      }
+      .scroll-area::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      .scroll-area::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 p-2 rounded-lg text-white">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-lg font-bold text-slate-900 leading-tight">
+                Plan UNICUS
+              </h1>
+              <p class="text-xs text-slate-500 font-medium">
+                Banco General de Contenidos
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <span
+              class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full font-medium border border-indigo-200"
+              >Modo: Administrador</span
+            >
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      <!-- Phase Header -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-slate-900">Asignación Focalizada</h2>
+        <p class="text-slate-500 mt-1">
+          Seleccione una categoría, elija un grado (6° a 11°) y active los
+          cuadernillos o accesos web correspondientes.
+        </p>
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="border-b border-slate-200 mb-6">
+        <nav class="-mb-px flex space-x-8" id="categoryTabs">
+          <button
+            onclick="switchTab('saber')"
+            class="tab-btn whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm tab-active"
+            data-tab="saber"
+          >
+            Pruebas Saber
+          </button>
+          <button
+            onclick="switchTab('preunal')"
+            class="tab-btn whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm tab-inactive"
+            data-tab="preunal"
+          >
+            Pre-UNAL
+          </button>
+          <button
+            onclick="switchTab('laboratorios')"
+            class="tab-btn whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm tab-inactive"
+            data-tab="laboratorios"
+          >
+            Laboratorios / Simulaciones
+          </button>
+        </nav>
+      </div>
+
+      <!-- Split Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left Column: Content Bank (8 cols) -->
+        <div class="lg:col-span-8">
+          <div
+            class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"
+          >
+            <div
+              class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center"
+            >
+              <h3
+                class="font-semibold text-slate-700 flex items-center gap-2"
+                id="bankTitle"
+              >
+                <svg
+                  class="w-5 h-5 text-indigo-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  ></path>
+                </svg>
+                Banco de Cuadernillos
+              </h3>
+              <span class="text-xs text-slate-400" id="examCountDisplay"
+                >0 elementos disponibles</span
+              >
+            </div>
+
+            <!-- Search Bar -->
+            <div
+              id="searchContainer"
+              class="p-3 border-b border-slate-100 bg-white"
+              style="display: none"
+            >
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <svg
+                    class="h-4 w-4 text-slate-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  id="searchInput"
+                  class="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-lg leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Buscar simulación por nombre o área..."
+                />
+              </div>
+            </div>
+
+            <!-- Grid Area -->
+            <div
+              id="examGrid"
+              class="p-4 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 h-[560px] overflow-y-auto scroll-area bg-slate-50/50"
+            >
+              <!-- Cards injected via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Assignment Control (4 cols) -->
+        <div class="lg:col-span-4 space-y-6">
+          <!-- Grade Selector Panel -->
+          <div
+            class="bg-white rounded-xl shadow-sm border border-slate-200 p-6"
+          >
+            <h3 class="text-lg font-bold text-slate-800 mb-1">
+              Asignación de Curso
+            </h3>
+            <p class="text-sm text-slate-500 mb-4" id="gradeHint">
+              Seleccione el grado para habilitar los cuadernillos en el banco.
+            </p>
+
+            <label
+              class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2"
+              >Grado Objetivo</label
+            >
+            <select
+              id="gradeSelector"
+              class="block w-full pl-3 pr-10 py-3 text-base border-slate-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg border bg-slate-50 shadow-sm cursor-pointer"
+            >
+              <option value="6">Grado 6°</option>
+              <option value="7">Grado 7°</option>
+              <option value="8">Grado 8°</option>
+              <option value="9">Grado 9°</option>
+              <option value="10">Grado 10°</option>
+              <option value="11" selected>Grado 11°</option>
+            </select>
+          </div>
+
+          <!-- Stats Panel -->
+          <div
+            class="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl shadow-lg p-6 text-white relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 rounded-full bg-white opacity-10"
+            ></div>
+
+            <h3 class="text-lg font-bold mb-1" id="statsTitle">
+              Resumen de Asignación
+            </h3>
+            <div class="mt-4 flex items-end justify-between">
+              <div>
+                <span class="text-indigo-200 text-sm font-medium block"
+                  >Activos para el Grado</span
+                >
+                <span class="text-4xl font-bold tracking-tight" id="activeCount"
+                  >0</span
+                >
+              </div>
+              <div class="text-right">
+                <span class="text-indigo-200 text-xs block"
+                  >Total en Banco</span
+                >
+                <span class="text-xl font-medium opacity-80" id="totalCount"
+                  >0</span
+                >
+              </div>
+            </div>
+            <div
+              class="mt-4 pt-4 border-t border-indigo-500/30 flex justify-between items-center"
+            >
+              <span class="text-xs text-indigo-200"
+                >Aplicado a:
+                <span class="text-white font-semibold" id="targetGradeLabel"
+                  >Grado 11°</span
+                ></span
+              >
+              <button
+                class="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded transition text-white"
+                onclick="resetGrade()"
+              >
+                Limpiar Grado
+              </button>
+            </div>
+          </div>
+
+          <!-- Legend -->
+          <div
+            class="bg-white rounded-xl shadow-sm border border-slate-200 p-5"
+          >
+            <h4 class="text-sm font-semibold text-slate-800 mb-3">
+              Leyenda Visual
+            </h4>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 opacity-60 flex items-center justify-center"
+                >
+                  <div class="w-4 h-4 bg-slate-300 rounded-full"></div>
+                </div>
+                <span class="text-sm text-slate-600"
+                  >Inactivo (Oculto para estudiantes)</span
+                >
+              </div>
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-lg bg-white border-2 border-emerald-500 flex items-center justify-center relative shadow-sm"
+                >
+                  <svg
+                    class="w-4 h-4 text-emerald-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <span class="text-sm text-slate-600 font-medium"
+                  >Cuadernillo Habilitado</span
+                >
+              </div>
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-lg bg-white border-2 border-blue-500 flex items-center justify-center relative shadow-sm"
+                >
+                  <svg
+                    class="w-4 h-4 text-blue-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                    ></path>
+                  </svg>
+                </div>
+                <span class="text-sm text-slate-600 font-medium"
+                  >Botón Web Activo</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-auto py-6">
+      <div class="max-w-7xl mx-auto px-4 text-center text-sm text-slate-400">
+        &copy; 2026 Plan UNICUS. Sistema de Gestión de Disponibilidad Académica.
+      </div>
+    </footer>
+
+    <script>
+      // --- Data Definitions ---
+      const iconSVGs = {
+        math: `<svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19L20 5"/><path d="M19 19H4V4H19L4 19Z"/><path d="M15 9L21 15M15 15L21 9"/></svg>`,
+        language: `<svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19C16.9706 19 21 15.4183 21 11C21 6.58172 16.9706 3 12 3C7.02944 3 3 6.58172 3 11C3 15.4183 7.02944 19 12 19Z"/><path d="M3 11H21"/><path d="M12 3C14.5 5.5 15.5 8.5 15.5 11C15.5 13.5 14.5 16.5 12 19C9.5 16.5 8.5 13.5 8.5 11C8.5 8.5 9.5 5.5 12 3Z"/></svg>`,
+        science: `<svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H15M10 3V10.5C10 10.5 8 14.5 8 16.5C8 17.6046 8.89543 18.5 10 18.5H14C15.1046 18.5 16 17.6046 16 16.5C16 14.5 14 10.5 14 10.5V3"/></svg>`,
+        social: `<svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12H22"/><path d="M12 2C14.5013 4.73835 15.9228 8.29203 16 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8 12C8.07725 8.29203 9.49872 4.73835 12 2Z"/></svg>`,
+        english: `<svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20V14"/></svg>`,
+        web: `<svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>`,
+        generic: `<svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 12h10M7 17h6"/></svg>`,
+      };
+
+      const themeColors = {
+        math: 'text-blue-600 bg-blue-50 border-blue-100',
+        language: 'text-purple-600 bg-purple-50 border-purple-100',
+        science: 'text-emerald-600 bg-emerald-50 border-emerald-100',
+        social: 'text-orange-600 bg-orange-50 border-orange-100',
+        english: 'text-red-600 bg-red-50 border-red-100',
+        web: 'text-sky-600 bg-sky-50 border-sky-100',
+        generic: 'text-slate-600 bg-slate-50 border-slate-100',
+      };
+
+      // Exam/Lab Definitions
+      const itemsDB = {
+        saber: [
+          {
+            id: 'saber_mat',
+            name: 'Matemáticas',
+            icon: 'math',
+            type: 'cuadernillo',
+            gradeApplicability: ['6', '7', '8', '9', '10', '11'],
+          },
+          {
+            id: 'saber_len',
+            name: 'Lenguaje y Literatura',
+            icon: 'language',
+            type: 'cuadernillo',
+            gradeApplicability: ['6', '7', '8', '9', '10', '11'],
+          },
+          {
+            id: 'saber_nat',
+            name: 'Ciencias Naturales',
+            icon: 'science',
+            type: 'cuadernillo',
+            gradeApplicability: ['6', '7', '8', '9', '10', '11'],
+          },
+          {
+            id: 'saber_soc',
+            name: 'Ciencias Sociales',
+            icon: 'social',
+            type: 'cuadernillo',
+            gradeApplicability: ['6', '7', '8', '9', '10', '11'],
+          },
+          {
+            id: 'saber_ing',
+            name: 'Inglés',
+            icon: 'english',
+            type: 'cuadernillo',
+            gradeApplicability: ['6', '7', '8', '9', '10', '11'],
+          },
+          {
+            id: 'saber_ciu',
+            name: 'Competencias Ciudadanas',
+            icon: 'social',
+            type: 'cuadernillo',
+            gradeApplicability: ['9', '11'],
+          },
+        ],
+        preunal: [
+          {
+            id: 'preu_mat',
+            name: 'Razonamiento Cuantitativo',
+            icon: 'math',
+            type: 'cuadernillo',
+            gradeApplicability: ['10', '11'],
+          },
+          {
+            id: 'preu_crit',
+            name: 'Lectura Crítica',
+            icon: 'language',
+            type: 'cuadernillo',
+            gradeApplicability: ['10', '11'],
+          },
+          {
+            id: 'preu_soc',
+            name: 'Sociales y Ciudadanas',
+            icon: 'social',
+            type: 'cuadernillo',
+            gradeApplicability: ['10', '11'],
+          },
+          {
+            id: 'preu_nat',
+            name: 'Ciencias Naturales',
+            icon: 'science',
+            type: 'cuadernillo',
+            gradeApplicability: ['10', '11'],
+          },
+          {
+            id: 'preu_ing',
+            name: 'English Proficiency',
+            icon: 'english',
+            type: 'cuadernillo',
+            gradeApplicability: ['10', '11'],
+          },
+        ],
+        laboratorios: [
+          {
+            id: 'lab_fis',
+            name: 'Simulador Física',
+            icon: 'web',
+            type: 'web',
+            url: '#sim-fisica',
+            gradeApplicability: ['10', '11'],
+          },
+          {
+            id: 'lab_quim',
+            name: 'Lab. Virtual Química',
+            icon: 'web',
+            type: 'web',
+            url: '#sim-quimica',
+            gradeApplicability: ['10', '11'],
+          },
+          {
+            id: 'lab_bio',
+            name: 'Microscopía Virtual',
+            icon: 'web',
+            type: 'web',
+            url: '#sim-biologia',
+            gradeApplicability: ['9', '10', '11'],
+          },
+          {
+            id: 'lab_geo',
+            name: 'Mapas Interactivos',
+            icon: 'web',
+            type: 'web',
+            url: '#sim-geografia',
+            gradeApplicability: ['6', '7', '8', '9', '10', '11'],
+          },
+        ],
+      };
+
+      // State
+      let state = {
+        activeTab: 'saber',
+        activeGrade: '11',
+        assignments: {}, // Key: `${itemId}_${grade}`, Value: boolean
+        searchQuery: '',
+      };
+
+      // --- Functions ---
+
+      function switchTab(tabName) {
+        state.activeTab = tabName;
+
+        document.querySelectorAll('.tab-btn').forEach((btn) => {
+          const isActive = btn.dataset.tab === tabName;
+          btn.className = `tab-btn whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${
+            isActive ? 'tab-active' : 'tab-inactive'
+          }`;
+        });
+
+        // Handle search bar visibility: Only visible for Laboratorios
+        const searchContainer = document.getElementById('searchContainer');
+        if (tabName === 'laboratorios') {
+          searchContainer.style.display = 'block';
+        } else {
+          searchContainer.style.display = 'none';
+          state.searchQuery = '';
+          document.getElementById('searchInput').value = '';
+        }
+
+        // Update UI hints based on tab
+        const bankTitle = document.getElementById('bankTitle');
+        const gradeHint = document.getElementById('gradeHint');
+        const statsTitle = document.getElementById('statsTitle');
+
+        if (tabName === 'laboratorios') {
+          bankTitle.innerHTML = `<svg class="w-5 h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Banco de Simulaciones Web`;
+          gradeHint.textContent =
+            'Seleccione el grado para habilitar los botones de acceso a simulaciones.';
+          statsTitle.textContent = 'Resumen de Accesos Web';
+        } else {
+          bankTitle.innerHTML = `<svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg> Banco de Cuadernillos`;
+          gradeHint.textContent =
+            'Seleccione el grado para habilitar los cuadernillos en el banco.';
+          statsTitle.textContent = 'Resumen de Asignación';
+        }
+
+        renderItems();
+        updateStats();
+      }
+
+      function changeGrade(grade) {
+        state.activeGrade = grade;
+        updateGradeLabel();
+        renderItems();
+        updateStats();
+      }
+
+      function toggleItem(itemId) {
+        const key = `${itemId}_${state.activeGrade}`;
+        state.assignments[key] = !state.assignments[key];
+        renderItems();
+        updateStats();
+      }
+
+      function resetGrade() {
+        Object.keys(state.assignments).forEach((key) => {
+          if (key.endsWith(`_${state.activeGrade}`)) {
+            delete state.assignments[key];
+          }
+        });
+        renderItems();
+        updateStats();
+      }
+
+      function updateGradeLabel() {
+        document.getElementById('targetGradeLabel').textContent =
+          `Grado ${state.activeGrade}°`;
+      }
+
+      function updateStats() {
+        const currentItems = itemsDB[state.activeTab].filter((e) =>
+          e.gradeApplicability.includes(state.activeGrade)
+        );
+        const totalCount = currentItems.length;
+        let activeCount = 0;
+
+        currentItems.forEach((e) => {
+          if (state.assignments[`${e.id}_${state.activeGrade}`]) {
+            activeCount++;
+          }
+        });
+
+        document.getElementById('activeCount').textContent = activeCount;
+        document.getElementById('totalCount').textContent = totalCount;
+        document.getElementById('examCountDisplay').textContent =
+          `${totalCount} elementos disponibles`;
+      }
+
+      function filterItems(items) {
+        if (!state.searchQuery) return items;
+        const q = state.searchQuery.toLowerCase();
+        return items.filter(
+          (e) =>
+            e.name.toLowerCase().includes(q) || e.id.toLowerCase().includes(q)
+        );
+      }
+
+      function renderItems() {
+        const grid = document.getElementById('examGrid');
+        grid.innerHTML = '';
+
+        let categoryItems = itemsDB[state.activeTab] || [];
+        categoryItems = categoryItems.filter((e) =>
+          e.gradeApplicability.includes(state.activeGrade)
+        );
+        categoryItems = filterItems(categoryItems);
+
+        const isWebTab = state.activeTab === 'laboratorios';
+
+        if (categoryItems.length === 0) {
+          grid.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-12 text-center opacity-60">
+                        <svg class="w-16 h-16 text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="text-slate-500">No se encontraron elementos para este grado o búsqueda.</p>
+                    </div>
+                `;
+          return;
+        }
+
+        categoryItems.forEach((item) => {
+          const key = `${item.id}_${state.activeGrade}`;
+          const isEnabled = !!state.assignments[key];
+
+          const card = document.createElement('div');
+          const activeClass = isWebTab
+            ? 'card-enabled-web'
+            : 'card-enabled-exam';
+          card.className = `exam-card relative rounded-xl flex flex-col items-center justify-center p-4 h-40 ${
+            isEnabled ? activeClass : 'card-disabled'
+          }`;
+          card.onclick = () => toggleItem(item.id);
+
+          const colorClass = themeColors[item.icon] || themeColors['generic'];
+          const iconContainerClass = isEnabled
+            ? `p-3 rounded-xl border ${colorClass}`
+            : `p-3 rounded-xl border bg-white border-slate-100 text-slate-300`;
+
+          const badgeContent = isWebTab
+            ? `<div class="status-badge status-badge-web absolute top-2 right-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">🌐 WEB</div>`
+            : `<div class="status-badge status-badge-exam absolute top-2 right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">✅ PDF</div>`;
+
+          const statusText = isEnabled
+            ? isWebTab
+              ? 'Enlace Activo'
+              : 'Habilitado'
+            : 'Inactivo';
+
+          card.innerHTML = `
+                    ${badgeContent}
+                    <div class="${iconContainerClass} transition-all duration-300">
+                        ${iconSVGs[item.icon]}
+                    </div>
+
+                    <div class="mt-3 text-center">
+                        <p class="text-sm font-semibold leading-tight ${
+                          isEnabled ? 'text-slate-800' : 'text-slate-400'
+                        }">${item.name}</p>
+                        <p class="text-xs mt-1 ${
+                          isEnabled
+                            ? isWebTab
+                              ? 'text-sky-500 font-medium'
+                              : 'text-emerald-500 font-medium'
+                            : 'text-slate-300'
+                        }">
+                            ${statusText}
+                        </p>
+                    </div>
+                `;
+
+          grid.appendChild(card);
+        });
+      }
+
+      // --- Event Listeners ---
+      document
+        .getElementById('gradeSelector')
+        .addEventListener('change', (e) => {
+          changeGrade(e.target.value);
+        });
+
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        state.searchQuery = e.target.value;
+        renderItems();
+      });
+
+      // --- Init ---
+      // Pre-assign some defaults for visual demo
+      state.assignments['saber_mat_11'] = true;
+      state.assignments['saber_nat_11'] = true;
+
+      // Initialize UI
+      switchTab('saber');
+      changeGrade('11');
+      updateGradeLabel();
+    </script>
+  </body>
+</html>

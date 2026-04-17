@@ -1,0 +1,1465 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestor de Exámenes - Plan UNICUS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/fontsource-inter@4.0.0/latin.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .tab-active {
+        border-bottom: 3px solid #4f46e5;
+        color: #4f46e5;
+        font-weight: 600;
+      }
+      .tab-inactive {
+        border-bottom: 3px solid transparent;
+        color: #6b7280;
+      }
+      .tab-inactive:hover {
+        color: #374151;
+        border-bottom-color: #d1d5db;
+      }
+
+      /* Card Transitions */
+      .exam-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        user-select: none;
+      }
+      .exam-card:hover {
+        transform: translateY(-3px);
+        box-shadow:
+          0 10px 20px -5px rgba(0, 0, 0, 0.1),
+          0 6px 8px -4px rgba(0, 0, 0, 0.05);
+      }
+      .card-disabled {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        opacity: 0.85;
+      }
+      .card-enabled-exam {
+        background-color: #ffffff;
+        border: 2px solid #10b981;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+        z-index: 10;
+      }
+      .card-enabled-web {
+        background-color: #ffffff;
+        border: 2px solid #3b82f6;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+        z-index: 10;
+      }
+
+      /* Custom Scrollbar */
+      .scroll-area::-webkit-scrollbar {
+        width: 6px;
+      }
+      .scroll-area::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+      }
+      .scroll-area::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      .scroll-area::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* Origin Filter Pills */
+      .pill {
+        transition: all 0.2s;
+      }
+      .pill-active {
+        background-color: #4f46e5;
+        color: white;
+        border-color: #4f46e5;
+      }
+      .pill-inactive {
+        background-color: white;
+        color: #64748b;
+        border-color: #e2e8f0;
+      }
+      .pill-inactive:hover {
+        border-color: #94a3b8;
+        background-color: #f8fafc;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in {
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      /* Tooltip */
+      .tooltip {
+        position: relative;
+      }
+      .tooltip-content {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1f2937;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+        z-index: 50;
+        margin-bottom: 8px;
+      }
+      .tooltip-content::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: #1f2937;
+      }
+      .tooltip:hover .tooltip-content {
+        opacity: 1;
+      }
+
+      /* Progress Bar */
+      .progress-bar {
+        transition: width 0.5s ease-out;
+      }
+
+      /* Selection Mode */
+      .selection-mode {
+        background-color: #eff6ff !important;
+        border-color: #3b82f6 !important;
+      }
+      .selection-checkbox {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+
+      /* Component Badge */
+      .component-badge {
+        background-color: #4f46e5;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 4px;
+        display: inline-block;
+        margin-top: 4px;
+      }
+
+      /* Save Button Animation */
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      .pulse-once {
+        animation: pulse 0.5s ease-in-out;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 50;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+      }
+      .modal-content {
+        background-color: white;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+      .modal.show .modal-content {
+        transform: scale(1);
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 p-2 rounded-lg text-white">
+              <i class="fas fa-clipboard-list text-xl"></i>
+            </div>
+            <div>
+              <h1 class="text-lg font-bold text-slate-900 leading-tight">
+                Plan UNICUS
+              </h1>
+              <p class="text-xs text-slate-500 font-medium">
+                Banco General Flexible
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <span
+              class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full font-medium border border-indigo-200"
+            >
+              <i class="fas fa-user-shield mr-1"></i>Admin
+            </span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      <!-- Header -->
+      <div class="mb-8 fade-in">
+        <h2 class="text-2xl font-bold text-slate-900">
+          Asignación Flexible de Exámenes
+        </h2>
+        <p class="text-slate-500 mt-1">
+          Seleccione un
+          <span class="text-indigo-600 font-medium">Grado Destino</span>, busque
+          cuadernillos de
+          <span class="text-indigo-600 font-medium">cualquier origen</span> en
+          el banco y actívelos.
+        </p>
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="border-b border-slate-200 mb-6 fade-in">
+        <nav class="-mb-px flex space-x-8" id="categoryTabs">
+          <button
+            onclick="switchTab('saber')"
+            class="tab-btn whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm tab-active"
+            data-tab="saber"
+          >
+            <i class="fas fa-graduation-cap mr-2"></i>Pruebas Saber
+          </button>
+          <button
+            onclick="switchTab('preunal')"
+            class="tab-btn whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm tab-inactive"
+            data-tab="preunal"
+          >
+            <i class="fas fa-university mr-2"></i>Pre-UNAL
+          </button>
+          <button
+            onclick="switchTab('laboratorios')"
+            class="tab-btn whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm tab-inactive"
+            data-tab="laboratorios"
+          >
+            <i class="fas fa-flask mr-2"></i>Laboratorios / Simulaciones
+          </button>
+        </nav>
+      </div>
+
+      <!-- Split Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left Column: Wide Bank (8 cols) -->
+        <div class="lg:col-span-8">
+          <div
+            class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full fade-in"
+          >
+            <!-- Bank Header with Search and Origin Filter -->
+            <div class="bg-slate-50 border-b border-slate-200 p-4 space-y-4">
+              <div class="flex justify-between items-center">
+                <h3
+                  class="font-semibold text-slate-700 flex items-center gap-2"
+                  id="bankTitle"
+                >
+                  <i class="fas fa-book text-indigo-500"></i>
+                  Banco General
+                </h3>
+                <div class="flex items-center gap-3">
+                  <span class="text-xs text-slate-400">
+                    Mostrando cuadernillos de todos los grados
+                  </span>
+                  <button
+                    onclick="toggleSelectionMode()"
+                    id="selectionToggle"
+                    class="text-sm text-indigo-600 hover:text-indigo-800 font-medium hidden"
+                  >
+                    <i class="fas fa-check-square mr-1"></i>Seleccionar
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-4">
+                <!-- Search -->
+                <div class="relative flex-grow">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <i class="fas fa-search h-4 w-4 text-slate-400"></i>
+                  </div>
+                  <input
+                    type="text"
+                    id="searchInput"
+                    class="block w-full pl-10 pr-10 py-2 border border-slate-300 rounded-lg leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm shadow-sm"
+                    placeholder="Buscar por nombre o área (ej. Matemáticas 6)..."
+                  />
+                  <button
+                    onclick="clearSearch()"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                  >
+                    <i class="fas fa-times-circle"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Origin Grade Filter -->
+              <div>
+                <label
+                  class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block"
+                  >Filtrar por Grado de Origen</label
+                >
+                <div class="flex flex-wrap gap-2" id="originFilters">
+                  <!-- Generated by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid Area -->
+            <div
+              id="examGrid"
+              class="p-4 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 h-[500px] overflow-y-auto scroll-area bg-slate-50/50"
+            >
+              <!-- Cards injected via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Assignment Control (4 cols) -->
+        <div class="lg:col-span-4 space-y-6 fade-in">
+          <!-- Grade Selector Panel (Target) -->
+          <div
+            class="bg-white rounded-xl shadow-sm border border-slate-200 p-6"
+          >
+            <h3 class="text-lg font-bold text-slate-800 mb-1">
+              Asignación Focalizada
+            </h3>
+            <p class="text-sm text-slate-500 mb-4">
+              Estos estudiantes verán los exámenes seleccionados en el banco.
+            </p>
+
+            <label
+              class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2"
+              >Grado Destino</label
+            >
+            <select
+              id="gradeSelector"
+              class="block w-full pl-3 pr-10 py-3 text-base border-slate-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg border bg-indigo-50 shadow-sm cursor-pointer font-medium text-indigo-900"
+            >
+              <option value="6">Grado 6°</option>
+              <option value="7">Grado 7°</option>
+              <option value="8">Grado 8°</option>
+              <option value="9">Grado 9°</option>
+              <option value="10">Grado 10°</option>
+              <option value="11" selected>Grado 11°</option>
+            </select>
+          </div>
+
+          <!-- Stats Panel -->
+          <div
+            class="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl shadow-lg p-6 text-white relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 rounded-full bg-white opacity-10"
+            ></div>
+
+            <h3 class="text-lg font-bold mb-1">Estado del Grado</h3>
+            <div class="mt-4 flex items-end justify-between">
+              <div>
+                <span class="text-indigo-200 text-sm font-medium block"
+                  >Exámenes Habilitados</span
+                >
+                <span class="text-4xl font-bold tracking-tight" id="activeCount"
+                  >0</span
+                >
+              </div>
+              <div class="text-right">
+                <span class="text-indigo-200 text-xs block">Disponibles</span>
+                <span class="text-xl font-medium opacity-80" id="totalCount"
+                  >0</span
+                >
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mt-4">
+              <div class="w-full bg-indigo-700 rounded-full h-2">
+                <div
+                  class="progress-bar bg-white h-2 rounded-full"
+                  id="progressBar"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+
+            <div
+              class="mt-4 pt-4 border-t border-indigo-500/30 flex justify-between items-center"
+            >
+              <span class="text-xs text-indigo-200"
+                >Aplicado a:
+                <span class="text-white font-semibold" id="targetGradeLabel"
+                  >Grado 11°</span
+                ></span
+              >
+              <button
+                class="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded transition text-white"
+                onclick="resetGrade()"
+              >
+                <i class="fas fa-eraser mr-1"></i>Limpiar Grado
+              </button>
+            </div>
+          </div>
+
+          <!-- Area Breakdown -->
+          <div
+            class="bg-white rounded-xl shadow-sm border border-slate-200 p-5"
+          >
+            <h4 class="text-sm font-semibold text-slate-800 mb-3">
+              Desglose por Área
+            </h4>
+            <div id="areaBreakdown" class="space-y-3">
+              <!-- Generated by JS -->
+            </div>
+          </div>
+
+          <!-- Save Changes Button -->
+          <div
+            class="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 rounded-full bg-white opacity-10"
+            ></div>
+
+            <h3 class="text-lg font-bold mb-3">Guardar Cambios</h3>
+            <p class="text-sm text-emerald-100 mb-4">
+              Guarda todas las asignaciones realizadas para el grado actual.
+            </p>
+
+            <button
+              id="saveButton"
+              onclick="saveChanges()"
+              class="w-full bg-white text-emerald-600 hover:bg-emerald-50 font-bold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2 shadow-md"
+            >
+              <i class="fas fa-save"></i>
+              Guardar Asignaciones
+            </button>
+
+            <div
+              id="saveStatus"
+              class="mt-3 text-center text-sm opacity-0 transition-opacity duration-300"
+            >
+              <!-- Status message will be inserted here -->
+            </div>
+          </div>
+
+          <!-- Legend -->
+          <div
+            class="bg-white rounded-xl shadow-sm border border-slate-200 p-5"
+          >
+            <h4 class="text-sm font-semibold text-slate-800 mb-3">Leyenda</h4>
+            <div class="space-y-3">
+              <div class="flex items-start gap-3">
+                <div
+                  class="mt-0.5 w-8 h-8 rounded-lg bg-white border-2 border-emerald-500 flex items-center justify-center shadow-sm"
+                >
+                  <i class="fas fa-check text-emerald-500 text-sm"></i>
+                </div>
+                <div>
+                  <span class="text-sm font-medium text-slate-700 block"
+                    >Asignado</span
+                  >
+                  <span class="text-xs text-slate-500"
+                    >Visible para el grado destino.</span
+                  >
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div
+                  class="mt-0.5 w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center opacity-60"
+                >
+                  <div class="w-4 h-4 bg-slate-300 rounded-full"></div>
+                </div>
+                <div>
+                  <span class="text-sm font-medium text-slate-700 block"
+                    >Inactivo</span
+                  >
+                  <span class="text-xs text-slate-500"
+                    >No visible para el grado destino.</span
+                  >
+                </div>
+              </div>
+              <div
+                class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500 leading-relaxed"
+              >
+                <p class="mb-1">
+                  <strong>Nota:</strong> Puede asignar cuadernillos de
+                  <span class="text-indigo-600 font-bold">Grado Origen</span>
+                  (ej. 6°) a estudiantes de
+                  <span class="text-indigo-600 font-bold">Grado Destino</span>
+                  (ej. 11°) para refuerzo o evaluación diferenciada.
+                </p>
+                <p class="mb-1">
+                  <strong>Pre-UNAL:</strong> Solo disponible para grados 10° y
+                  11°. Cada componente tiene múltiples cuadernillos con
+                  preguntas diferentes.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Save Confirmation Modal -->
+    <div id="saveModal" class="modal">
+      <div class="modal-content max-w-md w-full mx-4">
+        <div class="text-center">
+          <div
+            class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4"
+          >
+            <i class="fas fa-check text-green-600 text-xl"></i>
+          </div>
+          <h3 class="text-lg font-medium text-slate-900 mb-2">
+            ¡Cambios guardados!
+          </h3>
+          <p class="text-sm text-slate-500 mb-6">
+            Las asignaciones para el Grado
+            <span id="savedGrade" class="font-semibold text-indigo-600"></span>
+            han sido guardadas exitosamente.
+          </p>
+          <button
+            onclick="closeSaveModal()"
+            class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-200"
+          >
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- Data Definitions ---
+      const iconSVGs = {
+        math: `<i class="fas fa-calculator text-2xl"></i>`,
+        language: `<i class="fas fa-language text-2xl"></i>`,
+        science: `<i class="fas fa-flask text-2xl"></i>`,
+        social: `<i class="fas fa-globe-americas text-2xl"></i>`,
+        english: `<i class="fas fa-language text-2xl"></i>`,
+        web: `<i class="fas fa-laptop-code text-2xl"></i>`,
+        generic: `<i class="fas fa-file-alt text-2xl"></i>`,
+      };
+
+      const themeColors = {
+        math: 'text-blue-600 bg-blue-50 border-blue-100',
+        language: 'text-purple-600 bg-purple-50 border-purple-100',
+        science: 'text-emerald-600 bg-emerald-50 border-emerald-100',
+        social: 'text-orange-600 bg-orange-50 border-orange-100',
+        english: 'text-red-600 bg-red-50 border-red-100',
+        web: 'text-sky-600 bg-sky-50 border-sky-100',
+        generic: 'text-slate-600 bg-slate-50 border-slate-100',
+      };
+
+      // Comprehensive Data for "Banco Amplio" with multiple booklets per grade/area
+      const itemsDB = [
+        // --- PRUEBAS SABER ---
+        // Grade 6 (Multiple Booklets)
+        {
+          id: 'mat_6_a',
+          name: 'Matemáticas - Cuadernillo A',
+          area: 'Matemáticas',
+          original_grade: '6',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'saber',
+        },
+        {
+          id: 'mat_6_b',
+          name: 'Matemáticas - Cuadernillo B',
+          area: 'Matemáticas',
+          original_grade: '6',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'saber',
+        },
+        {
+          id: 'len_6_a',
+          name: 'Lenguaje - Cuadernillo 1',
+          area: 'Lenguaje',
+          original_grade: '6',
+          type: 'cuadernillo',
+          icon: 'language',
+          category: 'saber',
+        },
+        {
+          id: 'len_6_b',
+          name: 'Lenguaje - Cuadernillo 2',
+          area: 'Lenguaje',
+          original_grade: '6',
+          type: 'cuadernillo',
+          icon: 'language',
+          category: 'saber',
+        },
+        {
+          id: 'nat_6',
+          name: 'Ciencias Naturales - Único',
+          area: 'Naturales',
+          original_grade: '6',
+          type: 'cuadernillo',
+          icon: 'science',
+          category: 'saber',
+        },
+        {
+          id: 'soc_6',
+          name: 'Ciencias Sociales - Único',
+          area: 'Sociales',
+          original_grade: '6',
+          type: 'cuadernillo',
+          icon: 'social',
+          category: 'saber',
+        },
+
+        // Grade 9 (Multiple Booklets)
+        {
+          id: 'mat_9_a',
+          name: 'Matemáticas - Cuadernillo A',
+          area: 'Matemáticas',
+          original_grade: '9',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'saber',
+        },
+        {
+          id: 'mat_9_b',
+          name: 'Matemáticas - Cuadernillo B',
+          area: 'Matemáticas',
+          original_grade: '9',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'saber',
+        },
+        {
+          id: 'mat_9_c',
+          name: 'Matemáticas - Cuadernillo C',
+          area: 'Matemáticas',
+          original_grade: '9',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'saber',
+        },
+        {
+          id: 'len_9',
+          name: 'Lenguaje - Cuadernillo Único',
+          area: 'Lenguaje',
+          original_grade: '9',
+          type: 'cuadernillo',
+          icon: 'language',
+          category: 'saber',
+        },
+        {
+          id: 'ciu_9',
+          name: 'Competencias Ciudadanas',
+          area: 'Ciudadanas',
+          original_grade: '9',
+          type: 'cuadernillo',
+          icon: 'social',
+          category: 'saber',
+        },
+
+        // Grade 11 (Multiple Booklets)
+        {
+          id: 'mat_11_a',
+          name: 'Matemáticas - Cuadernillo 1',
+          area: 'Matemáticas',
+          original_grade: '11',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'saber',
+        },
+        {
+          id: 'mat_11_b',
+          name: 'Matemáticas - Cuadernillo 2',
+          area: 'Matemáticas',
+          original_grade: '11',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'saber',
+        },
+        {
+          id: 'len_11',
+          name: 'Lectura Crítica',
+          area: 'Lenguaje',
+          original_grade: '11',
+          type: 'cuadernillo',
+          icon: 'language',
+          category: 'saber',
+        },
+        {
+          id: 'ing_11',
+          name: 'English - B1/B2',
+          area: 'Inglés',
+          original_grade: '11',
+          type: 'cuadernillo',
+          icon: 'english',
+          category: 'saber',
+        },
+        {
+          id: 'fil_11',
+          name: 'Filosofía - Lógica',
+          area: 'Filosofía',
+          original_grade: '11',
+          type: 'cuadernillo',
+          icon: 'social',
+          category: 'saber',
+        },
+
+        // --- PRE-UNAL (Solo para grados 10 y 11) ---
+        // Componente Razonamiento Cuantitativo
+        {
+          id: 'preu_mat_1',
+          name: 'Razonamiento Cuantitativo - Cuadernillo 1',
+          area: 'Matemáticas',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_mat_2',
+          name: 'Razonamiento Cuantitativo - Cuadernillo 2',
+          area: 'Matemáticas',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_mat_3',
+          name: 'Razonamiento Cuantitativo - Cuadernillo 3',
+          area: 'Matemáticas',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_mat_4',
+          name: 'Razonamiento Cuantitativo - Cuadernillo 4',
+          area: 'Matemáticas',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_mat_5',
+          name: 'Razonamiento Cuantitativo - Cuadernillo 5',
+          area: 'Matemáticas',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'math',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+
+        // Componente Lectura Crítica
+        {
+          id: 'preu_crit_1',
+          name: 'Lectura Crítica - Cuadernillo 1',
+          area: 'Lenguaje',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'language',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_crit_2',
+          name: 'Lectura Crítica - Cuadernillo 2',
+          area: 'Lenguaje',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'language',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_crit_3',
+          name: 'Lectura Crítica - Cuadernillo 3',
+          area: 'Lenguaje',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'language',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_crit_4',
+          name: 'Lectura Crítica - Cuadernillo 4',
+          area: 'Lenguaje',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'language',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+
+        // Componente Sociales y Ciudadanas
+        {
+          id: 'preu_soc_1',
+          name: 'Sociales y Ciudadanas - Cuadernillo 1',
+          area: 'Sociales',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'social',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_soc_2',
+          name: 'Sociales y Ciudadanas - Cuadernillo 2',
+          area: 'Sociales',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'social',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_soc_3',
+          name: 'Sociales y Ciudadanas - Cuadernillo 3',
+          area: 'Sociales',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'social',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_soc_4',
+          name: 'Sociales y Ciudadanas - Cuadernillo 4',
+          area: 'Sociales',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'social',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+
+        // Componente Ciencias Naturales
+        {
+          id: 'preu_nat_1',
+          name: 'Ciencias Naturales - Cuadernillo 1',
+          area: 'Naturales',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'science',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_nat_2',
+          name: 'Ciencias Naturales - Cuadernillo 2',
+          area: 'Naturales',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'science',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_nat_3',
+          name: 'Ciencias Naturales - Cuadernillo 3',
+          area: 'Naturales',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'science',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_nat_4',
+          name: 'Ciencias Naturales - Cuadernillo 4',
+          area: 'Naturales',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'science',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+        {
+          id: 'preu_nat_5',
+          name: 'Ciencias Naturales - Cuadernillo 5',
+          area: 'Naturales',
+          original_grade: 'Pre-Icfes',
+          type: 'cuadernillo',
+          icon: 'science',
+          category: 'preunal',
+          targetGrades: ['10', '11'],
+        },
+
+        // --- LABORATORIOS ---
+        {
+          id: 'lab_fis',
+          name: 'Simulador Física',
+          area: 'Física',
+          original_grade: 'General',
+          type: 'web',
+          icon: 'web',
+          category: 'laboratorios',
+        },
+        {
+          id: 'lab_quim',
+          name: 'Lab. Virtual Química',
+          area: 'Química',
+          original_grade: 'General',
+          type: 'web',
+          icon: 'web',
+          category: 'laboratorios',
+        },
+        {
+          id: 'lab_geo',
+          name: 'Mapas Interactivos',
+          area: 'Geografía',
+          original_grade: 'General',
+          type: 'web',
+          icon: 'web',
+          category: 'laboratorios',
+        },
+      ];
+
+      // State
+      let state = {
+        activeTab: 'saber',
+        activeGrade: '11', // Target Grade
+        assignments: {}, // Key: `${itemId}_${grade}`, Value: boolean
+        searchQuery: '',
+        originFilter: 'all', // 'all' or specific grade
+        selectionMode: false,
+        selectedItems: new Set(),
+      };
+
+      // --- Functions ---
+
+      function switchTab(tabName) {
+        state.activeTab = tabName;
+        state.selectionMode = false;
+        state.selectedItems.clear();
+        document.getElementById('selectionToggle').classList.add('hidden');
+
+        document.querySelectorAll('.tab-btn').forEach((btn) => {
+          const isActive = btn.dataset.tab === tabName;
+          btn.className = `tab-btn whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${
+            isActive ? 'tab-active' : 'tab-inactive'
+          }`;
+        });
+
+        // Reset filters
+        state.originFilter = 'all';
+        state.searchQuery = '';
+        document.getElementById('searchInput').value = '';
+
+        renderOriginFilters();
+        renderItems();
+        updateStats();
+        updateAreaBreakdown();
+      }
+
+      function changeGrade(grade) {
+        state.activeGrade = grade;
+        updateGradeLabel();
+        renderItems();
+        updateStats();
+        updateAreaBreakdown();
+      }
+
+      function toggleItem(itemId, event) {
+        event.stopPropagation();
+
+        if (state.selectionMode) {
+          const key = `${itemId}_${state.activeGrade}`;
+          if (state.selectedItems.has(key)) {
+            state.selectedItems.delete(key);
+          } else {
+            state.selectedItems.add(key);
+          }
+          renderItems();
+        } else {
+          const key = `${itemId}_${state.activeGrade}`;
+          state.assignments[key] = !state.assignments[key];
+          renderItems();
+          updateStats();
+          updateAreaBreakdown();
+        }
+      }
+
+      function toggleSelectionMode() {
+        state.selectionMode = !state.selectionMode;
+        state.selectedItems.clear();
+
+        const toggle = document.getElementById('selectionToggle');
+        if (state.selectionMode) {
+          toggle.innerHTML =
+            '<i class="fas fa-check-double mr-1"></i>Confirmar Selección';
+          toggle.classList.remove('text-indigo-600');
+          toggle.classList.add('text-green-600');
+        } else {
+          toggle.innerHTML =
+            '<i class="fas fa-check-square mr-1"></i>Seleccionar';
+          toggle.classList.add('text-indigo-600');
+          toggle.classList.remove('text-green-600');
+        }
+
+        renderItems();
+      }
+
+      function confirmSelection() {
+        state.selectedItems.forEach((key) => {
+          state.assignments[key] = true;
+        });
+
+        state.selectionMode = false;
+        state.selectedItems.clear();
+
+        const toggle = document.getElementById('selectionToggle');
+        toggle.innerHTML =
+          '<i class="fas fa-check-square mr-1"></i>Seleccionar';
+        toggle.classList.add('text-indigo-600');
+        toggle.classList.remove('text-green-600');
+        toggle.classList.add('hidden');
+
+        renderItems();
+        updateStats();
+        updateAreaBreakdown();
+      }
+
+      function resetGrade() {
+        Object.keys(state.assignments).forEach((key) => {
+          if (key.endsWith(`_${state.activeGrade}`)) {
+            delete state.assignments[key];
+          }
+        });
+        renderItems();
+        updateStats();
+        updateAreaBreakdown();
+      }
+
+      function setOriginFilter(grade) {
+        state.originFilter = grade;
+        renderOriginFilters();
+        renderItems();
+      }
+
+      function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        state.searchQuery = '';
+        renderItems();
+      }
+
+      function updateGradeLabel() {
+        document.getElementById('targetGradeLabel').textContent =
+          `Grado ${state.activeGrade}°`;
+      }
+
+      function updateStats() {
+        const filteredItems = getFilteredItems();
+        const totalCount = filteredItems.length;
+        let activeCount = 0;
+
+        filteredItems.forEach((e) => {
+          if (state.assignments[`${e.id}_${state.activeGrade}`]) {
+            activeCount++;
+          }
+        });
+
+        // Animate count changes
+        animateValue(
+          'activeCount',
+          parseInt(document.getElementById('activeCount').textContent),
+          activeCount,
+          500
+        );
+        document.getElementById('totalCount').textContent = totalCount;
+
+        // Update progress bar
+        const progress = totalCount > 0 ? (activeCount / totalCount) * 100 : 0;
+        document.getElementById('progressBar').style.width = `${progress}%`;
+      }
+
+      function animateValue(id, start, end, duration) {
+        const element = document.getElementById(id);
+        const range = end - start;
+        const increment = end > start ? 1 : -1;
+        const stepTime = Math.abs(Math.floor(duration / range));
+        let current = start;
+
+        const timer = setInterval(() => {
+          current += increment;
+          element.textContent = current;
+          if (current === end) {
+            clearInterval(timer);
+          }
+        }, stepTime);
+      }
+
+      function updateAreaBreakdown() {
+        const container = document.getElementById('areaBreakdown');
+        container.innerHTML = '';
+
+        const areas = {};
+        const filteredItems = getFilteredItems();
+
+        filteredItems.forEach((item) => {
+          if (!areas[item.area]) {
+            areas[item.area] = { total: 0, active: 0 };
+          }
+          areas[item.area].total++;
+
+          if (state.assignments[`${item.id}_${state.activeGrade}`]) {
+            areas[item.area].active++;
+          }
+        });
+
+        Object.entries(areas).forEach(([area, data]) => {
+          const percentage =
+            data.total > 0 ? (data.active / data.total) * 100 : 0;
+          const areaItem = document.createElement('div');
+          areaItem.className = 'fade-in';
+          areaItem.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-medium text-slate-600">${area}</span>
+                        <span class="text-xs font-bold text-slate-800">${data.active}/${data.total}</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5">
+                        <div class="bg-indigo-600 h-1.5 rounded-full" style="width: ${percentage}%"></div>
+                    </div>
+                `;
+          container.appendChild(areaItem);
+        });
+      }
+
+      function getFilteredItems() {
+        let items = itemsDB.filter((e) => e.category === state.activeTab);
+
+        // Filter by Origin Grade
+        if (state.originFilter !== 'all') {
+          items = items.filter((e) => e.original_grade === state.originFilter);
+        }
+
+        // Filter by Search
+        if (state.searchQuery) {
+          const q = state.searchQuery.toLowerCase();
+          items = items.filter(
+            (e) =>
+              e.name.toLowerCase().includes(q) ||
+              e.area.toLowerCase().includes(q)
+          );
+        }
+
+        // Filter by target grade for Pre-UNAL
+        if (state.activeTab === 'preunal') {
+          items = items.filter((e) => {
+            if (e.targetGrades) {
+              return e.targetGrades.includes(state.activeGrade);
+            }
+            return true;
+          });
+        }
+
+        return items;
+      }
+
+      function renderOriginFilters() {
+        const container = document.getElementById('originFilters');
+        container.innerHTML = '';
+
+        // Only grades 6-11 (Pre-UNAL and Web/Sim removed per request)
+        const grades = ['6', '7', '8', '9', '10', '11'];
+
+        // "All" pill
+        const allPill = document.createElement('button');
+        allPill.className = `pill px-3 py-1 text-xs font-bold rounded-full border ${
+          state.originFilter === 'all' ? 'pill-active' : 'pill-inactive'
+        }`;
+        allPill.textContent = 'Todos';
+        allPill.onclick = () => setOriginFilter('all');
+        container.appendChild(allPill);
+
+        grades.forEach((grade) => {
+          const pill = document.createElement('button');
+          pill.className = `pill px-3 py-1 text-xs font-bold rounded-full border ${
+            state.originFilter === grade ? 'pill-active' : 'pill-inactive'
+          }`;
+          pill.textContent = `${grade}°`;
+          pill.onclick = () => setOriginFilter(grade);
+          container.appendChild(pill);
+        });
+      }
+
+      function renderItems() {
+        const grid = document.getElementById('examGrid');
+        grid.innerHTML = '';
+
+        const filteredItems = getFilteredItems();
+        const isWebTab = state.activeTab === 'laboratorios';
+
+        if (filteredItems.length === 0) {
+          grid.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-12 text-center opacity-60">
+                        <i class="fas fa-search text-4xl text-slate-300 mb-4"></i>
+                        <p class="text-slate-500">No se encontraron cuadernillos.</p>
+                    </div>
+                `;
+          return;
+        }
+
+        filteredItems.forEach((item) => {
+          const key = `${item.id}_${state.activeGrade}`;
+          const isEnabled = !!state.assignments[key];
+          const isSelected =
+            state.selectionMode && state.selectedItems.has(key);
+
+          const card = document.createElement('div');
+          const activeClass = isWebTab
+            ? 'card-enabled-web'
+            : 'card-enabled-exam';
+          card.className = `exam-card relative rounded-xl flex flex-col items-center justify-center p-4 h-44 ${
+            isEnabled ? activeClass : 'card-disabled'
+          } ${state.selectionMode ? 'selection-mode' : ''}`;
+
+          if (state.selectionMode) {
+            card.onclick = () => toggleItem(item.id, event);
+          } else {
+            card.onclick = () => toggleItem(item.id, event);
+          }
+
+          const colorClass = themeColors[item.icon] || themeColors['generic'];
+          const iconContainerClass = isEnabled
+            ? `p-3 rounded-xl border ${colorClass}`
+            : `p-3 rounded-xl border bg-white border-slate-100 text-slate-300`;
+
+          const badgeContent = isWebTab
+            ? `<div class="absolute top-2 right-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">WEB</div>`
+            : `<div class="absolute top-2 right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">PDF</div>`;
+
+          // Selection Checkbox
+          const checkbox = state.selectionMode
+            ? `
+                    <input type="checkbox" class="selection-checkbox" ${
+                      isSelected ? 'checked' : ''
+                    } onclick="toggleItem('${item.id}', event)">
+                `
+            : '';
+
+          // Origin Grade Tag
+          let originBadge = '';
+          if (item.original_grade === 'Pre-Icfes') {
+            originBadge = `<span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-1.5 py-0.5 rounded">Pre-UNAL</span>`;
+          } else if (item.original_grade === 'General') {
+            originBadge = `<span class="bg-sky-100 text-sky-700 text-[10px] font-bold px-1.5 py-0.5 rounded">General</span>`;
+          } else {
+            originBadge = `<span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-1.5 py-0.5 rounded">Grado ${item.original_grade}°</span>`;
+          }
+
+          // Component Badge for Pre-UNAL
+          let componentBadge = '';
+          if (item.original_grade === 'Pre-Icfes') {
+            componentBadge = `<span class="component-badge">${item.area}</span>`;
+          }
+
+          // Cross-grade warning logic
+          let crossGradeWarning = '';
+          if (
+            isEnabled &&
+            item.original_grade !== state.activeGrade &&
+            item.original_grade !== 'Pre-Icfes' &&
+            item.original_grade !== 'General'
+          ) {
+            crossGradeWarning = `<div class="tooltip mt-1 text-[9px] text-indigo-500 font-bold uppercase tracking-wide">Refuerzo/Adelanto<div class="tooltip-content">Asignado desde Grado ${item.original_grade}°</div></div>`;
+          }
+
+          const statusText = isEnabled
+            ? isWebTab
+              ? 'Acceso Activo'
+              : 'Asignado'
+            : 'No Asignado';
+
+          card.innerHTML = `
+                    ${badgeContent}
+                    ${checkbox}
+                    <div class="${iconContainerClass} transition-all duration-300">
+                        ${iconSVGs[item.icon]}
+                    </div>
+
+                    <div class="mt-3 text-center w-full">
+                        <div class="flex justify-center mb-1 gap-1">
+                             ${originBadge}
+                        </div>
+                        <p class="text-sm font-semibold leading-tight ${
+                          isEnabled ? 'text-slate-800' : 'text-slate-500'
+                        }">${item.name}</p>
+                        ${componentBadge}
+                        ${crossGradeWarning}
+                        <p class="text-xs mt-1 ${
+                          isEnabled
+                            ? isWebTab
+                              ? 'text-sky-500 font-medium'
+                              : 'text-emerald-500 font-medium'
+                            : 'text-slate-300'
+                        }">
+                            ${statusText}
+                        </p>
+                    </div>
+                `;
+
+          grid.appendChild(card);
+        });
+
+        // Show selection toggle if in selection mode
+        if (state.selectionMode) {
+          document.getElementById('selectionToggle').classList.remove('hidden');
+          document.getElementById('selectionToggle').onclick = confirmSelection;
+        }
+      }
+
+      function saveChanges() {
+        const saveButton = document.getElementById('saveButton');
+        const saveStatus = document.getElementById('saveStatus');
+
+        // Add pulse animation
+        saveButton.classList.add('pulse-once');
+        setTimeout(() => saveButton.classList.remove('pulse-once'), 500);
+
+        // Show saving status
+        saveStatus.innerHTML =
+          '<i class="fas fa-spinner fa-spin mr-2"></i>Guardando...';
+        saveStatus.classList.remove('opacity-0');
+        saveStatus.classList.add('opacity-100');
+
+        // Simulate saving process
+        setTimeout(() => {
+          // In a real application, this would send data to a server
+          const dataToSave = {
+            grade: state.activeGrade,
+            assignments: state.assignments,
+            timestamp: new Date().toISOString(),
+          };
+
+          console.log('Saving data:', dataToSave);
+
+          // Show success status
+          saveStatus.innerHTML =
+            '<i class="fas fa-check-circle mr-2"></i>¡Guardado exitosamente!';
+          saveStatus.classList.remove('text-yellow-200');
+          saveStatus.classList.add('text-emerald-200');
+
+          // Show modal
+          document.getElementById('savedGrade').textContent =
+            `Grado ${state.activeGrade}°`;
+          const modal = document.getElementById('saveModal');
+          modal.classList.add('show');
+
+          // Hide status after a delay
+          setTimeout(() => {
+            saveStatus.classList.remove('opacity-100');
+            saveStatus.classList.add('opacity-0');
+            saveStatus.innerHTML = '';
+          }, 3000);
+        }, 1500);
+      }
+
+      function closeSaveModal() {
+        const modal = document.getElementById('saveModal');
+        modal.classList.remove('show');
+      }
+
+      // --- Event Listeners ---
+      document
+        .getElementById('gradeSelector')
+        .addEventListener('change', (e) => {
+          changeGrade(e.target.value);
+        });
+
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        state.searchQuery = e.target.value;
+        renderItems();
+        updateStats();
+        updateAreaBreakdown();
+      });
+
+      // Close modal when clicking outside
+      document.getElementById('saveModal').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) {
+          closeSaveModal();
+        }
+      });
+
+      // --- Init ---
+      // Pre-assign some defaults
+      state.assignments['mat_6_a_11'] = true; // Grade 11 gets Grade 6 Math A (Cross-grade)
+      state.assignments['mat_11_a_11'] = true; // Grade 11 gets Grade 11 Math A (Normal)
+      state.assignments['lab_fis_11'] = true;
+
+      switchTab('saber');
+      changeGrade('11');
+      updateGradeLabel();
+
+      // Add fade-in animation to elements
+      document.querySelectorAll('.fade-in').forEach((el, index) => {
+        el.style.animationDelay = `${index * 0.1}s`;
+      });
+    </script>
+  </body>
+</html>
