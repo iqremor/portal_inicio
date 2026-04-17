@@ -1,5 +1,34 @@
 # Historial de Cambios
 
+## Sesión 38 - 16 de abril de 2026
+
+### Objetivos de la sesión:
+
+- Sincronizar y versionar los nuevos prototipos funcionales del **Plan UNICUS**.
+- Asegurar el cumplimiento de estándares de calidad (Linting/Prettier) en los archivos de prototipo.
+
+### Estado inicial:
+
+- **Calidad de código:** Validada y estable tras la Sesión 37.
+- **Funcionalidad:** Planes NATURA y FOCUS completados. Inicio de la integración del Plan UNICUS.
+
+### Acciones Realizadas:
+
+- **Prototipado (Plan UNICUS):**
+  - Incorporación de `Gestor de Exámenes - Plan UNICUS_v4.html` y `v5.html`.
+  - Incorporación de `exam_manager_unicus_v3.html`.
+  - Validación de los archivos mediante _hooks_ de pre-commit (Black, Prettier, Trailing Whitespace, End of File Fixer).
+- **Gestión de Versiones:** Realización del commit `proto: agregar prototipos v3, v4 y v5 para el gestor de exámenes UNICUS` en la rama `develop_backend`.
+
+### Estado final:
+
+- **Calidad de código:** 100% validado por formateadores automáticos.
+- **Funcionalidad:** Prototipos de la interfaz de asignación flexible (UNICUS) disponibles en el directorio `prototype/`.
+
+### Finalización: jueves, 16 de abril de 2026
+
+---
+
 ## Sesión 37 - 15 de abril de 2026
 
 ### Objetivos de la sesión:
