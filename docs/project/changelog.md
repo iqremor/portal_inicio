@@ -1,5 +1,27 @@
 # Historial de Cambios
 
+## Sesión 39 - 18 de abril de 2026
+
+### Objetivos de la sesión:
+
+- Sincronizar y validar los cambios locales pendientes de la Fase 2 del **Plan UNICUS**.
+- Refinar la interfaz de **Banco Centralizado** en el panel administrativo.
+- Iniciar la **Fase 3 del Plan UNICUS**: Filtrado dinámico en los lobbies del estudiante (Dashboard y Simulacros).
+
+### Estado inicial:
+
+- **Calidad de código:** Estable, con cambios locales sin commitear en el backend y frontend.
+- **Funcionalidad:** Prototipos UNICUS v3-v5 disponibles. Fase 2 de UNICUS iniciada en el código fuente.
+- **Git:** Rama `develop_backend` con 2 commits por delante del origen.
+
+### Acciones Realizadas: [PENDIENTE]
+
+### Estado final: [PENDIENTE]
+
+### Finalización: [PENDIENTE]
+
+---
+
 ## Sesión 38 - 16 de abril de 2026
 
 ### Objetivos de la sesión:

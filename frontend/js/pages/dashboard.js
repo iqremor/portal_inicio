@@ -1,6 +1,6 @@
 import {
   fetchUserData,
-  startExam,
+  startExamById,
   loadExamsForGrade as apiLoadExamsForGrade, // Renamed to avoid conflict with method name
 } from '../api/index.js';
 import { checkSession, clearSession, handleLogout } from '../shared/auth.js';
@@ -92,10 +92,18 @@ class Dashboard {
   }
 
   checkModulesAvailability() {
-    if (!this.currentUser.modules) {
-      console.warn('Modules data not found in user object.');
+    if (!this.currentUser || !this.currentUser.modules) {
+      console.warn(
+        'DEBUG DASHBOARD: No se encontró objeto de módulos en el usuario:',
+        this.currentUser
+      );
       return;
     }
+
+    console.log(
+      'DEBUG DASHBOARD: Datos de módulos recibidos:',
+      this.currentUser.modules
+    );
 
     const { preicfes, preunal, laboratorios } = this.currentUser.modules;
 
@@ -106,9 +114,15 @@ class Dashboard {
       laboratorios
     );
 
-    // Si todos los módulos están ocultos, mostrar mensaje
+    console.log(
+      `DEBUG DASHBOARD: Visibilidad -> Saber: ${preicfesVisible}, UNAL: ${preunalVisible}, Labs: ${laboratoriosVisible}`
+    );
+
+    // Si todos los módulos están ocultos, mostrar mensaje sin destruir el grid
     if (!preicfesVisible && !preunalVisible && !laboratoriosVisible) {
-      this.showNoActivitiesMessage();
+      this.showNoActivitiesMessage(true);
+    } else {
+      this.showNoActivitiesMessage(false);
     }
   }
 
@@ -116,34 +130,55 @@ class Dashboard {
     const btn = document.getElementById(btnId);
     if (!btn) return false;
 
-    const card = btn.closest('.activity-card-new');
+    const cardId = btnId.replace('btn-', 'card-');
+    const card =
+      btn.closest('.activity-card-new') || document.getElementById(cardId);
 
     if (isEnabled) {
-      if (card) card.style.display = 'flex';
+      if (card) {
+        card.style.display = 'flex';
+        card.style.visibility = 'visible';
+        card.style.opacity = '1';
+      }
       btn.disabled = false;
       btn.classList.remove('btn-secondary');
       btn.classList.add('btn-primary');
-      btn.textContent = 'Comenzar';
-      btn.style.opacity = '1';
+      btn.textContent = btnId === 'btn-preicfes' ? 'Prueba Saber' : 'Comenzar';
       return true;
     } else {
-      if (card) card.style.display = 'none';
+      if (card) {
+        card.style.display = 'none';
+      }
       btn.disabled = true;
-      btn.textContent = 'No disponible';
-      btn.style.opacity = '0.5';
       return false;
     }
   }
 
-  showNoActivitiesMessage() {
+  showNoActivitiesMessage(show) {
     const activitiesGrid = document.querySelector('.activities-grid');
-    if (activitiesGrid) {
-      activitiesGrid.innerHTML = `
-        <div class="no-activities-container">
+    let msgContainer = document.getElementById('no-activities-msg');
+
+    if (show) {
+      if (!msgContainer) {
+        msgContainer = document.createElement('div');
+        msgContainer.id = 'no-activities-msg';
+        msgContainer.className = 'no-activities-container';
+        msgContainer.innerHTML = `
           <i class="fas fa-calendar-times"></i>
           <p>Sin actividades disponibles por el momento.</p>
-        </div>
-      `;
+        `;
+        if (activitiesGrid) {
+          activitiesGrid.parentNode.insertBefore(
+            msgContainer,
+            activitiesGrid.nextSibling
+          );
+        }
+      }
+      msgContainer.style.display = 'block';
+      if (activitiesGrid) activitiesGrid.style.display = 'none';
+    } else {
+      if (msgContainer) msgContainer.style.display = 'none';
+      if (activitiesGrid) activitiesGrid.style.display = 'grid';
     }
   }
 
@@ -173,12 +208,11 @@ class Dashboard {
     });
   }
 
-  async startExam(areaId) {
+  async startExam(cuadernilloId, areaId) {
     try {
-      const examData = await startExam(
-        areaId,
-        this.currentUser.codigo,
-        this.currentUser.grado
+      const examData = await startExamById(
+        cuadernilloId,
+        this.currentUser.codigo
       );
       window.location.href = `/frontend/pages/examen.html?id=${examData.sesion_id}&area=${areaId}`;
     } catch (error) {
@@ -242,6 +276,7 @@ class Dashboard {
                 </div>
                 <button
                     class="start-exam-btn"
+                    data-id="${exam.id}"
                     data-area-id="${exam.area}"
                     data-active="${isActive}"
                 >
@@ -264,8 +299,9 @@ class Dashboard {
           return;
         }
 
+        const cuadernilloId = e.target.getAttribute('data-id');
         const areaId = e.target.getAttribute('data-area-id');
-        this.startExam(areaId); // Llamar a la función startExam de la clase Dashboard
+        this.startExam(cuadernilloId, areaId); // Llamar a la función startExam de la clase Dashboard
       });
     });
   }

@@ -112,6 +112,25 @@ export async function loadExamsForGrade(grade, userCodigo) {
   return response.json();
 }
 
+/**
+ * Inicia un examen utilizando el ID único del cuadernillo.
+ * Recomendado para el Plan UNICUS.
+ */
+export async function startExamById(cuadernilloId, codigo) {
+  const response = await apiFetch(
+    `${API_BASE}/api/examenes/id/${cuadernilloId}/iniciar`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ codigo: codigo }),
+    },
+    'Error al iniciar el examen por ID.'
+  );
+  return response.json();
+}
+
 export async function startExam(areaId, codigo, grado) {
   // startExam requires auth
   const response = await apiFetch(

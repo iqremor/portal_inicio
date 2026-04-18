@@ -1,253 +1,759 @@
-{% extends 'admin/master.html' %} {% block body %}
-<h1>Gestión de Asignación Universal (Plan UNICUS)</h1>
-<p class="lead">
-  Habilite cualquier examen para cualquier grado. Use el buscador para filtrar
-  por área o nombre.
-</p>
-
-<div class="mb-4">
-  <div class="input-group">
-    <div class="input-group-prepend">
-      <span class="input-group-text"><i class="fas fa-search"></i></span>
-    </div>
-    <input
-      type="text"
-      id="area-search"
-      class="form-control form-control-lg"
-      placeholder="Buscar por Área (ej: Matemáticas) o Nombre del Examen..."
-    />
-  </div>
-</div>
-
-<form method="POST" action="{{ url_for('.index') }}">
-  <!-- Matriz de Asignación de Cuadernillos -->
-  <div class="card mb-4 shadow-sm">
-    <div
-      class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
-    >
-      <h5 class="mb-0">Matriz de Disponibilidad de Cuadernillos</h5>
-      <span class="badge badge-light"
-        >{{ cuadernillos|length }} Exámenes detectados</span
-      >
-    </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table id="exam-matrix-table" class="table table-hover table-sm mb-0">
-          <thead class="thead-light">
-            <tr>
-              <th style="width: 250px">Examen / Área</th>
-              <th class="text-center" style="width: 100px">Origen</th>
-              {% for grado in grados %}
-              <th class="text-center grade-header" data-grade="{{ grado }}">
-                Grado {{ grado }}
-              </th>
-              {% endfor %}
-              <th class="text-center">Gestión</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for c in cuadernillos %}
-            <tr
-              class="exam-row"
-              data-area="{{ c.area|lower }}"
-              data-nombre="{{ c.nombre|lower }}"
-            >
-              <td>
-                <div class="font-weight-bold">{{ c.nombre }}</div>
-                <small class="text-muted text-uppercase">{{ c.area }}</small>
-              </td>
-              <td class="text-center">
-                <span class="badge badge-secondary">Saber {{ c.grado }}</span>
-              </td>
-
-              {% for g in grados %}
-              <td class="text-center grade-col" data-grade="{{ g }}">
-                <div class="custom-control custom-switch">
-                  {% set is_enabled = availability_map.get((c.id, g), False) %}
-                  <input
-                    type="checkbox"
-                    class="custom-control-input"
-                    id="switch-{{ c.id }}-{{ g }}"
-                    name="cuadernillo-{{ c.id }}-grado-{{ g }}"
-                    {%
-                    if
-                    is_enabled
-                    %}checked{%
-                    endif
-                    %}
-                  />
-                  <label
-                    class="custom-control-label"
-                    for="switch-{{ c.id }}-{{ g }}"
-                  ></label>
-                </div>
-              </td>
-              {% endfor %}
-
-              <td class="text-center">
-                <a
-                  href="{{ url_for('cuadernillo.edit_view', id=c.id) }}"
-                  class="btn btn-sm btn-outline-info"
-                  title="Editar Cuadernillo"
-                >
-                  <i class="fas fa-edit"></i>
-                </a>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- Módulos Globales -->
-  <div class="card mb-4 shadow-sm border-dark">
-    <div class="card-header bg-dark text-white">
-      <h5 class="mb-0">Módulos Globales del Portal</h5>
-    </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-bordered mb-0">
-          <thead class="thead-light">
-            <tr>
-              <th>Módulo</th>
-              {% for grado in grados %}
-              <th class="text-center">Grado {{ grado }}</th>
-              {% endfor %}
-            </tr>
-          </thead>
-          <tbody>
-            {% set modulos = [('PREICFES', 'Preicfes (Saber 11)'), ('PREUNAL',
-            'Preunal (Univ. Nacional)'), ('LABORATORIOS', 'Laboratorios')] %} {%
-            for mod_key, mod_label in modulos %}
-            <tr>
-              <td class="font-weight-bold">{{ mod_label }}</td>
-              {% for grado in grados %}
-              <td class="text-center">
-                <div class="custom-control custom-checkbox">
-                  {% set enabled_grades = modules_config.get(mod_key, []) %}
-                  <input
-                    type="checkbox"
-                    class="custom-control-input"
-                    id="module-{{ mod_key }}-{{ grado }}"
-                    name="module-{{ mod_key }}-{{ grado }}"
-                    {%
-                    if
-                    (grado|string)
-                    in
-                    enabled_grades
-                    %}checked{%
-                    endif
-                    %}
-                  />
-                  <label
-                    class="custom-control-label"
-                    for="module-{{ mod_key }}-{{ grado }}"
-                  ></label>
-                </div>
-              </td>
-              {% endfor %}
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="sticky-bottom bg-white p-3 border-top shadow-lg d-flex justify-content-end"
-  >
-    <button type="submit" class="btn btn-success btn-lg px-5">
-      <i class="fas fa-save mr-2"></i> Guardar Cambios UNICUS
-    </button>
-  </div>
-
-  <input
-    type="hidden"
-    name="active_grade_filter"
-    id="active_grade_filter"
-    value="all"
-  />
-</form>
-
+{% extends 'admin/master.html' %} {% block head_css %} {{ super() }}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/admin_custom.css') }}"
+/>
+<!-- FontAwesome 6 para los iconos del prototipo -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
 <style>
-  .exam-row:hover {
-    background-color: #f8f9fa !important;
+  .focus-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+    border: 1px solid #edf2f7;
   }
-  .grade-header {
-    cursor: help;
-    transition: background 0.2s;
+  .admin-container {
+    display: flex;
+    min-height: 100vh;
   }
-  .grade-header:hover {
-    background-color: #e2e6ea;
+  .main-content {
+    flex: 1;
+    background: #f8fafc;
   }
-  .sticky-bottom {
-    position: sticky;
-    bottom: 0;
-    z-index: 1000;
+
+  /* Adaptación de Tabs V5 al estilo Admin */
+  .unicus-tabs .nav-link {
+    border: none;
+    color: #718096;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    border-bottom: 3px solid transparent;
+    transition: 0.3s;
   }
-  .badge-secondary {
-    background-color: #6c757d;
-    font-size: 0.8rem;
+  .unicus-tabs .nav-link:hover {
+    color: #4a5568;
   }
-  .custom-switch .custom-control-label::before {
-    height: 1.5rem;
-    width: 2.75rem;
-    border-radius: 1rem;
+  .unicus-tabs .nav-link.active {
+    color: #4caf50;
+    border-bottom-color: #4caf50;
+    background: transparent;
   }
-  .custom-switch .custom-control-label::after {
-    width: calc(1.5rem - 4px);
-    height: calc(1.5rem - 4px);
-    border-radius: 1rem;
+
+  /* Tarjetas de Examen con estilo focus-card simplificado */
+  .exam-card {
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: 0.3s;
+    background: #fff;
   }
-  .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
-    transform: translateX(1.25rem);
+  .exam-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+  }
+  .exam-card.active {
+    border: 2px solid #4caf50 !important;
+    background: #f0fff0;
+  }
+  .exam-card.active .status-text {
+    color: #4caf50 !important;
+    font-weight: bold;
+  }
+
+  .icon-box {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f7fafc;
+    border-radius: 10px;
+    color: #4a5568;
+  }
+  .exam-card.active .icon-box {
+    background: #e6fffa;
+    color: #4caf50;
+  }
+
+  .pill {
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #718096;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .pill.active {
+    background: #4caf50;
+    color: #fff;
+    border-color: #4caf50;
+  }
+
+  .stat-hero {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .progress-custom {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
   }
 </style>
+{% endblock %} {% block body %}
+<div class="admin-container">
+  <aside class="sidebar">{% include 'admin/_menu.html' %}</aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-text">Plan UNICUS: Asignación de Exámenes</div>
+      </div>
+    </header>
+
+    <div class="container-fluid py-4">
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        class="alert alert-{{ category }} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+
+      <form method="POST" action="{{ url_for('.index') }}" id="unicus-form">
+        <!-- Tabs -->
+        <ul
+          class="nav nav-tabs unicus-tabs border-bottom mb-4"
+          id="categoryTabs"
+          role="tablist"
+        >
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              id="saber-tab"
+              data-toggle="tab"
+              href="#tab-saber"
+              role="tab"
+              ><i class="fas fa-graduation-cap mr-2"></i>Saber</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="preunal-tab"
+              data-toggle="tab"
+              href="#tab-preunal"
+              role="tab"
+              ><i class="fas fa-university mr-2"></i>Pre-UNAL</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="labs-tab"
+              data-toggle="tab"
+              href="#tab-labs"
+              role="tab"
+              ><i class="fas fa-flask mr-2"></i>Laboratorios</a
+            >
+          </li>
+        </ul>
+
+        <div class="row">
+          <!-- Banco de Exámenes -->
+          <div class="col-lg-8">
+            <div class="focus-card p-0 overflow-hidden">
+              <div class="bg-light p-4 border-bottom">
+                <div
+                  class="d-flex justify-content-between align-items-center mb-4"
+                >
+                  <h4 class="mb-0 font-weight-bold text-dark">
+                    <i class="fas fa-database text-success mr-2"></i>Banco
+                    General
+                  </h4>
+                  <small class="text-muted"
+                    >Mostrando todos los cuadernillos</small
+                  >
+                </div>
+
+                <div class="input-group mb-4 shadow-sm">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-white border-right-0"
+                      ><i class="fas fa-search text-muted"></i
+                    ></span>
+                  </div>
+                  <input
+                    type="text"
+                    id="area-search"
+                    class="form-control border-left-0"
+                    placeholder="Buscar por área o nombre..."
+                  />
+                </div>
+
+                <div id="origin-filter-container">
+                  <label
+                    class="small font-weight-bold text-uppercase text-muted mb-2 d-block"
+                    >Grado de Origen</label
+                  >
+                  <div class="d-flex flex-wrap">
+                    <button
+                      type="button"
+                      class="pill active mr-2 mb-2 origin-filter-btn"
+                      data-origin="all"
+                    >
+                      Todos
+                    </button>
+                    {% for g in grados %}
+                    <button
+                      type="button"
+                      class="pill mr-2 mb-2 origin-filter-btn"
+                      data-origin="{{ g }}"
+                    >
+                      {{ g }}°
+                    </button>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 bg-light-soft">
+                <div class="tab-content">
+                  <div
+                    class="tab-pane fade show active"
+                    id="tab-saber"
+                    role="tabpanel"
+                  >
+                    <div
+                      id="grid-saber"
+                      class="row scroll-area"
+                      style="max-height: 550px; overflow-y: auto"
+                    >
+                      {% for c in cuadernillos['SABER'] %}
+                      <div
+                        class="col-md-4 col-sm-6 mb-4 exam-card-container"
+                        data-area="{{ c.area|lower }}"
+                        data-nombre="{{ c.nombre|lower }}"
+                        data-origin="{{ c.grado }}"
+                      >
+                        <div
+                          class="exam-card card h-100 p-3 text-center"
+                          data-id="{{ c.id }}"
+                          data-type="cuadernillo"
+                        >
+                          <div class="mb-2">
+                            <span class="badge badge-light border text-muted"
+                              >Grado {{ c.grado }}°</span
+                            >
+                          </div>
+                          <div class="icon-box mb-3">
+                            {% if 'matemat' in c.area|lower %}<i
+                              class="fas fa-calculator fa-lg"
+                            ></i>
+                            {% elif 'lengua' in c.area|lower or 'lectura' in
+                            c.area|lower %}<i class="fas fa-language fa-lg"></i>
+                            {% elif 'natural' in c.area|lower %}<i
+                              class="fas fa-flask fa-lg"
+                            ></i>
+                            {% elif 'social' in c.area|lower or 'ciudadan' in
+                            c.area|lower %}<i
+                              class="fas fa-globe-americas fa-lg"
+                            ></i>
+                            {% else %}<i class="fas fa-file-alt fa-lg"></i>{%
+                            endif %}
+                          </div>
+                          <h6 class="font-weight-bold small mb-1">
+                            {{ c.nombre }}
+                          </h6>
+                          <p class="status-text extra-small text-muted mb-0">
+                            No Asignado
+                          </p>
+                          <div class="hidden-inputs d-none">
+                            {% for g in grados %}
+                            <input
+                              type="checkbox"
+                              id="check-{{ c.id }}-{{ g }}"
+                              name="cuadernillo-{{ c.id }}-grado-{{ g }}"
+                              class="item-check"
+                              data-id="{{ c.id }}"
+                              data-grado="{{ g }}"
+                              data-area="{{ c.area }}"
+                              {%
+                              if
+                              availability_map.get((c.id,
+                              g))
+                              %}checked{%
+                              endif
+                              %}
+                            />
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <!-- Pestañas Pre-UNAL y Labs mantenidas con mismo estilo -->
+                  <div class="tab-pane fade" id="tab-preunal" role="tabpanel">
+                    <div
+                      class="row scroll-area"
+                      style="max-height: 550px; overflow-y: auto"
+                    >
+                      <!-- Módulos Especiales -->
+                      {% set mods = [('PREUNAL', 'Preunal', 'fa-university'),
+                      ('PREICFES', 'Preicfes', 'fa-graduation-cap')] %} {% for
+                      mod_id, mod_name, mod_icon in mods %}
+                      <div
+                        class="col-md-4 col-sm-6 mb-4 exam-card-container"
+                        data-area="especial"
+                        data-nombre="{{ mod_name|lower }}"
+                        data-origin="all"
+                      >
+                        <div
+                          class="exam-card card h-100 p-3 text-center"
+                          data-id="{{ mod_id }}"
+                          data-type="module"
+                        >
+                          <div class="mb-2">
+                            <span class="badge badge-primary">Especial</span>
+                          </div>
+                          <div class="icon-box mb-3 text-primary">
+                            <i class="fas {{ mod_icon }} fa-lg"></i>
+                          </div>
+                          <h6 class="font-weight-bold small mb-1">
+                            {{ mod_name }}
+                          </h6>
+                          <p class="status-text extra-small text-muted mb-0">
+                            No Asignado
+                          </p>
+                          <div class="hidden-inputs d-none">
+                            {% for g in grados %}
+                            <input
+                              type="checkbox"
+                              id="module-{{ mod_id }}-{{ g }}"
+                              name="module-{{ mod_id }}-{{ g }}"
+                              class="item-check"
+                              data-id="{{ mod_id }}"
+                              data-grado="{{ g }}"
+                              data-area="Especial"
+                              {%
+                              if
+                              (g|string)
+                              in
+                              modules_config.get(mod_id,
+                              [])
+                              %}checked{%
+                              endif
+                              %}
+                            />
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+
+                      <!-- Cuadernillos UNAL -->
+                      {% for c in cuadernillos['UNAL'] %}
+                      <div
+                        class="col-md-4 col-sm-6 mb-4 exam-card-container"
+                        data-area="{{ c.area|lower }}"
+                        data-nombre="{{ c.nombre|lower }}"
+                        data-origin="{{ c.grado }}"
+                      >
+                        <div
+                          class="exam-card card h-100 p-3 text-center"
+                          data-id="{{ c.id }}"
+                          data-type="cuadernillo"
+                        >
+                          <div class="mb-2">
+                            <span class="badge badge-light border text-muted"
+                              >Origen Saber {{ c.grado }}°</span
+                            >
+                          </div>
+                          <div class="icon-box mb-3">
+                            <i class="fas fa-university fa-lg"></i>
+                          </div>
+                          <h6 class="font-weight-bold small mb-1">
+                            {{ c.nombre }}
+                          </h6>
+                          <p class="status-text extra-small text-muted mb-0">
+                            No Asignado
+                          </p>
+                          <div class="hidden-inputs d-none">
+                            {% for g in grados %}
+                            <input
+                              type="checkbox"
+                              id="check-{{ c.id }}-{{ g }}"
+                              name="cuadernillo-{{ c.id }}-grado-{{ g }}"
+                              class="item-check"
+                              data-id="{{ c.id }}"
+                              data-grado="{{ g }}"
+                              data-area="{{ c.area }}"
+                              {%
+                              if
+                              availability_map.get((c.id,
+                              g))
+                              %}checked{%
+                              endif
+                              %}
+                            />
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="tab-labs" role="tabpanel">
+                    <div
+                      class="row scroll-area"
+                      style="max-height: 550px; overflow-y: auto"
+                    >
+                      <div
+                        class="col-md-4 col-sm-6 mb-4 exam-card-container"
+                        data-area="ciencias"
+                        data-nombre="laboratorios"
+                        data-origin="all"
+                      >
+                        <div
+                          class="exam-card card h-100 p-3 text-center"
+                          data-id="LABORATORIOS"
+                          data-type="module"
+                        >
+                          <div class="mb-2">
+                            <span class="badge badge-success"
+                              >Laboratorios</span
+                            >
+                          </div>
+                          <div class="icon-box mb-3 text-success">
+                            <i class="fas fa-flask fa-lg"></i>
+                          </div>
+                          <h6 class="font-weight-bold small mb-1">
+                            Simuladores Virtuales
+                          </h6>
+                          <p class="status-text extra-small text-muted mb-0">
+                            No Asignado
+                          </p>
+                          <div class="hidden-inputs d-none">
+                            {% for g in grados %} {% set is_checked = (g|string)
+                            in modules_config.get('LABORATORIOS', []) %}
+                            <input
+                              type="checkbox"
+                              id="module-LABORATORIOS-{{ g }}"
+                              name="module-LABORATORIOS-{{ g }}"
+                              class="item-check"
+                              data-id="LABORATORIOS"
+                              data-grado="{{ g }}"
+                              data-area="Ciencias"
+                              {%
+                              if
+                              is_checked
+                              %}checked{%
+                              endif
+                              %}
+                            />
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Cuadernillos Labs -->
+                      {% for c in cuadernillos['LAB'] %}
+                      <div
+                        class="col-md-4 col-sm-6 mb-4 exam-card-container"
+                        data-area="{{ c.area|lower }}"
+                        data-nombre="{{ c.nombre|lower }}"
+                        data-origin="{{ c.grado }}"
+                      >
+                        <div
+                          class="exam-card card h-100 p-3 text-center"
+                          data-id="{{ c.id }}"
+                          data-type="cuadernillo"
+                        >
+                          <div class="mb-2">
+                            <span class="badge badge-light border text-muted"
+                              >Práctica</span
+                            >
+                          </div>
+                          <div class="icon-box mb-3">
+                            <i class="fas fa-vial fa-lg"></i>
+                          </div>
+                          <h6 class="font-weight-bold small mb-1">
+                            {{ c.nombre }}
+                          </h6>
+                          <p class="status-text extra-small text-muted mb-0">
+                            No Asignado
+                          </p>
+                          <div class="hidden-inputs d-none">
+                            {% for g in grados %}
+                            <input
+                              type="checkbox"
+                              id="check-{{ c.id }}-{{ g }}"
+                              name="cuadernillo-{{ c.id }}-grado-{{ g }}"
+                              class="item-check"
+                              data-id="{{ c.id }}"
+                              data-grado="{{ g }}"
+                              data-area="{{ c.area }}"
+                              {%
+                              if
+                              availability_map.get((c.id,
+                              g))
+                              %}checked{%
+                              endif
+                              %}
+                            />
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna Lateral -->
+          <div class="col-lg-4">
+            <!-- Panel Focalizado -->
+            <div class="focus-card">
+              <h5 class="font-weight-bold mb-1">Asignación Focalizada</h5>
+              <p class="text-muted small mb-3">
+                Habilite exámenes para el grado seleccionado.
+              </p>
+              <div class="form-group">
+                <label class="small font-weight-bold text-uppercase"
+                  >Grado de Destino</label
+                >
+                <select
+                  id="target-grade-selector"
+                  class="form-control form-control-lg font-weight-bold text-success border-success"
+                >
+                  {% for g in grados %}
+                  <option
+                    value="{{ g }}"
+                    {%
+                    if
+                    g=""
+                    ="11"
+                    %}selected{%
+                    endif
+                    %}
+                  >
+                    Estudiantes de {{ g }}°
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <!-- Estado del Grado -->
+            <div class="stat-hero mb-4 shadow">
+              <h6 class="font-weight-bold mb-3">
+                Estado del Grado <span id="display-target-grade">11</span>°
+              </h6>
+              <div class="d-flex justify-content-between align-items-end mb-3">
+                <div>
+                  <h2 class="mb-0 font-weight-bold" id="activeCount">0</h2>
+                  <small class="opacity-75">Habilitados</small>
+                </div>
+                <div class="text-right">
+                  <h4 class="mb-0" id="totalCount">0</h4>
+                  <small class="opacity-75">Total</small>
+                </div>
+              </div>
+              <div class="progress-custom mb-3">
+                <div
+                  id="progressBar"
+                  class="bg-white h-100 transition-all duration-500"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <button
+                type="button"
+                class="btn btn-sm btn-block btn-outline-light border-0"
+                onclick="resetGrade()"
+              >
+                <i class="fas fa-eraser mr-1"></i> Limpiar este grado
+              </button>
+            </div>
+
+            <!-- Desglose -->
+            <div class="focus-card mb-4">
+              <h6 class="font-weight-bold mb-3">Desglose por Áreas</h6>
+              <div id="areaBreakdown" class="space-y-3"></div>
+            </div>
+
+            <!-- Botón Guardar -->
+            <button
+              type="submit"
+              class="btn btn-success btn-lg btn-block py-3 font-weight-bold shadow-sm mb-4"
+            >
+              <i class="fas fa-save mr-2"></i> Guardar Cambios UNICUS
+            </button>
+
+            <div class="alert alert-info py-3 shadow-sm border-0">
+              <h6 class="font-weight-bold">
+                <i class="fas fa-info-circle mr-2"></i>Recordatorio
+              </h6>
+              <p class="extra-small mb-0 text-dark">
+                Puede habilitar exámenes de cualquier origen a cualquier grado
+                destino. No olvide guardar los cambios antes de salir.
+              </p>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    const targetSelector = document.getElementById('target-grade-selector');
+    const examCards = document.querySelectorAll('.exam-card');
     const searchInput = document.getElementById('area-search');
-    const examRows = document.querySelectorAll('.exam-row');
+    const originButtons = document.querySelectorAll('.origin-filter-btn');
+    const areaBreakdown = document.getElementById('areaBreakdown');
 
-    // Filtro de búsqueda en tiempo real
-    searchInput.addEventListener('input', function () {
-      const term = this.value.toLowerCase().trim();
+    let currentGrade = targetSelector.value;
+    let currentOrigin = 'all';
 
-      examRows.forEach((row) => {
-        const area = row.dataset.area;
-        const nombre = row.dataset.nombre;
-        if (area.includes(term) || nombre.includes(term)) {
-          row.style.display = '';
+    function updateUI() {
+      let active = 0,
+        total = 0;
+      const areas = {};
+      const term = searchInput.value.toLowerCase();
+
+      document.getElementById('display-target-grade').textContent =
+        currentGrade;
+
+      examCards.forEach((card) => {
+        const id = card.dataset.id;
+        const type = card.dataset.type;
+        const container = card.closest('.exam-card-container');
+        const checkbox =
+          type === 'cuadernillo'
+            ? document.getElementById(`check-${id}-${currentGrade}`)
+            : document.getElementById(`module-${id}-${currentGrade}`);
+
+        const area = checkbox.dataset.area;
+
+        let isVisible = true;
+        if (container) {
+          isVisible =
+            container.dataset.area.includes(term) ||
+            container.dataset.nombre.includes(term);
+          isVisible =
+            isVisible &&
+            (currentOrigin === 'all' ||
+              container.dataset.origin === currentOrigin);
+          container.style.display = isVisible ? 'block' : 'none';
+        }
+
+        if (
+          isVisible &&
+          card.closest('.tab-pane').classList.contains('active')
+        ) {
+          total++;
+          if (!areas[area]) areas[area] = { active: 0, total: 0 };
+          areas[area].total++;
+          if (checkbox && checkbox.checked) areas[area].active++;
+        }
+
+        if (checkbox && checkbox.checked) {
+          card.classList.add('active');
+          card.querySelector('.status-text').textContent = 'Asignado';
+          active++;
         } else {
-          row.style.display = 'none';
+          card.classList.remove('active');
+          card.querySelector('.status-text').textContent = 'No Asignado';
         }
       });
-    });
 
-    // Efecto visual al pasar por encima de las columnas
-    const headers = document.querySelectorAll('.grade-header');
-    headers.forEach((header) => {
-      header.addEventListener('mouseenter', () => {
-        const g = header.dataset.grade;
-        document
-          .querySelectorAll(`.grade-col[data-grade="${g}"]`)
-          .forEach((td) => {
-            td.style.backgroundColor = 'rgba(0,123,255,0.05)';
-          });
+      document.getElementById('activeCount').textContent = active;
+      document.getElementById('totalCount').textContent = total;
+      const percent = total > 0 ? Math.round((active / total) * 100) : 0;
+      document.getElementById('progressBar').style.width = percent + '%';
+
+      areaBreakdown.innerHTML = '';
+      Object.entries(areas).forEach(([area, data]) => {
+        const areaPercent = Math.round((data.active / data.total) * 100);
+        areaBreakdown.innerHTML += `
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="font-weight-bold text-muted">${area}</span>
+                        <span class="font-weight-bold">${data.active}/${data.total}</span>
+                    </div>
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-success" style="width: ${areaPercent}%"></div>
+                    </div>
+                </div>
+            `;
       });
-      header.addEventListener('mouseleave', () => {
-        const g = header.dataset.grade;
-        document
-          .querySelectorAll(`.grade-col[data-grade="${g}"]`)
-          .forEach((td) => {
-            td.style.backgroundColor = '';
-          });
-      });
+    }
+
+    targetSelector.addEventListener('change', (e) => {
+      currentGrade = e.target.value;
+      updateUI();
     });
+    searchInput.addEventListener('input', updateUI);
+    originButtons.forEach((btn) =>
+      btn.addEventListener('click', function () {
+        originButtons.forEach((b) => b.classList.remove('active'));
+        this.classList.add('active');
+        currentOrigin = this.dataset.origin;
+        updateUI();
+      })
+    );
+
+    examCards.forEach((card) =>
+      card.addEventListener('click', () => {
+        const id = card.dataset.id,
+          type = card.dataset.type;
+        const cb =
+          type === 'cuadernillo'
+            ? document.getElementById(`check-${id}-${currentGrade}`)
+            : document.getElementById(`module-${id}-${currentGrade}`);
+        if (cb) {
+          cb.checked = !cb.checked;
+          updateUI();
+        }
+      })
+    );
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', () => updateUI());
+    window.resetGrade = () => {
+      if (confirm(`¿Desactivar todo para el Grado ${currentGrade}?`)) {
+        document
+          .querySelectorAll(`.item-check[data-grado="${currentGrade}"]`)
+          .forEach((cb) => (cb.checked = false));
+        updateUI();
+      }
+    };
+    updateUI();
   });
 </script>
-
 {% endblock %}

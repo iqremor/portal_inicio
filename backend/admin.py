@@ -1040,19 +1040,32 @@ class ExamAvailabilityView(BaseView):
             for mod in modulos:
                 enabled_grades = []
                 for g in unique_grados:
-                    if f"module-{mod}-{g}" in request.form:
+                    field_name = f"module-{mod}-{g}"
+                    if field_name in request.form:
                         enabled_grades.append(str(g))
 
-                clave = f"MODULE_{mod}_GRADES"
-                valor = ",".join(enabled_grades)
-                config = ConfiguracionSistema.query.filter_by(clave=clave).first()
-                if config:
-                    config.valor = valor
+                clave_grades = f"MODULE_{mod}_GRADES"
+                clave_enabled = f"{mod}_ENABLED"
+
+                valor_grades = ",".join(enabled_grades)
+                # Si hay grados habilitados, encendemos el switch maestro automáticamente
+                valor_enabled = "1" if len(enabled_grades) > 0 else "0"
+
+                print(f"DEBUG UNICUS: Modulo {mod} -> Grados: {valor_grades}, Global: {valor_enabled}")
+
+                # Actualizar lista de grados
+                config_g = ConfiguracionSistema.query.filter_by(clave=clave_grades).first()
+                if config_g:
+                    config_g.valor = valor_grades
                 else:
-                    config = ConfiguracionSistema(
-                        clave=clave, valor=valor, descripcion=f"Grados habilitados para el módulo {mod}"
-                    )
-                db.session.add(config)
+                    db.session.add(ConfiguracionSistema(clave=clave_grades, valor=valor_grades))
+
+                # Actualizar switch maestro
+                config_e = ConfiguracionSistema.query.filter_by(clave=clave_enabled).first()
+                if config_e:
+                    config_e.valor = valor_enabled
+                else:
+                    db.session.add(ConfiguracionSistema(clave=clave_enabled, valor=valor_enabled))
 
             try:
                 db.session.commit()

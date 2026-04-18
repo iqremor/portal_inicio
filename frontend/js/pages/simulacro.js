@@ -77,35 +77,16 @@ async function loadLobbyData(session) {
   const scoresContainer = document.getElementById('scores-container');
 
   try {
-    const response = await fetch('/api/examenes', {
+    const studentGrade = session.grado;
+    const response = await fetch(`/api/examenes/grado/${studentGrade}`, {
       headers: { 'X-Session-ID': session.sessionId || session.session_id },
     });
     const allExams = await response.json();
 
-    const gradeMap = {
-      sexto: '6',
-      septimo: '7',
-      octavo: '8',
-      noveno: '9',
-      decimo: '10',
-      once: '11',
-      6: '6',
-      7: '7',
-      8: '8',
-      9: '9',
-      10: '10',
-      11: '11',
-    };
-
-    const studentGrade = session.grado;
-    const normalizedStudentGrade =
-      gradeMap[studentGrade.toLowerCase()] || studentGrade.toLowerCase();
-
-    const availableExams = allExams.filter((exam) => {
-      const examGrade = exam.grado.toString().toLowerCase();
-      const normalizedExamGrade = gradeMap[examGrade] || examGrade;
-      return normalizedExamGrade === normalizedStudentGrade;
-    });
+    // Filtrar exámenes de categoría SABER (ignorar UNAL y LABORATORIOS)
+    const saberExams = allExams.filter((exam) =>
+      exam.cuadernillo_id.toLowerCase().includes('pruebas_saber')
+    );
 
     const resResults = await fetch(
       `/api/usuario/${session.codigo}/resumen_notas`,
@@ -119,8 +100,8 @@ async function loadLobbyData(session) {
       bestScoresMap = await resResults.json();
     }
 
-    renderAreas(availableExams, areasContainer, session);
-    renderScores(availableExams, bestScoresMap, scoresContainer);
+    renderAreas(saberExams, areasContainer, session);
+    renderScores(saberExams, bestScoresMap, scoresContainer);
   } catch (error) {
     console.error('Error cargando datos del lobby Prueba Saber:', error);
     if (areasContainer) {
@@ -151,7 +132,7 @@ function renderAreas(exams, container, session) {
             <span class="btn-label">${displayName}</span>
             <span class="area-info">${exam.tiempo_limite_minutos} min</span>
         `;
-    btn.addEventListener('click', () => startExam(exam.area, session));
+    btn.addEventListener('click', () => startExam(exam.id, exam.area, session));
     container.appendChild(btn);
   });
 }
@@ -180,15 +161,15 @@ function renderScores(exams, bestScoresMap, container) {
   });
 }
 
-async function startExam(areaId, session) {
+async function startExam(cuadernilloId, areaId, session) {
   try {
-    const response = await fetch(`/api/examenes/${areaId}/iniciar`, {
+    const response = await fetch(`/api/examenes/id/${cuadernilloId}/iniciar`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Session-ID': session.sessionId || session.session_id,
       },
-      body: JSON.stringify({ codigo: session.codigo, grado: session.grado }),
+      body: JSON.stringify({ codigo: session.codigo }),
     });
     const data = await response.json();
     if (response.ok && data.sesion_id) {

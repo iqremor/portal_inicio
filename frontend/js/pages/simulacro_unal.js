@@ -28,19 +28,17 @@ async function loadLobbyData(session) {
   const scoresContainer = document.getElementById('scores-container');
 
   try {
-    // Consultar exámenes disponibles
-    const response = await fetch('/api/examenes', {
+    const studentGrade = session.grado;
+    const response = await fetch(`/api/examenes/grado/${studentGrade}`, {
       headers: { 'X-Session-ID': session.session_id },
     });
     const allExams = await response.json();
 
-    // Filtrar exámenes por el grado del estudiante y que sean específicos para Preunal
-    const studentGrade = session.grado;
+    // Filtrar exámenes que sean específicos para Preunal (ya vienen filtrados por grado del estudiante desde el backend)
     const preunalExams = allExams.filter(
       (exam) =>
-        exam.grado.toString().toLowerCase() === studentGrade.toLowerCase() &&
-        (exam.nombre.toLowerCase().includes('preunal') ||
-          exam.area.toLowerCase().includes('preunal'))
+        exam.nombre.toLowerCase().includes('preunal') ||
+        exam.area.toLowerCase().includes('preunal')
     );
 
     // Consultar mejores notas del estudiante usando el nuevo endpoint de resumen
@@ -113,10 +111,8 @@ function renderScores(exams, bestScoresMap, container) {
 }
 
 async function startExam(cuadernilloId, areaId, session) {
-  // Added cuadernilloId parameter
   try {
-    const response = await fetch(`/api/examenes/${areaId}/iniciar`, {
-      // Using areaId here as per API
+    const response = await fetch(`/api/examenes/id/${cuadernilloId}/iniciar`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -124,7 +120,6 @@ async function startExam(cuadernilloId, areaId, session) {
       },
       body: JSON.stringify({
         codigo: session.codigo,
-        grado: session.grado,
       }),
     });
 

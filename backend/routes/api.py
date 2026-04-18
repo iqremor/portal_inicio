@@ -70,6 +70,35 @@ def get_exam_config(active_session):
     )
 
 
+@api_bp.route("/examenes/id/<int:cuadernillo_id>/iniciar", methods=["POST"])
+@api_login_required
+def start_examen_by_id(cuadernillo_id, active_session):
+    """
+    Inicia una sesión de examen utilizando el ID único del cuadernillo.
+    Evolución para el Plan UNICUS (Asignación Flexible).
+    """
+    data = request.get_json()
+    user_codigo = data.get("codigo")
+
+    if not user_codigo:
+        return jsonify({"error": "El parámetro 'codigo' es requerido"}), 400
+
+    user = User.query.filter_by(codigo=user_codigo).first()
+    if not user or user.id != active_session.user_id:
+        return jsonify({"error": "Usuario inválido o no coincide con la sesión."}), 403
+
+    cuadernillo = Cuadernillo.query.get(cuadernillo_id)
+    if not cuadernillo:
+        return jsonify({"error": f"No se encontró el cuadernillo con ID {cuadernillo_id}"}), 404
+
+    # Vincular a la sesión activa
+    active_session.cuadernillo_id = cuadernillo.id
+    active_session.presented_questions = None
+    db.session.commit()
+
+    return jsonify({"sesion_id": active_session.session_id, "area_id": cuadernillo.area})
+
+
 @api_bp.route("/examenes/<string:area_id>/iniciar", methods=["POST"])
 @api_login_required
 def start_examen(area_id, active_session):
@@ -282,45 +311,92 @@ def get_exam_questions_by_session(session_id, active_session):
 @api_bp.route("/usuario/<string:codigo>", methods=["GET"])
 @api_login_required
 def get_user_data(codigo, active_session):
+    # Forzar refresco de la base de datos para obtener configuraciones actualizadas
+    db.session.expire_all()
+
     user = active_session.user
     if user.codigo != codigo:
         return jsonify({"error": "No autorizado"}), 403
 
-    def is_mod_enabled(g_flag, gr_flag, u_grade):
-        if get_config_value(g_flag, "0") != "1":
-            return False
-        enabled = [g.strip() for g in get_config_value(gr_flag, "").split(",")]
-        return str(u_grade) in enabled
+    # Mapeo de normalización de grados robusto
+    grade_map = {
+        "sexto": "6",
+        "septimo": "7",
+        "octavo": "8",
+        "noveno": "9",
+        "decimo": "10",
+        "once": "11",
+        "6": "6",
+        "7": "7",
+        "8": "8",
+        "9": "9",
+        "10": "10",
+        "11": "11",
+    }
 
-    return jsonify(
-        {
-            "codigo": user.codigo,
-            "nombre_completo": user.nombre_completo,
-            "grado": user.grado,
-            "role": user.role.value,
-            "modules": {
-                "preicfes": is_mod_enabled("PREICFES_ENABLED", "MODULE_PREICFES_GRADES", user.grado),
-                "preunal": is_mod_enabled("PREUNAL_ENABLED", "MODULE_PREUNAL_GRADES", user.grado),
-                "laboratorios": is_mod_enabled("LABORATORIOS_ENABLED", "MODULE_LABORATORIOS_GRADES", user.grado),
-            },
-        }
-    )
+    # Limpiamos espacios, minúsculas y eliminamos el símbolo ° si existe
+    u_grade_raw = str(user.grado).strip().lower().replace("°", "")
+    normalized_user_grade = grade_map.get(u_grade_raw, u_grade_raw)
+
+    def is_mod_enabled(g_flag):
+        # Control Global desde la pantalla de Configuración de Exámenes
+        return get_config_value(g_flag, "0") == "1"
+
+    response_data = {
+        "codigo": user.codigo,
+        "nombre_completo": user.nombre_completo,
+        "grado": user.grado,
+        "role": user.role.value,
+        "modules": {
+            "preicfes": is_mod_enabled("PREICFES_ENABLED"),
+            "preunal": is_mod_enabled("PREUNAL_ENABLED"),
+            "laboratorios": is_mod_enabled("LABORATORIOS_ENABLED"),
+        },
+    }
+
+    print(f"DEBUG API: Usuario {user.codigo} (Grado: {user.grado}) -> Módulos Globales: {response_data['modules']}")
+    return jsonify(response_data)
 
 
 @api_bp.route("/examenes/grado/<string:grado>", methods=["GET"])
 @api_login_required
 def get_examenes_por_grado(grado, active_session):
     """Retorna los exámenes asignados a un grado específico."""
-    availability = ExamAvailability.query.filter_by(grado=grado, is_enabled=True).all()
+    try:
+        # Mapeo de normalización de grados
+        grade_map = {
+            "sexto": "6",
+            "septimo": "7",
+            "octavo": "8",
+            "noveno": "9",
+            "decimo": "10",
+            "once": "11",
+            "6": "6",
+            "7": "7",
+            "8": "8",
+            "9": "9",
+            "10": "10",
+            "11": "11",
+        }
+        normalized_grade = grade_map.get(str(grado).lower(), str(grado))
 
-    examenes = []
-    for avail in availability:
-        if avail.cuadernillo:
-            d = avail.cuadernillo.to_dict()
-            d["grado_asignado"] = avail.grado  # Mantener trazabilidad
-            examenes.append(d)
+        num_questions = int(get_config_value("EXAM_QUESTIONS_COUNT", 10))
+        duration_per_q = int(get_config_value("EXAM_TIMER_DURATION", 240))
+        calculated_minutes = (num_questions * duration_per_q) // 60
 
-    return jsonify(examenes)
+        availability = ExamAvailability.query.filter_by(grado=normalized_grade, is_enabled=True).all()
+
+        examenes = []
+        for avail in availability:
+            if avail.cuadernillo:
+                d = avail.cuadernillo.to_dict()
+                d["grado_asignado"] = avail.grado
+                d["tiempo_limite_minutos"] = calculated_minutes
+                examenes.append(d)
+
+        return jsonify(examenes)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @api_bp.route("/examenes/<int:cuadernillo_id>/attempts", methods=["GET"])
