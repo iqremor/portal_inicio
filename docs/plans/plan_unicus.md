@@ -32,6 +32,7 @@
 ### Fase 4: Reportes e Integridad [EN_ESPERA]
 
 - **Trazabilidad**: Los reportes incluirán el "Grado de Origen" y la "Categoría" del examen para total claridad pedagógica.
+- **Refactorización de Reporte de Grado**: Modificar `reporte_grado.html` para que, al seleccionar un grado (ej: 11°), la lista de exámenes muestre todos los cuadernillos **habilitados** para ese grupo mediante el Plan UNICUS, incluso si el cuadernillo pertenece originalmente a otro grado (ej: mostrar un examen de 10° asignado a 11°).
 
 ---
 

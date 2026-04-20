@@ -9,7 +9,8 @@ def sync_exams():
     app = create_app()
     with app.app_context():
         # Configuración de carpetas y mapeo de nombres
-        base_data_path = os.path.join(os.getcwd(), "..", "data")
+        # Se asume que el script se corre desde la raíz o dentro de backend/
+        base_data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data"))
 
         # CATEGORÍAS DE EXÁMENES (Nueva Jerarquía)
         categorias = [

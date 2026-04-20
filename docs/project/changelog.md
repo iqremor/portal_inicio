@@ -14,9 +14,36 @@
 - **Funcionalidad:** Prototipos UNICUS v3-v5 disponibles. Fase 2 de UNICUS iniciada en el código fuente.
 - **Git:** Rama `develop_backend` con 2 commits por delante del origen.
 
-### Acciones Realizadas: [PENDIENTE]
+### Acciones Realizadas:
 
-### Estado final: [PENDIENTE]
+- **Plan UNICUS (Fase 2):** Refinamiento de la lógica de asignación en el panel administrativo.
+- **Plan UNICUS (Fase 3):** Implementación del filtrado dinámico en los lobbies.
+  - Se corrigió el bug que impedía ver exámenes asignados de otros grados si el estudiante pertenecía a un grado diferente.
+  - Se optimizó la consulta a `ExamAvailability` en `api.py` para asegurar que las asignaciones focalizadas se respeten en tiempo real.
+- **Gestión de Versiones:** Realización del commit `fix: corregir filtrado de exámenes por grado en los lobbies para respetar asignaciones focalizadas` en la rama `develop_backend`.
+
+### Estado final:
+
+- **Calidad de código:** 100% validado por tests unitarios. 1 advertencia menor en ESLint (frontend).
+- **Funcionalidad:** Fase 3 del Plan UNICUS funcional. Los lobbies ahora muestran correctamente las cartillas asignadas mediante el nuevo sistema focalizado.
+
+### Finalización: sábado, 18 de abril de 2026
+
+---
+
+## Sesión 40 - 20 de abril de 2026
+
+### Objetivos de la sesión:
+
+- Sincronizar el estado del proyecto y validar la Fase 3 del Plan UNICUS en el entorno de producción.
+- Iniciar la **Fase 4 del Plan UNICUS**: Reportes e Integridad (incluir grado de origen en los reportes).
+- Resolver la deuda técnica menor (advertencia ESLint en `respuestas.js`).
+
+### Estado inicial:
+
+- **Calidad de código:** 6/6 tests de backend pasando. 1 warning de ESLint en `respuestas.js`.
+- **Funcionalidad:** Planes NATURA, FOCUS y PRISMA completados. Plan UNICUS en Fase 3/4.
+- **Git:** Rama `develop_backend` al día con los últimos cambios locales.
 
 ### Finalización: [PENDIENTE]
 
