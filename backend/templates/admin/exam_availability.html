@@ -620,13 +620,7 @@
                   {% for g in grados %}
                   <option
                     value="{{ g }}"
-                    {%
-                    if
-                    g=""
-                    ="11"
-                    %}selected{%
-                    endif
-                    %}
+                    {% if g == "11" %}selected{% endif %}
                   >
                     Estudiantes de {{ g }}°
                   </option>

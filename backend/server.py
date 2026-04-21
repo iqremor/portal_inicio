@@ -62,20 +62,20 @@ def run(host, port, debug, reload, open_browser):
     """
     Iniciar el servidor de desarrollo con un menú interactivo.
     """
+    # Configurar el logging global basado en el modo debug
+    log_level = logging.INFO if debug else logging.WARNING
+    logging.basicConfig(
+        level=log_level,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%H:%M:%S",
+    )
+
+    # Silenciar logs específicos de librerías para mantener la consola limpia
+    logging.getLogger("werkzeug").setLevel(logging.ERROR)
+    logging.getLogger("urllib3").setLevel(logging.ERROR)
+    logging.getLogger("requests").setLevel(logging.ERROR)
+
     os.system("cls" if os.name == "nt" else "clear")
-
-    # --- NUEVA LÍNEA DE DEPURACIÓN ---
-    # Crear una instancia temporal para obtener la config
-    if debug:
-        app_instance = create_app()
-        click.echo(f"DEBUG: SECRET_KEY utilizada: {app_instance.config.get('SECRET_KEY')}")
-    # --- FIN NUEVA LÍNEA DE DEPURACIÓN ---
-
-    import warnings
-
-    warnings.filterwarnings("ignore", category=UserWarning, module="flask_admin.model.base")
-    log = logging.getLogger("werkzeug")
-    log.setLevel(logging.ERROR)
 
     # --- Verificación e Inicialización de DB ---
     from utils.db_utils import initialize_database_if_not_exists

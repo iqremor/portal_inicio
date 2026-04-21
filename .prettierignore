@@ -1,0 +1,8 @@
+# Ignorar plantillas de Flask con lógica compleja de Jinja2
+backend/templates/**/*.html
+backend/templates/admin/*.html
+backend/templates/server_admin/*.html
+
+# Otros archivos que no necesitan formateo agresivo
+docs/**/*.md
+prototype/**/*.html

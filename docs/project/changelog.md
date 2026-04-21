@@ -31,25 +31,47 @@
 
 ---
 
-## Sesión 40 - 20 de abril de 2026
+## Sesión 40 - 20 de Abril de 2026
 
 ### Objetivos de la sesión:
-
-- Sincronizar el estado del proyecto y validar la Fase 3 del Plan UNICUS en el entorno de producción.
-- Iniciar la **Fase 4 del Plan UNICUS**: Reportes e Integridad (incluir grado de origen en los reportes).
-- Resolver la deuda técnica menor (advertencia ESLint en `respuestas.js`).
+- Corregir error de sintaxis Jinja2 en `exam_availability.html`.
+- Solucionar problema de inhabilitación global de módulos al guardar disponibilidad.
+- Ajustar lógica de visualización de notas (Estudiante: Último intento, Admin: Mejor nota).
+- Refactorizar reporte de grado para soportar Plan UNICUS.
+- Crear plan formal para gestión de respuestas (Plan RESPUESTA-MASTER).
 
 ### Estado inicial:
+- **Calidad de código**: Issues de sintaxis detectados en templates admin.
+- **Deuda técnica**: Filtros restrictivos de grado en API impedían funcionamiento de UNICUS en reportes.
+- **Git**: Rama `develop_backend` activa.
 
-- **Calidad de código:** 6/6 tests de backend pasando. 1 warning de ESLint en `respuestas.js`.
-- **Funcionalidad:** Planes NATURA, FOCUS y PRISMA completados. Plan UNICUS en Fase 3/4.
-- **Git:** Rama `develop_backend` al día con los últimos cambios locales.
+### Acciones Realizadas:
+- **Backend (Admin)**:
+  - `admin.py`: Se inhabilitó la sobrescritura automática del switch maestro de módulos en `ExamAvailabilityView`.
+  - Se cambió el ordenamiento del reporte de grado a `final_score.desc()` para mostrar la mejor nota al administrador.
+- **Backend (API)**:
+  - `routes/api.py`: Se eliminó el filtro de grado en `get_user_resumen_notas` para permitir visualización de exámenes de otros grados (UNICUS).
+  - Se implementó subconsulta para obtener el **último intento** del estudiante en el resumen de notas.
+- **Frontend (Admin)**:
+  - `reporte_grado.html`: Refactorización completa del selector de exámenes. Ahora utiliza la API `/api/examenes_por_grado/` para cargar solo los cuadernillos habilitados para el grado seleccionado, independientemente de su origen.
+- **Correcciones de Sintaxis**:
+  - `exam_availability.html`: Fix de sentencia `if` mal formada en Jinja2.
+  - `resultados.html`: Cierre de etiqueta de botón faltante detectado por hooks de Prettier.
+- **UX/Consistencia**:
+  - Actualización de textos en `dashboard.html`, `simulacro.html`, `resultados.html` y `ui.js` para unificar el nombre "Prueba Saber".
+- **Planificación**:
+  - Creación de `docs/plans/plan_respuestas.md` para la futura gestión administrativa de claves.
 
-### Finalización: [PENDIENTE]
+### Estado final:
+- **Calidad de código**: 100% validado por hooks de pre-commit (Black, Prettier, Flake8).
+- **Funcionalidad**: Reportes UNICUS plenamente operativos. Inconsistencias de visibilidad de módulos resueltas.
+
+### Finalización: [COMPLETADO]
 
 ---
 
-## Sesión 38 - 16 de abril de 2026
+## Sesión 39 - 18 de abril de 2026
+
 
 ### Objetivos de la sesión:
 
