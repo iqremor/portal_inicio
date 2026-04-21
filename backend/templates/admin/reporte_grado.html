@@ -107,31 +107,43 @@
       // Lista de cuadernillos pasada desde el backend ya como lista de dicts
       const cuadernillos = {{ cuadernillos|tojson }};
 
-      // Al cambiar el grado, filtrar los cuadernillos disponibles
+      // Al cambiar el grado, cargar los cuadernillos HABILITADOS para ese grado (Plan UNICUS)
       selectGrado.addEventListener('change', function() {
           const gradoSelected = this.value;
 
           // Resetear select de cuadernillo
-          selectCuadernillo.innerHTML = '<option value="">-- Seleccionar Examen --</option>';
+          selectCuadernillo.innerHTML = '<option value="">-- Cargando exámenes... --</option>';
+          selectCuadernillo.disabled = true;
+          btnBuscar.disabled = true;
 
           if (gradoSelected) {
-              const filtrados = cuadernillos.filter(c => c.grado === gradoSelected);
+              // Consultar al servidor qué exámenes están habilitados para este grado específico
+              fetch(`/admin/reporte_grado/api/examenes_por_grado/${gradoSelected}`)
+              .then(response => response.json())
+              .then(filtrados => {
+                  selectCuadernillo.innerHTML = '<option value="">-- Seleccionar Examen --</option>';
 
-              if (filtrados.length > 0) {
-                  filtrados.forEach(c => {
-                      const option = document.createElement('option');
-                      option.value = c.id;
-                      option.textContent = `${c.area.toUpperCase()} - ${c.nombre}`;
-                      selectCuadernillo.appendChild(option);
-                  });
-                  selectCuadernillo.disabled = false;
-              } else {
-                  selectCuadernillo.innerHTML = '<option value="">No hay exámenes para este grado</option>';
-                  selectCuadernillo.disabled = true;
-              }
+                  if (filtrados.length > 0) {
+                      filtrados.forEach(c => {
+                          const option = document.createElement('option');
+                          option.value = c.id;
+                          // Usar el label que viene del servidor o construir uno descriptivo
+                          option.textContent = c.label || `${c.area.toUpperCase()} (Origen: ${c.grado}°) - ${c.nombre}`;
+                          selectCuadernillo.appendChild(option);
+                      });
+                      selectCuadernillo.disabled = false;
+                  } else {
+                      selectCuadernillo.innerHTML = '<option value="">No hay exámenes habilitados para este grado</option>';
+                      selectCuadernillo.disabled = true;
+                  }
+              })
+              .catch(error => {
+                  console.error('Error cargando exámenes:', error);
+                  selectCuadernillo.innerHTML = '<option value="">Error al cargar exámenes</option>';
+              });
           } else {
+              selectCuadernillo.innerHTML = '<option value="">-- Primero seleccione un grado --</option>';
               selectCuadernillo.disabled = true;
-              btnBuscar.disabled = true;
           }
       });
 

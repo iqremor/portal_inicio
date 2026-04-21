@@ -143,7 +143,7 @@ export function mostrarPaginaInicio(
                 <button id="btnIniciarQuiz" class="btn btn-primary">Iniciar Prueba</button>
                 ${
                   curAtt > 0
-                    ? '<button id="btnVolverSimulacro" class="btn btn-secondary">Volver al Simulacro</button>'
+                    ? '<button id="btnVolverSimulacro" class="btn btn-secondary">Volver a Prueba Saber</button>'
                     : ''
                 }
             </div>

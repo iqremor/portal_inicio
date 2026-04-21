@@ -705,7 +705,7 @@ class ReporteGradoView(BaseView):
         for usuario in usuarios:
             ultimo_result = (
                 ExamResult.query.filter_by(user_id=usuario.id, cuadernillo_id=cuadernillo_id)
-                .order_by(ExamResult.attempt_number.desc())
+                .order_by(ExamResult.final_score.desc())  # Mostrar la nota más alta
                 .first()
             )
 
@@ -1060,12 +1060,14 @@ class ExamAvailabilityView(BaseView):
                 else:
                     db.session.add(ConfiguracionSistema(clave=clave_grades, valor=valor_grades))
 
-                # Actualizar switch maestro
-                config_e = ConfiguracionSistema.query.filter_by(clave=clave_enabled).first()
-                if config_e:
-                    config_e.valor = valor_enabled
-                else:
-                    db.session.add(ConfiguracionSistema(clave=clave_enabled, valor=valor_enabled))
+                # COMENTADO: El switch maestro se gestiona en la pantalla de Configuración Global.
+                # No debemos apagarlo automáticamente aquí si no hay grados, pues el admin puede
+                # querer mantener el módulo encendido mientras configura los grados.
+                # config_e = ConfiguracionSistema.query.filter_by(clave=clave_enabled).first()
+                # if config_e:
+                #     config_e.valor = valor_enabled
+                # else:
+                #     db.session.add(ConfiguracionSistema(clave=clave_enabled, valor=valor_enabled))
 
             try:
                 db.session.commit()

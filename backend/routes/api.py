@@ -530,17 +530,24 @@ def get_user_resumen_notas(codigo, active_session):
     user_grade = str(user.grado).lower()
     normalized_user_grade = grade_map.get(user_grade, user_grade)
 
-    # Obtener las mejores notas de cada área para el grado del usuario
-    results = (
-        db.session.query(Cuadernillo.area, func.max(ExamResult.final_score).label("mejor_nota"))
-        .join(ExamResult, ExamResult.cuadernillo_id == Cuadernillo.id)
+    # Obtener el último intento de cada área para el usuario
+    # Usamos una subconsulta para encontrar el máximo ID de intento (o el más reciente) por cuadernillo
+    subquery = (
+        db.session.query(ExamResult.cuadernillo_id, func.max(ExamResult.id).label("max_id"))
         .filter(ExamResult.user_id == user.id)
-        .filter(Cuadernillo.grado == normalized_user_grade)
-        .group_by(Cuadernillo.area)
+        .group_by(ExamResult.cuadernillo_id)
+        .subquery()
+    )
+
+    results = (
+        db.session.query(Cuadernillo.area, ExamResult.final_score)
+        .join(ExamResult, Cuadernillo.id == ExamResult.cuadernillo_id)
+        .join(subquery, (ExamResult.id == subquery.c.max_id))
+        .filter(ExamResult.user_id == user.id)
         .all()
     )
 
-    resumen = {r.area: round(r.mejor_nota, 1) for r in results}
+    resumen = {r.area: round(r.final_score, 1) for r in results}
     return jsonify(resumen)
 
 
